@@ -1,0 +1,34 @@
+[
+  {
+    "number": 2,
+    "title": "Fix the folder distribution!",
+    "created_at": "2025-01-17T21:49:03Z",
+    "closed_at": "2025-01-17T22:17:09Z",
+    "labels": [],
+    "url": "https://github.com/iiMidknightii/PathMesh3D/issues/2",
+    "body": "i tried downloading this addon since its description is exactly what i need, when i was downloading it, i noticed it have a lot of folders outside of the addons folder, this messes with anyone working directory, where should be only the users folders.\ni'm going to test it in a separated project.",
+    "comments_url": "https://api.github.com/repos/iiMidknightii/PathMesh3D/issues/2/comments",
+    "author": "lucasthomaz97",
+    "comments": [
+      {
+        "user": "lucasthomaz97",
+        "created_at": "2025-01-17T22:17:09Z",
+        "body": "I just tested it in another project, i noticed that i only needed the content inside the addons folder."
+      },
+      {
+        "user": "iiMidknightii",
+        "created_at": "2025-01-17T22:46:21Z",
+        "body": "Yes, for the addon to work you only need the addons folder.  The others are necessary if you want to build the plugin yourself for other platforms (like Mac or Android).  You could also edit the source code files to better suit your needs.  When you download from the Godot AssetLib tab, it lets you choose which folders are downloaded and installed into your project.  There you could just select the addons folder only if that's all you need."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification about which folders are essential for the addon to function",
+      "Explanation of why additional folders exist in the distribution",
+      "Information about how to obtain only the necessary files when downloading"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:08"
+    }
+  }
+]

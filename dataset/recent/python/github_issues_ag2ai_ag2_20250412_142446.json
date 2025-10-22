@@ -1,0 +1,129 @@
+[
+  {
+    "number": 1382,
+    "title": "[Bug]: Data ingestion task failing in DocAgent",
+    "created_at": "2025-03-17T14:52:13Z",
+    "closed_at": "2025-03-19T19:37:50Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/ag2ai/ag2/issues/1382",
+    "body": "### Describe the bug\n\nDuring first ingestion function call step, below error is observed:\n\n_Swarm_Tool_Executor (to chat_manager):\n\n***** Response from calling tool (call_Ndd1aKWi9w3NfqGFoeab24OC) *****\nData Ingestion Task Failed, Error 'Ingest' object is not subscriptable: ''\n**********************************************************************\n\nInput arguments are correct for execution. Same error is observed in both in-memory and VectorChromaQueryEngine \n\n### Steps to reproduce\n\n_No response_\n\n### Model Used\n\ngpt-4o\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots and logs\n\n_No response_\n\n### Additional Information\n\nag2 = {extras = [\"openai\", \"rag\"], version = \"^0.8.1\"}\nRocky 9.4\nPython 3.12.7",
+    "comments_url": "https://api.github.com/repos/ag2ai/ag2/issues/1382/comments",
+    "author": "gunue",
+    "comments": [
+      {
+        "user": "AgentGenie",
+        "created_at": "2025-03-19T19:37:50Z",
+        "body": "@gunue It should be fixed in release 0.8.2. Could you verify? Thanks."
+      },
+      {
+        "user": "gunue",
+        "created_at": "2025-03-21T15:23:52Z",
+        "body": "Verified for 0.8.3 and it's fixed. Thanks"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the 'Ingest' object not being subscriptable error during data ingestion",
+      "An updated version of the library that resolves the bug",
+      "Compatibility with their existing environment (Rocky 9.4, Python 3.12.7)"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:01"
+    }
+  },
+  {
+    "number": 298,
+    "title": "[Bug]: GroupChatManager.a_run_chat does not handle NoEligibleSpeaker Exception",
+    "created_at": "2024-12-27T06:39:08Z",
+    "closed_at": "2025-01-03T18:27:17Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/ag2ai/ag2/issues/298",
+    "body": "### Describe the bug\r\n\r\nAccording to the code in GroupChatManager.run_chat when GroupChat.select_speaker raise NoEligibleSpeaker , the groupchat will be terminated. This feature enables coders to define termination conditions in customized speaker_selection_method. \r\n\r\n```python\r\ndef run_chat(\r\n        self,\r\n        messages: Optional[list[dict]] = None,\r\n        sender: Optional[Agent] = None,\r\n        config: Optional[GroupChat] = None,\r\n    ) -> tuple[bool, Optional[str]]:\r\n        \"\"\"Run a group chat.\"\"\"\r\n        \r\n         # other codes before ...\r\n       \r\n        for i in range(groupchat.max_round):\r\n            self._last_speaker = speaker\r\n            groupchat.append(message, speaker)\r\n            # broadcast the message to all agents except the speaker\r\n            for agent in groupchat.agents:\r\n                if agent != speaker:\r\n                    self.send(message, agent, request_reply=False, silent=True)\r\n            if self._is_termination_msg(message) or i == groupchat.max_round - 1:\r\n                # The conversation is over or it's the last round\r\n                break\r\n            try:\r\n                # select the next speaker\r\n                speaker = groupchat.select_speaker(speaker, self)\r\n                if not silent:\r\n                    iostream = IOStream.get_default()\r\n                    iostream.print(colored(f\"\\nNext speaker: {speaker.name}\\n\", \"green\"), flush=True)\r\n                # let the speaker speak\r\n                reply = speaker.generate_reply(sender=self)\r\n            except KeyboardInterrupt:\r\n                # let the admin agent speak if interrupted\r\n                if groupchat.admin_name in groupchat.agent_names:\r\n                    # admin agent is one of the participants\r\n                    speaker = groupchat.agent_by_name(groupchat.admin_name)\r\n                    reply = speaker.generate_reply(sender=self)\r\n                else:\r\n                    # admin agent is not found in the participants\r\n                    raise\r\n            except NoEligibleSpeaker:\r\n                # No eligible speaker, terminate the conversation\r\n                break\r\n\r\n        # other codes after ...\r\n        return True, None\r\n\r\n```\r\n\r\nHowever, it seems that GroupChatManager.a_run_chat do not have this feature.  \r\nI am not sure whether it is a feature or bug.\r\n```python\r\n\r\nasync def a_run_chat(\r\n        self,\r\n        messages: Optional[list[dict]] = None,\r\n        sender: Optional[Agent] = None,\r\n        config: Optional[GroupChat] = None,\r\n    ):\r\n        # other codes before ...\r\n        for i in range(groupchat.max_round):\r\n            groupchat.append(message, speaker)\r\n\r\n            if self._is_termination_msg(message):\r\n                # The conversation is over\r\n                break\r\n\r\n            # broadcast the message to all agents except the speaker\r\n            for agent in groupchat.agents:\r\n                if agent != speaker:\r\n                    await self.a_send(message, agent, request_reply=False, silent=True)\r\n            if i == groupchat.max_round - 1:\r\n                # the last round\r\n                break\r\n            try:\r\n                # select the next speaker\r\n                speaker = await groupchat.a_select_speaker(speaker, self)\r\n                # let the speaker speak\r\n                reply = await speaker.a_generate_reply(sender=self)\r\n            except KeyboardInterrupt:\r\n                # let the admin agent speak if interrupted\r\n                if groupchat.admin_name in groupchat.agent_names:\r\n                    # admin agent is one of the participants\r\n                    speaker = groupchat.agent_by_name(groupchat.admin_name)\r\n                    reply = await speaker.a_generate_reply(sender=self)\r\n                else:\r\n                    # admin agent is not found in the participants\r\n                    raise\r\n           # It does not have the following exception handler\r\n           #  except NoEligibleSpeaker:  \r\n           #     break\r\n\r\n            if reply is None:\r\n                break\r\n\r\n       # other codes after ...\r\n      \r\n```\r\n### Steps to reproduce\r\n\r\nDefine a speaker_selection_method returning None under some conditions. ( That should be a proper case when we try to define the termination condition\r\n\r\n### Model Used\r\n\r\n_No response_\r\n\r\n### Expected Behavior\r\n\r\n_No response_\r\n\r\n### Screenshots and logs\r\n\r\n_No response_\r\n\r\n### Additional Information\r\n\r\n_No response_",
+    "comments_url": "https://api.github.com/repos/ag2ai/ag2/issues/298/comments",
+    "author": "linmou",
+    "comments": [
+      {
+        "user": "marklysze",
+        "created_at": "2024-12-27T17:45:30Z",
+        "body": "Thanks @linmou, I have addressed this in my Telemetry Phase 1 code, if you need it more urgently then I'll create a new PR. Telemetry Phase 1 #296 "
+      },
+      {
+        "user": "linmou",
+        "created_at": "2024-12-27T20:56:20Z",
+        "body": "> Thanks @linmou, I have addressed this in my Telemetry Phase 1 code, if you need it more urgently then I'll create a new PR. Telemetry Phase 1 #296\r\n\r\nNot so urgent , I can change my code locally. "
+      },
+      {
+        "user": "marklysze",
+        "created_at": "2024-12-30T03:02:43Z",
+        "body": "I'm also addressing this in #315, as I think that will merge earlier than #296."
+      },
+      {
+        "user": "marklysze",
+        "created_at": "2025-01-03T18:27:17Z",
+        "body": "#315 has merged, so we're good to go :)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation that the NoEligibleSpeaker exception handling will be added to the a_run_chat method",
+      "A timeline for when the fix will be available in the codebase",
+      "Acknowledgment that this is a legitimate issue rather than intended behavior"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:09"
+    }
+  },
+  {
+    "number": 169,
+    "title": "[Bug]: Upgraded to AG2 0.5 and imports broke",
+    "created_at": "2024-12-08T06:56:43Z",
+    "closed_at": "2024-12-08T23:49:39Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/ag2ai/ag2/issues/169",
+    "body": "### Describe the bug\n\nUpgraded to v0.5 and I no longer can import \r\n\r\nfrom autogen import (\r\n    SwarmResult,\r\n    AssistantAgent,\r\n    SwarmAgent,\r\n)\r\n\r\nI cannot even import \r\n\r\nfrom autogen.coding import DockerCommandLineCodeExecutor\r\n\r\nNot sure what happened. \n\n### Steps to reproduce\n\nUpgrade from 0.41 to 0.5 via pip install ag2 --upgrade\n\n### Model Used\n\n_No response_\n\n### Expected Behavior\n\n_No response_\n\n### Screenshots and logs\n\n_No response_\n\n### Additional Information\n\n_No response_",
+    "comments_url": "https://api.github.com/repos/ag2ai/ag2/issues/169/comments",
+    "author": "bassilkhilo",
+    "comments": [
+      {
+        "user": "Hk669",
+        "created_at": "2024-12-08T07:08:45Z",
+        "body": "cc @marklysze "
+      },
+      {
+        "user": "marklysze",
+        "created_at": "2024-12-08T19:00:17Z",
+        "body": "@bassilkhilo, are you able to output the trace when you try and run the program? Just checking if, perhaps, there are any changes made to other files?"
+      },
+      {
+        "user": "ashim-mahara",
+        "created_at": "2024-12-08T19:26:00Z",
+        "body": "using `pyautogen`works."
+      },
+      {
+        "user": "ohdearquant",
+        "created_at": "2024-12-08T21:24:49Z",
+        "body": "@bassilkhilo  what environment/package manager do you use?"
+      },
+      {
+        "user": "bassilkhilo",
+        "created_at": "2024-12-08T23:49:02Z",
+        "body": "Hey all.\r\n\r\nA quick update, @marklysze suggested I run the following commands to fix the issue:\r\n\r\npip uninstall openai pyautogen ag2\r\n\r\npip install ag2\r\n\r\nThis worked, I no longer have import issues.\r\n\r\nI was on AG2 0.41, maybe pyautoagen as well, honestly not too sure. But the above solution fixed the problem.\r\n\r\nCC: @ohdearquant "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves import errors after upgrading to AG2 0.5",
+      "Clear instructions for package management to fix dependency conflicts",
+      "A clean installation approach that removes conflicting packages before reinstalling"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:14"
+    }
+  }
+]

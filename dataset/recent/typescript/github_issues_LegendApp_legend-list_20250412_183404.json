@@ -1,0 +1,106 @@
+[
+  {
+    "number": 142,
+    "title": "version ^1.0.0-beta.17 is causing crash",
+    "created_at": "2025-03-13T07:56:35Z",
+    "closed_at": "2025-03-13T08:16:19Z",
+    "labels": [],
+    "url": "https://github.com/LegendApp/legend-list/issues/142",
+    "body": "after upgrading to ^1.0.0-beta.17 getting this error :\n\n```\nWarning: ReferenceError: Property 'React' doesn't exist\n\nThis error is located at:\n    in Containers2 (created by ListComponent2)\n    in RCTView (created by View)\n    in View (created by ScrollView)\n    in RCTScrollView\n    in VScrollViewNativeComponent (created by ScrollView)\n    in AndroidSwipeRefreshLayout (created by RefreshControl)\n    in RefreshControl\n    in ScrollView (created by ScrollView)\n    in Wrapper (created by ListComponent2)\n    in ListComponent2\n    in LegendListInner2\n    in StateProvider\n    in LegendList2\n```",
+    "comments_url": "https://api.github.com/repos/LegendApp/legend-list/issues/142/comments",
+    "author": "SumitR9910",
+    "comments": [
+      {
+        "user": "jmeistrich",
+        "created_at": "2025-03-13T08:16:19Z",
+        "body": "Thanks for the report! Should be fixed in beta.19. But please let me know if it's still not working!"
+      },
+      {
+        "user": "SumitR9910",
+        "created_at": "2025-03-13T08:28:32Z",
+        "body": "works fine in beta.19 \ud83d\udc4d\ud83c\udffb\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the React reference error that occurs after upgrading to version ^1.0.0-beta.17",
+      "A working version of the library that doesn't crash the application",
+      "Clear guidance on which version to use to avoid the reported error"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:54"
+    }
+  },
+  {
+    "number": 117,
+    "title": "[issue] onViewableItemsChanged not firing with/after new data appended to start",
+    "created_at": "2025-02-24T00:05:30Z",
+    "closed_at": "2025-03-17T15:13:56Z",
+    "labels": [
+      "1.0",
+      "done?"
+    ],
+    "url": "https://github.com/LegendApp/legend-list/issues/117",
+    "body": "I have a header component that displays accurate data related to the current most prominent item in view.\n\nIt seems like onViewableItemsChanged is not firing when new data is appended at the beginning of the list. Basically it goes to index 0 and then is not firing anymore.\n\nFor your idea my implementation:\n\n```typescript\n<LegendList\n  refreshControl={\n    <RefreshControl\n      onRefresh={() => refetchCalendar()}\n      refreshing={isRefetchingCalendar}\n    />\n  }\n  data={ungroupedAndSortedCalendar}\n  keyExtractor={(item) => {\n    return item.startDate;\n  }}\n  estimatedItemSize={700}\n  initialScrollIndex={Math.floor(calendar.pages[0].length / 2)}\n  onStartReached={() => {\n    if (!isFetchingPreviousPage) {\n      fetchPreviousPage();\n    }\n  }}\n  onEndReached={() => {\n    if (!isFetchingNextPage) {\n      fetchNextPage();\n    }\n  }}\n  onViewableItemsChanged={({ viewableItems, changed }) => {\n    if (!viewableItems?.length) {\n      return;\n    }\n\n    const wait10ms = new Promise((resolve) =>\n      setTimeout(resolve, 10)\n    );\n\n    wait10ms.then(() => {\n      setMonthInView(viewableItems[0].item.title);\n    });\n  }}\n  viewabilityConfig={{\n    itemVisiblePercentThreshold: 50,\n    waitForInteraction: false,\n  }}\n  recycleItems\n  waitForInitialLayout\n  maintainVisibleContentPosition\n  renderItem={({ item }: { item: TwelveMonthCalendar[0] }) => {\n    return (\n      <TwelveMonthCalendarItem\n        calendar={item.calendar}\n        today={today}\n      />\n    );\n  }}\n/>\n```",
+    "comments_url": "https://api.github.com/repos/LegendApp/legend-list/issues/117/comments",
+    "author": "niek-hdas",
+    "comments": [
+      {
+        "user": "jmeistrich",
+        "created_at": "2025-03-17T13:17:26Z",
+        "body": "This should be fixed in beta.22. The viewability calculations were not working well with maintainVisibleContentPosition and scrolling above 0. @niek-hdas can you check and see if it's working better for you now?"
+      },
+      {
+        "user": "niek-hdas",
+        "created_at": "2025-03-17T13:41:16Z",
+        "body": "@jmeistrich it does seem to be working now, great! \ud83c\udf89"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the onViewableItemsChanged event not firing when new data is appended to the beginning of the list",
+      "Proper interaction between onViewableItemsChanged and maintainVisibleContentPosition",
+      "Reliable tracking of visible items when scrolling to negative indices"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:02"
+    }
+  },
+  {
+    "number": 35,
+    "title": "fix unstable_batchedUpdates on web.",
+    "created_at": "2024-12-09T23:28:24Z",
+    "closed_at": "2024-12-16T22:15:32Z",
+    "labels": [],
+    "url": "https://github.com/LegendApp/legend-list/pull/35",
+    "body": "fixes #34",
+    "comments_url": "https://api.github.com/repos/LegendApp/legend-list/issues/35/comments",
+    "author": "a-eid",
+    "comments": [
+      {
+        "user": "a-eid",
+        "created_at": "2024-12-10T02:52:45Z",
+        "body": "not sure why but I think `unstable_batchedUpdates` needs to be split to `unstable_batchedUpdates.ts` & `unstable_batchedUpdates.web.ts`"
+      },
+      {
+        "user": "jmeistrich",
+        "created_at": "2024-12-16T22:15:32Z",
+        "body": "Thanks @a-eid! But while optimizing I found that unstable_batchedUpdates surprisingly made things worse, so I removed it :). It's fixed in main and I'm planning to release an update tomorrow."
+      },
+      {
+        "user": "a-eid",
+        "created_at": "2024-12-17T02:43:36Z",
+        "body": "> Thanks @a-eid! But while optimizing I found that unstable_batchedUpdates surprisingly made things worse, so I removed it :). It's fixed in main and I'm planning to release an update tomorrow.\r\n\r\nthank you, can't wait to use it."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the unstable_batchedUpdates functionality on web platforms",
+      "A timely release of the fix in an update",
+      "A solution that improves performance"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:09"
+    }
+  }
+]

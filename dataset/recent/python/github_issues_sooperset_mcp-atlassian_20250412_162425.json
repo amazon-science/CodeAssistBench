@@ -1,0 +1,119 @@
+[
+  {
+    "number": 172,
+    "title": "Error fetching Jira projects caused by character '@'",
+    "created_at": "2025-03-31T05:17:25Z",
+    "closed_at": "2025-04-02T15:55:18Z",
+    "labels": [],
+    "url": "https://github.com/sooperset/mcp-atlassian/issues/172",
+    "body": "I am encountering the following errors when I use the latest version of mcp-atlassian.\n\nInstall:\nbrew install uv\nuvx mcp-atlassian\n\nUsage:\nTransport Type: STDIO\nCommand: uvx\nArguments: mcp-atlassian --confluence-url my_url --confluence-personal-token my_token_1 --jira-url my_url --jira-personal-token my_token_2\n\nError output from MCP server when connecting:\n`ERROR - mcp-atlassian - Error fetching Jira projects: Error in the JQL Query: The character '@' is a reserved JQL character. You must enclose it in a string or use the escape '\\u0040' instead. (line 1, character 17)`\n\nSeems main features are still correct, I can invoke the tools in windsurf. please help to address the above error.",
+    "comments_url": "https://api.github.com/repos/sooperset/mcp-atlassian/issues/172/comments",
+    "author": "langpingxue",
+    "comments": [
+      {
+        "user": "sooperset",
+        "created_at": "2025-04-01T18:00:20Z",
+        "body": "Thanks for reporting this issue. The error occurs because the '@' character in email addresses isn't properly quoted in JQL queries. I've identified the root cause in how user identifiers are inserted into queries and will submit a fix shortly. Glad to hear main functionality still works despite this error."
+      },
+      {
+        "user": "sooperset",
+        "created_at": "2025-04-02T15:55:55Z",
+        "body": "Hi, I fixed this issue with #180. would you try testing with the current main branch?"
+      },
+      {
+        "user": "langpingxue",
+        "created_at": "2025-04-03T08:57:47Z",
+        "body": "looks good, thank you."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the JQL query error caused by the '@' character",
+      "Maintaining functionality of the main features while fixing the error",
+      "A solution that works with the user's existing setup (uvx/brew installation method)"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:23"
+    }
+  },
+  {
+    "number": 167,
+    "title": "Support for legacy confluence (6.0.x)",
+    "created_at": "2025-03-28T11:09:07Z",
+    "closed_at": "2025-04-02T15:17:09Z",
+    "labels": [],
+    "url": "https://github.com/sooperset/mcp-atlassian/issues/167",
+    "body": "I'm wondering what would be missing to have support for the confluence series 6.0.\n\nI've tried the confluence client lib ( `atlassian-python-api` ) against such a legacy server and it seems to work just fine, at least for the basic features.\n\nLooking at the mcp-atlassian code, I couldn't find the reason why it doesn't seem to work with confluence 6.0.x . \n\nAre there any useful pointers about how to start diagnosing this issue?\n\nI'd be keen on building support for the 6.0.x confluence branch, even if it has to be limited.\n\n ",
+    "comments_url": "https://api.github.com/repos/sooperset/mcp-atlassian/issues/167/comments",
+    "author": "jeteve",
+    "comments": [
+      {
+        "user": "sooperset",
+        "created_at": "2025-03-29T05:04:22Z",
+        "body": "That sounds great! The supported Confluence version was set in PR #92. For Jira DC/server, the supported version was set due to the PAT support. It would be great if we could support the legacy version seamlessly, if possible."
+      },
+      {
+        "user": "jeteve",
+        "created_at": "2025-03-31T08:08:29Z",
+        "body": "So, I ran some test using the test suite and they pass just fine for my legacy confluence:\n\n```\n\npytest -vx tests/test_real_api_validation.py --use-real-data\ntests/test_real_api_validation.py::TestRealConfluenceValidation::test_get_page_content PASSED                             [ 11%]\ntests/test_real_api_validation.py::TestRealConfluenceValidation::test_get_page_comments PASSED                            [ 14%]\ntests/test_real_api_validation.py::TestRealConfluenceValidation::test_search_content PASSED                               [ 17%]\ntests/test_real_api_validation.py::test_confluence_get_page_content[asyncio] PASSED                                       [ 29%]\n\n```\n\nBUT, when I run the MCP in claude with exactly the same environment variables, it just doesn't work and I can see anything significantly interesting in the MCP logs. Maybe it;s some sort of windows thing. MCP with Claude works perfectly with my cloud JIRA."
+      },
+      {
+        "user": "jeteve",
+        "created_at": "2025-03-31T08:57:07Z",
+        "body": "PR #173 makes this work in the MCP server itself."
+      },
+      {
+        "user": "sooperset",
+        "created_at": "2025-04-01T17:52:41Z",
+        "body": "Thank you for your contribution. I've just reviewed the PR and we're ready to proceed with a few updates. Once those are implemented, we can move forward with the merge."
+      },
+      {
+        "user": "jeteve",
+        "created_at": "2025-04-02T15:17:09Z",
+        "body": "Great! Yes, using basic auth, it works fine against an old confluence. (6.0.x line). Thanks a lot @sooperset !"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Support for Confluence 6.0.x series in the library",
+      "Identification of what was preventing compatibility with Confluence 6.0.x",
+      "A solution that works with the MCP server",
+      "Authentication method that works with legacy Confluence"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:29"
+    }
+  },
+  {
+    "number": 141,
+    "title": "jira_search fields not working",
+    "created_at": "2025-03-23T13:19:33Z",
+    "closed_at": "2025-03-23T14:36:52Z",
+    "labels": [],
+    "url": "https://github.com/sooperset/mcp-atlassian/issues/141",
+    "body": "\nI expected  fields of `jira search` arguments are Fields to return.  but it doesnt work.\n\n- actual arguments\n```json\n{\n  \"jql\": \"project = PROJECT AND cf[10049] IS NOT EMPTY ORDER BY cf[10049] DESC\",\n  \"fields\": \"summary,assignee,customfield_10049\",\n  \"limit\": 100\n}\n\n```\n\nactual result has not customfield_10049. also result has other field. \n\n```\n    \"id\": \n    \"summary\": \n    \"key\": \n    \"description\": null,\n    \"created\": \"\",\n    \"updated\": \"\",\n    \"status\": null,\n    \"issue_type\": null,\n    \"priority\": null,\n    \"assignee\": {\n      \"display_name\": \n      \"name\": \n      \"email\": \n      \"avatar_url\": \"\n      ...\n```",
+    "comments_url": "https://api.github.com/repos/sooperset/mcp-atlassian/issues/141/comments",
+    "author": "youngkyo0504",
+    "comments": [
+      {
+        "user": "sooperset",
+        "created_at": "2025-03-23T14:37:00Z",
+        "body": "Hi @youngkyo0504 \nThank you for reporting this issue. I've implemented a fix #142  that addresses both problems you identified:\n\n1. The `jira_search` fields parameter now properly filters which fields are returned in the response\n2. Custom fields are now included when requested\n\nThis has been merged and will be part of the next release. Please let us know if you encounter any other issues."
+      },
+      {
+        "user": "youngkyo0504",
+        "created_at": "2025-03-23T14:50:59Z",
+        "body": "Thank you. You're incredibly fast"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix for the fields parameter in jira_search to properly filter returned fields",
+      "Support for custom fields in the response when requested",
+      "Timely resolution of the reported issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:36"
+    }
+  }
+]

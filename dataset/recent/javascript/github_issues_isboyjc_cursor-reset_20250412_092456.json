@@ -1,0 +1,33 @@
+[
+  {
+    "number": 14,
+    "title": "win10\u5b89\u88c5\u4e86cursor\u4f46\u662f\u811a\u672c\u63d0\u793a\u672a\u5b89\u88c5",
+    "created_at": "2025-04-01T08:50:22Z",
+    "closed_at": "2025-04-01T08:52:25Z",
+    "labels": [],
+    "url": "https://github.com/isboyjc/cursor-reset/issues/14",
+    "body": null,
+    "comments_url": "https://api.github.com/repos/isboyjc/cursor-reset/issues/14/comments",
+    "author": "chenhanzxc",
+    "comments": [
+      {
+        "user": "isboyjc",
+        "created_at": "2025-04-01T08:52:25Z",
+        "body": "\u8bf7\u52ff\u66f4\u6539\u5b89\u88c5\u4f4d\u7f6e"
+      },
+      {
+        "user": "chenhanzxc",
+        "created_at": "2025-04-01T08:53:40Z",
+        "body": "\u53ef\u4ee5\u4e86\u8c22\u8c22"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Guidance on not changing the installation location of Cursor",
+      "A simple, direct solution to resolve the error message about Cursor not being installed"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:29"
+    }
+  }
+]

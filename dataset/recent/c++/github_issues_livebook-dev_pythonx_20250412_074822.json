@@ -1,0 +1,35 @@
+[
+  {
+    "number": 8,
+    "title": "local libraries",
+    "created_at": "2025-02-24T05:18:47Z",
+    "closed_at": "2025-02-24T08:21:02Z",
+    "labels": [],
+    "url": "https://github.com/livebook-dev/pythonx/issues/8",
+    "body": "I'm having troubles using my own libraries.\nConsider this setup: in the root folder of the app, I have a folder called `plibs` which at the moment, for test purposes, it contains one very simple library generated with `uv`. Running `uv build` does what it needs to do, building the `.tar.gz` and the `.whl` . For testing purposes, I have a `ptest` folder where I import the above library as a dependency like this:\n```\ndependencies = [\n    \"firstlib\"\n  ]\n[tool.uv.sources]\n  firstlib = { path = \"../plibs/firstlib/dist/firstlib-0.1.0-py3-none-any.whl\" }\n```\nRunning it via `uv run` works as expected.\nNow, I want to use the same library in Pythonx. So, I'm configuring it like this:\n```\nconfig :pythonx, :uv_init,\n  pyproject_toml: \"\"\"\n  [project]\n  name = \"nwsite\"\n  version = \"0.0.0\"\n  requires-python = \"==3.12.*\"\n  dependencies = [\n    \"firstlib\"\n  ]\n  [tool.uv.sources]\n  firstlib = { path = \"plibs/firstlib/dist/firstlib-0.1.0-py3-none-any.whl\" }\n  \"\"\"\n```\n\nThe result is this:\n\n```\n==> pythonx\nCompiling 10 files (.ex)\nUsing CPython 3.12.8\nCreating virtual environment at: .venv\nerror: Distribution not found at: file:///...../_build/dev/lib/pythonx/priv/uv/project/plibs/firstlib/dist/firstlib-0.1.0-py3-none-any.whl\n\n== Compilation error in file lib/pythonx/application.ex ==\n** (RuntimeError) fetching Python and dependencies failed, see standard output for details\n    lib/pythonx/uv.ex:36: Pythonx.Uv.fetch/3\n    lib/pythonx/application.ex:24: (module)\ncould not compile dependency :pythonx, \"mix compile\" failed. Errors may have been logged above. You can recompile this dependency with \"mix deps.compile pythonx --force\", update it with \"mix deps.update pythonx\" or clean it with \"mix deps.clean pythonx\"\n```\nIt tries to load relatively to the _build directory, not the root directory of the project.\n\nSo, my question is: how can I configure a local uv-built library? Hardcoding the absolute path to the library (it works, tested it, but it doesn't feels very flexible to me) ? \nAny other options/ideas I could explore?\n\nThank you!\n ",
+    "comments_url": "https://api.github.com/repos/livebook-dev/pythonx/issues/8/comments",
+    "author": "dantodor",
+    "comments": [
+      {
+        "user": "jonatanklosko",
+        "created_at": "2025-02-24T06:01:02Z",
+        "body": "Hey @dantodor! Since the config is an Elixir string, you can actually \"generate\" it to a reasonable extent, so what about this?\n\n```elixir\nconfig :pythonx, :uv_init,\n  pyproject_toml: \"\"\"\n  [project]\n  name = \"nwsite\"\n  version = \"0.0.0\"\n  requires-python = \"==3.12.*\"\n  dependencies = [\n    \"firstlib\"\n  ]\n  [tool.uv.sources]\n  firstlib = { path = \"#{File.cwd!()}/plibs/firstlib/dist/firstlib-0.1.0-py3-none-any.whl\" }\n  \"\"\"\n```"
+      },
+      {
+        "user": "dantodor",
+        "created_at": "2025-02-24T08:21:01Z",
+        "body": "That did it, thanks for the great suggestion!\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to reference local Python libraries in Pythonx that works with relative paths",
+      "A solution that maintains flexibility in project configuration",
+      "A method to dynamically resolve paths in the Pythonx configuration",
+      "A solution that integrates with the existing uv build workflow"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:45"
+    }
+  }
+]

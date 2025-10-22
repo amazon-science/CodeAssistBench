@@ -1,0 +1,129 @@
+[
+  {
+    "number": 137,
+    "title": "Using repo with transformers fix - Model adds words to my text at the end, is there a way to prevent this?",
+    "created_at": "2025-04-11T13:56:46Z",
+    "closed_at": "2025-04-11T14:18:37Z",
+    "labels": [],
+    "url": "https://github.com/canopyai/Orpheus-TTS/issues/137",
+    "body": "I'm using the repo suggested in one of the issues with vllm_c, because on windows vllm does not work.\n\nThis means the version may be a bit outdated to the current one, but I wanted to ask if this happens to others, the model adds some words or phrases I don't have in my text, is there a way to prevent this?",
+    "comments_url": "https://api.github.com/repos/canopyai/Orpheus-TTS/issues/137/comments",
+    "author": "juangea",
+    "comments": [
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-04-11T14:08:58Z",
+        "body": "This is not normal or expected behaviour- perhaps someone on Windows can offer more insight - I'd just confirm you have eos token id set to 128258."
+      },
+      {
+        "user": "juangea",
+        "created_at": "2025-04-11T14:18:37Z",
+        "body": "The stop token was at 49158, I changed it for the one you said, and now it stops correctly, thanks!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that prevents the model from adding unwanted words or phrases at the end of generated text",
+      "Guidance on proper configuration of end-of-sequence tokens for text generation"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:04"
+    }
+  },
+  {
+    "number": 132,
+    "title": "About training multilingual models",
+    "created_at": "2025-04-10T08:30:17Z",
+    "closed_at": "2025-04-11T02:31:34Z",
+    "labels": [],
+    "url": "https://github.com/canopyai/Orpheus-TTS/issues/132",
+    "body": "Hi , thanks for your repo! I want to ask some details about training multilingual models. \n1. In your training  stage , did you still follow the rule, the ratio of text batch :speech batch  start with 1:1 and gradually decrease to 0:1 for TTS?   As we all know, for TTS datasets, text and speech should always be one-to-one corresponding, that is, 1:1, 0:1 means there is only speech. Why is the 0:1 situation feasible?\n\n2. In finetuning stage, how did you ensure that so many tags are supported while using only 300 cases ?\n\n3. If I finetune the pre-trained model you released using more of the same language data instead of training from scratch, and then fine-tune the above model using the single speaker data, will I get a better single speaker model?",
+    "comments_url": "https://api.github.com/repos/canopyai/Orpheus-TTS/issues/132/comments",
+    "author": "shanhaidexiamo",
+    "comments": [
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-04-10T12:14:14Z",
+        "body": "1. 1:1 and 0:1 don't mean text:speech in the way you are thinking. There are 2 datasets one is text:text - i.e. question answer. One if text:speech i.e. a Text prompt and speech response. We only used regular TTS (text followed by speech) sequences for multilingual.\n2. Model learns tags very effectively in full parameter finetuning\n3. Yes"
+      },
+      {
+        "user": "shanhaidexiamo",
+        "created_at": "2025-04-11T02:31:25Z",
+        "body": "Thank you very much for answering my question \uff01"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of the training methodology for multilingual models, particularly regarding the text-to-speech ratio",
+      "Information about how the model effectively learns multiple language tags with limited training data",
+      "Guidance on the optimal training approach for creating a single-speaker model",
+      "Direct answers to specific technical questions about the training methodology"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:09"
+    }
+  },
+  {
+    "number": 37,
+    "title": "Pre-train Data Structure",
+    "created_at": "2025-03-21T17:10:40Z",
+    "closed_at": "2025-03-23T02:36:39Z",
+    "labels": [],
+    "url": "https://github.com/canopyai/Orpheus-TTS/issues/37",
+    "body": "Thank you for sharing great work, I want to know about pre-train data format and it meaning given config file\n\n```\n> `\n> # Datasets\n> text_QA_dataset: <speech input-ids>\n> TTS_dataset: <text-input-ids>\n```\nBasically i want to know how can i prepare `text_QA_dataset` and `TTS_dataset` and it's format structure. i am waiting for your response and great-full to you.  \n\nWhat is the different between `text_QA_dataset` and `TTS_dataset`.",
+    "comments_url": "https://api.github.com/repos/canopyai/Orpheus-TTS/issues/37/comments",
+    "author": "saifulislam79",
+    "comments": [
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-03-21T21:27:35Z",
+        "body": "```python\ntokeniser_length = 128256\nstart_of_text = 128000\nend_of_text = 128009\n\nstart_of_speech = tokeniser_length + 1\nend_of_speech = tokeniser_length + 2\n\nstart_of_human = tokeniser_length + 3\nend_of_human = tokeniser_length + 4\n\nstart_of_ai = tokeniser_length + 5\nend_of_ai =  tokeniser_length + 6\npad_token = tokeniser_length + 7\n\naudio_tokens_start = tokeniser_length + 10\n```\n\nstart of human --- start of text --- text tokens --- end of text--- end of human--- start of ai --- start of speech --- speech tokens --- end of speech --- end of ai\n\n\nLet me know if unclear or further questions.\n\nEDIT - for text which I realise you also asked about:\n\nstart of human --- start of text --- question text tokens --- end of text--- end of human --- start of ai --- start of text --- answer text tokens --- end of text --- end of ai\n"
+      },
+      {
+        "user": "saifulislam79",
+        "created_at": "2025-03-21T21:38:28Z",
+        "body": "Thank you for your reply i had reviewed data processing code into colab, which mentioned into readme file. I need more clear understanding the processing approach,  Is it same processing approach for both fine-tune and pre-train . \n\n```\ndef create_input_ids(example):\n    text_ids = tokenizer.encode(example[\"text\"],  add_special_tokens=True)\n    text_ids.append(end_of_text)\n    example[\"text_tokens\"] = text_ids\n    input_ids = (\n        [start_of_human]\n        + example[\"text_tokens\"]\n        + [end_of_human]\n        + [start_of_ai]\n        + [start_of_speech]\n        + example[\"codes_list\"]\n        + [end_of_speech]\n        + [end_of_ai]\n    )\n    example[\"input_ids\"] = input_ids\n    example[\"labels\"] = input_ids\n    example[\"attention_mask\"] = [1] * len(input_ids)\n\n    return example\n```\n\nhere `text_QA_dataset` and `TTS_dataset` why mentions separately. `text_QA_dataset` is QA textual information with audio or `TTS_dataset` is as normal TTS dataset. it will more convenient , if possible share some data sample about `text_QA_dataset` and `TTS_dataset` format.\n\nI mean that same format as like fine-tune dataset but use different dataset or other. "
+      },
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-03-21T21:51:12Z",
+        "body": "Yep the `text_QA_dataset` is only text no audio. `tts_dataset` is text and then a spoken version of the text. \n\nHere is what a text sample could look like, all the text samples are chained together so all input_ids are the same length (8192) for pretraining to make the training as efficient as possible:\n\nstart of human --- start of text --- question text tokens (i.e. AutoTokeniser.tokenise(\"What is 2 +2?\")  --- end of text--- end of human --- start of ai --- start of text --- (i.e. AutoTokeniser.tokenise(\"Great question, 2 + 2 =4\") --- end of text --- end of ai\n"
+      },
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-03-21T21:55:24Z",
+        "body": "Feel free to close this issue - if your question is answered!"
+      },
+      {
+        "user": "saifulislam79",
+        "created_at": "2025-03-21T22:19:18Z",
+        "body": "**This is the last clarification**\nExample with Token IDs (simplified illustration)\nAssume the tokenizer produces the following (again, just for illustration):\n**input sentence 1** : What is 2 + 2? ----> audio1.mp3\n\n **Answer other sentence** : Great question, 2 + 2 = 4. --->  audio2.mp3\n\n\n```\n\"start of human\" \u2192 [101]\n\"start of text\" \u2192 [102]\n\"What is 2 + 2?\" \u2192 [2001, 2002, 2003, 2004, 2005]\n\"end of text\" \u2192 [103]\n\"end of human\" \u2192 [104]\n\"start of ai\" \u2192 [105]\n\"start of text\" \u2192 [102]\n\"Great question, 2 + 2 = 4.\" \u2192 [3001, 3002, 3003, 3004, 3005, 3006]\n\"end of text\" \u2192 [103]\n\"end of ai\" \u2192 [106]\n```\n\n\nChained together example of question and answer:\n\n`[101, 102, 2001, 2002, 2003, 2004, 2005, 103, 104, 105, 102, 3001, 3002, 3003, 3004, 3005, 3006, 103, 106]`\n\nif i have 1M text sentences and it's corresponding audio codes,  what will be `<speech input-ids>` and `<text-input-ids>`. Could you please give a example ."
+      },
+      {
+        "user": "saiful9379",
+        "created_at": "2025-03-22T09:25:31Z",
+        "body": "@amuvarma13  thank for your clarification. "
+      },
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-03-22T09:36:55Z",
+        "body": "Sure, \nText input ids (text dataset) is for text question text answer pairs - the format you have given above is correct.\nSpeech input ids i.e. the tts dataset is for text speech pairs no question answering - the format I gave above with start of speech etc is what you want for this,.\n\n"
+      },
+      {
+        "user": "amuvarma13",
+        "created_at": "2025-03-23T02:36:39Z",
+        "body": "Marking as solved - reopen if unclear."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of the difference between text_QA_dataset and TTS_dataset",
+      "Explanation of the data format structure for both dataset types",
+      "Concrete examples showing the token sequence structure",
+      "Clarification on how to process large datasets with the described format"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:17:16"
+    }
+  }
+]

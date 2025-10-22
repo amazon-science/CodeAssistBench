@@ -1,0 +1,71 @@
+[
+  {
+    "number": 52,
+    "title": "chat commands not working",
+    "created_at": "2025-01-26T23:31:33Z",
+    "closed_at": "2025-01-27T00:42:27Z",
+    "labels": [],
+    "url": "https://github.com/DrMeepso/WebFishingCove/issues/52",
+    "body": "Have an issue where none of the built in commands like spawn, kick, ban, users work at all. it only says the command isnt found even though the command file has them in it. any fix?",
+    "comments_url": "https://api.github.com/repos/DrMeepso/WebFishingCove/issues/52/comments",
+    "author": "JBork1",
+    "comments": [
+      {
+        "user": "Ech0klang",
+        "created_at": "2025-01-26T23:32:00Z",
+        "body": "Enable plugins in the server config"
+      },
+      {
+        "user": "JBork1",
+        "created_at": "2025-01-26T23:32:44Z",
+        "body": "Ah, thank you. was having an issue banning someone earlier but now i can deal with them."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables the built-in chat commands to function",
+      "A simple configuration adjustment that doesn't require complex troubleshooting",
+      "Information about where in the server configuration the relevant setting needs to be changed"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:11"
+    }
+  },
+  {
+    "number": 11,
+    "title": "libsteam_api64: No such file or directory",
+    "created_at": "2024-11-12T04:55:19Z",
+    "closed_at": "2024-11-12T05:40:49Z",
+    "labels": [],
+    "url": "https://github.com/DrMeepso/WebFishingCove/issues/11",
+    "body": "Getting an error after server setup when attempting to start:\r\n\r\nUnable to load shared library 'steam_api64' or one of its dependencies. In order to help diagnose loading problems, consider setting the LD_DEBUG environment variable: libsteam_api64: cannot open shared object file: No such file or directory\r\n\r\nsorry if I'm just dumb",
+    "comments_url": "https://api.github.com/repos/DrMeepso/WebFishingCove/issues/11/comments",
+    "author": "JackOtsig",
+    "comments": [
+      {
+        "user": "DrMeepso",
+        "created_at": "2024-11-12T05:00:09Z",
+        "body": "You just have to rename libsteam_api.so to libsteam_api64.so. Thats on me, I'll update the build action to automatically do that! "
+      },
+      {
+        "user": "JackOtsig",
+        "created_at": "2024-11-12T05:12:59Z",
+        "body": "Ah, that makes sense, now facing the same issue as the other guy, but if they fixed it, so can I.\r\nThank you so much <3 you're amazing"
+      },
+      {
+        "user": "DrMeepso",
+        "created_at": "2024-11-12T05:40:49Z",
+        "body": "anytime <3"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A clear explanation of the file naming issue causing the library loading error",
+      "A simple, actionable fix for the 'libsteam_api64' loading error",
+      "Confirmation that their issue is a known/common problem"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:27"
+    }
+  }
+]

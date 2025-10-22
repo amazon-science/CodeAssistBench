@@ -1,0 +1,96 @@
+[
+  {
+    "number": 18,
+    "title": "A few questions about stage2 2B model training",
+    "created_at": "2025-03-04T03:51:10Z",
+    "closed_at": "2025-03-18T10:56:12Z",
+    "labels": [],
+    "url": "https://github.com/FoundationVision/FlashVideo/issues/18",
+    "body": "Hello, I would like to ask a few questions about stage2 2B model training:\n\n1. What is the sampling interval during training? That is, what the `num_noise_interval` parameter setting in the code?\n2. How to set some parameters during training, such as the `learning rate scheduler` and `cfg scale`?\n3. Are the sampler and denoiser in the code useful? As far as I understand, if flow matching is used for training, these two modules should not be used?\n4. In the code, when solving the integral, inference uses `rk4` instead of `euler`. Do these two have a big impact on the result video?\n5. In the pre-training 1 and 2 stages, is the `add noise range` for training images and training videos 600-900? Because I saw that the noise range for images and videos in the code uses two different parameters `img_ref_noise_step_range` and `ref_noise_step_range`, so I want to confirm.",
+    "comments_url": "https://api.github.com/repos/FoundationVision/FlashVideo/issues/18/comments",
+    "author": "frozoul",
+    "comments": [
+      {
+        "user": "jshilong",
+        "created_at": "2025-03-04T10:57:37Z",
+        "body": "\n\nWe appreciate your interest in our work.\n\n1. The parameter `num_noise_interval` was ultimately not used. It was originally intended to encode a latent input once and sample multiple noise timesteps $t$ to accelerate training. Because the encoding process proved to be  slow in practice.  \n\n2. Model training does not use the classifier-free guidance (CFG) scale. The learning rate scheduler is kept constant throughout training.\n\n3. Both the sampler and denoiser components are not used in the implementation.  \n\n4. There was a misunderstanding regarding the numerical method employed. The actual method passed and used is Euler, not default `rk4`, you can check this in the inference code.\n\n5. The range of `img_ref_noise_step_range` is set to \\[100, 300\\] in the implementation, based on empirical observations. However, we are not certain if this range is optimal, as ablation studies could not be conducted due to computational limitations and time constraints.  \n\nIf you have any questions or require adaptations of our algorithm to suit your specific problem, I am more than happy to share insights and experiences from this project with you :)"
+      },
+      {
+        "user": "frozoul",
+        "created_at": "2025-03-04T12:30:18Z",
+        "body": "Thank you for your reply. I am trying to train from scratch the second stage model in your paper, and your answer is very helpful.\nSo in the second stage of pre-training, when images and videos are mixed at a 1:2 ratio, the image noise range is 100-300, and the video noise range is 600-900?\nIn addition, the paper mentioned adjusting the latent degradation strength based on the Signal-to-Noise Ratio (SNR). How does this part work specifically?"
+      },
+      {
+        "user": "jshilong",
+        "created_at": "2025-03-04T14:49:11Z",
+        "body": "\n1. So in the second stage of pre-training, when images and videos are mixed at a 1:2 ratio, the image noise range is 100-300, and the video noise range is 600-900? \n- yes\n\n2. the paper mentioned adjusting the latent degradation strength based on the Signal-to-Noise Ratio (SNR)\n- This is the key insight we aim to share with other researchers: For larger resolutions and a higher number of frames, the degradation strength needs to be increased."
+      },
+      {
+        "user": "frozoul",
+        "created_at": "2025-03-05T06:47:35Z",
+        "body": "I understand, but what is the specific indicator used to calculate this SNR? Is there a quantitative relationship between the SNR indicator and the noise range?\n\nIn addition, is SD3's `t_transform` used during training (if so, what is the corresponding `shift_t` parameter)? If not, what kind of `t_transform` is used?"
+      },
+      {
+        "user": "jshilong",
+        "created_at": "2025-03-05T12:10:25Z",
+        "body": "1. As discussed in the paper, higher frame counts and larger resolutions require greater noise strength. However, directly calculating the optimal value is challenging. Therefore, we use a wide range of noise strengths during the initial training phase to search for the optimal setting.\n\n2. We do not utilize `logit_norm` in SD3 because, in our setting\u2014where the starting point is a low-resolution video\u2014the most challenging $t$ interval may differ from starting with pure noise. When starting from pure noise(SD3), the most challenging part is typically in the middle of the $t$ interval. However, in our setting, where we start with a low-resolution video, I believe the most challenging part should be near $t = 0$. While I have not conducted specific ablation studies to confirm this, I consider this assumption to be reasonable. So I only apply a $t$ shift, setting it to 3 during training."
+      },
+      {
+        "user": "frozoul",
+        "created_at": "2025-03-05T13:26:00Z",
+        "body": "Thanks very much for your reply\uff01"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of training parameters and their values",
+      "Clarification on which components of the architecture are actually used in implementation",
+      "Information about noise ranges for different data types during training",
+      "Explanation of the numerical methods used during inference",
+      "Insights into the relationship between SNR and degradation strength",
+      "Details about time step transformation techniques"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:18:13"
+    }
+  },
+  {
+    "number": 6,
+    "title": "missing sat.model",
+    "created_at": "2025-02-11T05:19:28Z",
+    "closed_at": "2025-02-11T07:47:57Z",
+    "labels": [
+      "help wanted"
+    ],
+    "url": "https://github.com/FoundationVision/FlashVideo/issues/6",
+    "body": "Hello, thank you for open-sourcing such an excellent work !\n\nBut when I run `sat/demo.ipynb`, an error will be reported at the line from `sat.model.base_model import get_model`, prompting that `sat.model cannot be found`. \nI see that there is indeed no model folder in the sat, and there is no `get_model` function in the `base_model` file. Is it because a file was uploaded missing?",
+    "comments_url": "https://api.github.com/repos/FoundationVision/FlashVideo/issues/6/comments",
+    "author": "frozoul",
+    "comments": [
+      {
+        "user": "jshilong",
+        "created_at": "2025-02-11T06:17:50Z",
+        "body": "Indeed, there seems to be a confusion over the `sat` reference. Here, `sat` points to the module in the environment, corresponding to `SwissArmyTransformer>=0.4.12` in the requirements. Have you executed `pip install -r requirements`? Feel free to comment here if you continue to face issues.\n\nTo avoid this confusion for more people, I may consider renaming the folder to `flashvideo`. Thanks for your feedback"
+      },
+      {
+        "user": "frozoul",
+        "created_at": "2025-02-11T06:34:54Z",
+        "body": "Thank you for your reply. I installed the dependencies according to the requirements, but I moved the `demo` file out of the `sat` folder and executed it, which caused the problem. If it is in the sat folder, it will be normal."
+      },
+      {
+        "user": "jshilong",
+        "created_at": "2025-02-11T06:37:31Z",
+        "body": "Indeed, the naming of the 'sat' folder in CogVideoX can be confusing. It is something I should address to improve clarity.\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification of why the import error occurs",
+      "Explanation of the correct file structure or execution context",
+      "Acknowledgment of potential naming confusion in the project"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:18:18"
+    }
+  }
+]

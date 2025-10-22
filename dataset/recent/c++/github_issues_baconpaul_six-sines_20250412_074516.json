@@ -1,0 +1,126 @@
+[
+  {
+    "number": 247,
+    "title": "LFO (without sync) changes speed based on song tempo",
+    "created_at": "2025-02-13T13:10:16Z",
+    "closed_at": "2025-02-13T13:38:07Z",
+    "labels": [],
+    "url": "https://github.com/baconpaul/six-sines/issues/247",
+    "body": "DAW tempo controls or offsets LFO RATE even with SYNC OFF. That can't be right. \n",
+    "comments_url": "https://api.github.com/repos/baconpaul/six-sines/issues/247/comments",
+    "author": "Taronium",
+    "comments": [
+      {
+        "user": "baconpaul",
+        "created_at": "2025-02-13T13:24:39Z",
+        "body": "Oh no really? "
+      },
+      {
+        "user": "Taronium",
+        "created_at": "2025-02-13T13:28:33Z",
+        "body": "Yes, haha. Really!\nKind of a little shocker, because I love playing with LFO as oscillator. With Key Tracking to 25% it tracks perfectly. But then... Bamm! "
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-02-13T13:31:17Z",
+        "body": "That s embarrassing but i have fixed it in #248\n\ngood catch and wow very sorry about that"
+      },
+      {
+        "user": "Taronium",
+        "created_at": "2025-02-13T13:40:07Z",
+        "body": "Awesome, Paul, no worries! You're doing a bang up job! \ud83d\ude0e\ud83d\udc4d"
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-02-13T14:10:17Z",
+        "body": "I tested tempo sync extensively when I added it\nJust not in the off position \nlol "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix for LFO rate being affected by DAW tempo when sync is off",
+      "Maintaining LFO's ability to function as an oscillator with key tracking",
+      "Prompt acknowledgment and resolution of the issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:15"
+    }
+  },
+  {
+    "number": 173,
+    "title": "Bass/Brand New Bass & Substrata are not tuned in the same way as the other basslines",
+    "created_at": "2025-01-27T13:54:55Z",
+    "closed_at": "2025-03-17T21:43:11Z",
+    "labels": [],
+    "url": "https://github.com/baconpaul/six-sines/issues/173",
+    "body": "i have to play it at G-4 and G-5 to hear what the other basslines sound like at C-4 C-5.\nany chance the tuning could match?\n",
+    "comments_url": "https://api.github.com/repos/baconpaul/six-sines/issues/173/comments",
+    "author": "esaruoho",
+    "comments": [
+      {
+        "user": "baconpaul",
+        "created_at": "2025-01-27T14:18:59Z",
+        "body": "Sure we can take a peek for 1.1 thanks!"
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-01-27T14:40:04Z",
+        "body": "One fix for this patch (which indeed has its fundemntal as 1.0/6.0) would be to implement #119 and then tune the entire patch up 7 semis in the main. Just linking that though there."
+      },
+      {
+        "user": "esaruoho",
+        "created_at": "2025-01-27T14:45:29Z",
+        "body": "same with Pads/Daughter of FloatChime\nPads/OST Pad\n..\nsorry, got sidetracked having to pick up my son so didn't finish the post before you replied"
+      },
+      {
+        "user": "esaruoho",
+        "created_at": "2025-01-27T14:46:01Z",
+        "body": "i can keep going through the presets to find the ones that don't play C at C-note, if it's of use. lmk @baconpaul "
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-01-27T20:48:28Z",
+        "body": "Yeah! I tagged @kdulcet who wrote a lot of these also to see if there's a reason for it too. (Like is there a modulator which brings them back in tune she used when using them musically or some such).\n\nThanks esa!"
+      },
+      {
+        "user": "esaruoho",
+        "created_at": "2025-01-27T21:55:04Z",
+        "body": "cool, i'll hit it\n```\nBass/Brand New Bass\nBass/Polite Discourse\nBass/Rehab for Edgelords\nBass/Scream Queen\nBass/Silversmith\nBass/Substrata\nBass/You Got Nothing On This\nKeys/Arpeggiator Food\nKeys/Eat Your Greens\nKeys/Iconoclasm\nKeys/Stack Operator\nLeads/Airlock\nLeads/Asteroid Destroyed\nPads/OST Pad\nPads/Daughter of FloatChime\nPads/OST Pad\n```\nthere are a few more that are kinda \"not sure\" but these stand out a bit to me.\nanyway, would be nice to know\n"
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-02-07T03:14:04Z",
+        "body": "I've added the coarse tuning shift so it really is now just a matter of me spending 30 minutes and adding a shift 7 to all of these then testing."
+      },
+      {
+        "user": "esaruoho",
+        "created_at": "2025-02-07T06:55:46Z",
+        "body": "Neat! I trust when this ticket is closed there is no need for me to check the presets but if u mention me here Upon closing i can recheck :)"
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-02-07T13:57:01Z",
+        "body": "Ahh not all of these are off by 7 semis. OK i'll do this over the weekend. Some are in tune in different parts of the keyboard too.\n"
+      },
+      {
+        "user": "esaruoho",
+        "created_at": "2025-03-17T21:44:14Z",
+        "body": "thank you!"
+      },
+      {
+        "user": "baconpaul",
+        "created_at": "2025-03-17T23:27:14Z",
+        "body": "No problem. Some of them were really ambiguous or non-tonal and I left them a lone, but the clearly mistuned ones I fixed up!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Consistent tuning across all basslines and other instruments",
+      "Correction of the specific presets identified as being out of tune",
+      "Verification that the tuning issues have been resolved"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:21"
+    }
+  }
+]

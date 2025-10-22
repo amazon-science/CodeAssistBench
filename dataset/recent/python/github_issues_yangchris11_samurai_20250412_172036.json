@@ -1,0 +1,33 @@
+[
+  {
+    "number": 85,
+    "title": "Problem running demo.py",
+    "created_at": "2025-01-01T11:34:08Z",
+    "closed_at": "2025-01-27T20:47:35Z",
+    "labels": [],
+    "url": "https://github.com/yangchris11/samurai/issues/85",
+    "body": "Enter your own video and .txt runtime   \r\nif __name__ == \"__main__\":\r\n    parser = argparse.ArgumentParser()\r\n    #print(\"1111\")\r\n    parser.add_argument(\"--video_path\",default=\"./assets/3.mp4\", help=\"Input video path or directory of frames.\")\r\n    parser.add_argument(\"--txt_path\",default=\"./assets/test.txt\", help=\"Path to ground truth text file.\")\r\n    parser.add_argument(\"--model_path\", default=\"sam2/checkpoints/sam2.1_hiera_base_plus.pt\", help=\"Path to the model checkpoint.\")\r\n    parser.add_argument(\"--video_output_path\", default=\"./assets/output.mp4\", help=\"Path to save the output video.\")\r\n    parser.add_argument(\"--save_to_video\", default=True, help=\"Save results to a video.\")\r\n    args = parser.parse_args()\r\n    main(args)     \r\nThe following questions will appear. Please help me answer the specific reasons. thank you\r\n/home/cyy/anaconda3/envs/samurai/bin/python /home/cyy/code/grp/samurai-master/demo.py \r\nSAMURAI mode: True\r\n\r\nProcess finished with exit code 137 (interrupted by signal 9: SIGKILL)",
+    "comments_url": "https://api.github.com/repos/yangchris11/samurai/issues/85/comments",
+    "author": "Grpab",
+    "comments": [
+      {
+        "user": "hsiangwei0903",
+        "created_at": "2025-01-02T00:01:06Z",
+        "body": "Looks like you ran out of memory. You might need to use a shorter video. "
+      },
+      {
+        "user": "Grpab",
+        "created_at": "2025-01-02T00:47:22Z",
+        "body": "> \u770b\u6765\u60a8\u7684\u5185\u5b58\u4e0d\u8db3\u4e86\u3002\u60a8\u53ef\u80fd\u9700\u8981\u4f7f\u7528\u8f83\u77ed\u7684\u89c6\u9891\u3002\r\n\r\nThank you for your answer, I will try your suggestion"
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation for why the program terminated with exit code 137",
+      "A practical solution to resolve the memory-related termination issue"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:10:46"
+    }
+  }
+]

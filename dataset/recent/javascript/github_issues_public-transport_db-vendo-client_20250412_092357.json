@@ -1,0 +1,34 @@
+[
+  {
+    "number": 1,
+    "title": "Error: unprocessable entity",
+    "created_at": "2024-12-17T10:16:44Z",
+    "closed_at": "2024-12-17T15:18:13Z",
+    "labels": [],
+    "url": "https://github.com/public-transport/db-vendo-client/issues/1",
+    "body": "The int.bahn.de server seems to respond with an unprocessable entity when using `journeys`.\r\nJust running /p/db/example.js with \r\n\r\n```\r\n let data = await client.journeys(berlinJungfernheide, m\u00fcnchenHbf, {\r\n        results: 1,\r\n        tickets: true,\r\n })\r\n```\r\n\r\nerrors out at\r\n\r\n```\r\n\t\tconst err = new Error(res.statusText);\r\n\t\t            ^\r\n\r\nError: Unprocessable Entity\r\n    at Object.request (file:///home/tgrossen/Projekte/Technical/db-vendo-client/lib/request.js:142:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\r\n    at async Object.journeys (file:///home/tgrossen/Projekte/Technical/db-vendo-client/index.js:213:25)\r\n    at async file:///home/tgrossen/Projekte/Technical/db-vendo-client/p/db/example.js:38:13\r\n```\r\n\r\n",
+    "comments_url": "https://api.github.com/repos/public-transport/db-vendo-client/issues/1/comments",
+    "author": "grssnbchr",
+    "comments": [
+      {
+        "user": "traines-source",
+        "created_at": "2024-12-17T15:01:10Z",
+        "body": "Sorry, I miscommitted something yesterday :( Should be fixed now. Thanks for reporting!"
+      },
+      {
+        "user": "grssnbchr",
+        "created_at": "2024-12-17T15:18:13Z",
+        "body": "No worries - can confirm it works now. Thank you."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the 'unprocessable entity' error when using the journeys function",
+      "Ability to successfully retrieve journey data from the int.bahn.de server",
+      "Proper functionality of the example code provided in the repository"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 00:59:22"
+    }
+  }
+]

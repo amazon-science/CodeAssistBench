@@ -1,0 +1,39 @@
+[
+  {
+    "number": 22,
+    "title": "\u706b\u5c71\u5f15\u64ceTTS\u8c03\u7528\u6ca1\u6709\u6307\u5b9asample rate\uff0c\u5bfc\u81f4\u91c7\u6837\u7387\u4e0d\u5339\u914d\uff0c\u58f0\u97f3\u53d1\u5230\u5ba2\u6237\u7aef\u540e\u5931\u771f",
+    "created_at": "2025-04-09T08:47:33Z",
+    "closed_at": "2025-04-09T08:54:01Z",
+    "labels": [],
+    "url": "https://github.com/joey-zhou/xiaozhi-esp32-server-java/issues/22",
+    "body": "\u706b\u5c71\u5f15\u64ceTTS\u7684sample rate\u9ed8\u8ba4\u662f24000\uff0c\u5c0f\u667a\u534f\u8bae\u9ed8\u8ba4\u7684\u662f16000\uff0c\u4e24\u8005\u4e0d\u5339\u914d\u5bfc\u81f4\u5ba2\u6237\u7aef\u53d7\u5230\u58f0\u97f3\u64ad\u653e\u7684\u65f6\u5019\u5931\u771f",
+    "comments_url": "https://api.github.com/repos/joey-zhou/xiaozhi-esp32-server-java/issues/22/comments",
+    "author": "yijunwu",
+    "comments": [
+      {
+        "user": "yijunwu",
+        "created_at": "2025-04-09T08:47:56Z",
+        "body": "\u9700\u8981\u5728VolcengineTtsService.sendRequest\u65b9\u6cd5\u4e2daudio\u4e0b\u6dfb\u52a0rate\u53c2\u6570\uff0c\u8bbe\u4e3a16000"
+      },
+      {
+        "user": "joey-zhou",
+        "created_at": "2025-04-09T08:49:08Z",
+        "body": "\u6700\u65b0\u4ee3\u7801\u5df2\u7ecf\u4fee\u6539\u4e86\uff0c20\u5206\u949f\u524d\u521a\u63d0\u4ea4\u7684\uff0c\u6211\u4e5f\u521a\u53d1\u73b0"
+      },
+      {
+        "user": "yijunwu",
+        "created_at": "2025-04-09T08:49:55Z",
+        "body": "\u624b\u901f\u771f\u5feb [thumb up]"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that addresses the sample rate mismatch between Volcano Engine TTS and the client protocol",
+      "Confirmation that the sample rate parameter has been properly configured",
+      "Timely resolution of the audio distortion problem"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:39"
+    }
+  }
+]

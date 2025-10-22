@@ -1,0 +1,82 @@
+[
+  {
+    "number": 129,
+    "title": "910b4",
+    "created_at": "2025-02-21T02:22:02Z",
+    "closed_at": "2025-02-22T07:24:24Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/vllm-project/vllm-ascend/issues/129",
+    "body": "\u8bf7\u95ee\u652f\u4e0d\u652f\u6301910b4",
+    "comments_url": "https://api.github.com/repos/vllm-project/vllm-ascend/issues/129/comments",
+    "author": "w1051868626",
+    "comments": [
+      {
+        "user": "wangxiyuan",
+        "created_at": "2025-02-21T03:03:58Z",
+        "body": "910b4 is supported. The only difference is that HBM of 910b4 is 32G."
+      },
+      {
+        "user": "w1051868626",
+        "created_at": "2025-02-22T07:17:53Z",
+        "body": "OK, I succeed"
+      },
+      {
+        "user": "wangxiyuan",
+        "created_at": "2025-02-22T07:24:24Z",
+        "body": "OK, I'll close this issue. Feel free to create new issue if you hit any problem. Thanks."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation of 910b4 hardware compatibility with the system",
+      "Information about any hardware-specific limitations or differences"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:11:53"
+    }
+  },
+  {
+    "number": 17,
+    "title": "[Platform] add dispatch key",
+    "created_at": "2025-02-07T02:51:08Z",
+    "closed_at": "2025-02-21T09:10:31Z",
+    "labels": [],
+    "url": "https://github.com/vllm-project/vllm-ascend/pull/17",
+    "body": "### What this PR does / why we need it?\r\nAdd dispatch key for NPU, so that the log could be print correctly.\r\n\r\nNow\r\n```\r\nexecutor_base.py:110] # CPU blocks: 220478, # CPU blocks: 21845\r\n```\r\n\r\nAfter this pr\r\n```\r\nexecutor_base.py:110] # NPU blocks: 220478, # CPU blocks: 21845\r\n```\r\n\r\n### Does this PR introduce _any_ user-facing change?\r\nN/A\r\n\r\n### How was this patch tested?\r\nCI passed and log printed as above\r\n\r\n",
+    "comments_url": "https://api.github.com/repos/vllm-project/vllm-ascend/issues/17/comments",
+    "author": "MengqingCao",
+    "comments": [
+      {
+        "user": "wangxiyuan",
+        "created_at": "2025-02-17T01:43:00Z",
+        "body": "from torch expert suggestion: change the value to `PrivateUse1`. "
+      },
+      {
+        "user": "MengqingCao",
+        "created_at": "2025-02-17T02:53:10Z",
+        "body": "> from torch expert suggestion: change the value to `PrivateUse1`.\r\n\r\nThanks a lot! This could fix the issue that torch does not recognize key `npu`.\r\nBut the log printed will become `executor_base.py:110] # PrivateUse1 blocks: 220478, # CPU blocks: 21845`, I'll fix this in vLLM."
+      },
+      {
+        "user": "wangxiyuan",
+        "created_at": "2025-02-17T02:55:08Z",
+        "body": "> > from torch expert suggestion: change the value to `PrivateUse1`.\r\n> \r\n> Thanks a lot! This could fix the issue that torch does not recognize key `npu`. But the log printed will become `executor_base.py:110] # PrivateUse1 blocks: 220478, # CPU blocks: 21845`, I'll fix this in vLLM.\r\n\r\nYes, the log in vllm should use device_name instead."
+      },
+      {
+        "user": "MengqingCao",
+        "created_at": "2025-02-17T02:57:46Z",
+        "body": "> Yes, the log in vllm should use device_name instead.\r\n\r\nAgree"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that allows torch to recognize the NPU device type",
+      "A way to display the correct device name in logs",
+      "Guidance from torch experts on the proper approach for adding custom device types"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:12:00"
+    }
+  }
+]

@@ -1,0 +1,71 @@
+[
+  {
+    "number": 64,
+    "title": "Reloading application.css when constituent files are changed (Sprockets)",
+    "created_at": "2025-01-06T19:22:24Z",
+    "closed_at": "2025-01-25T08:49:13Z",
+    "labels": [],
+    "url": "https://github.com/hotwired/spark/issues/64",
+    "body": "Thanks for making this! :star_struck: We're still running sprockets, so it was nice to see #41 adding basic sprockets support \u2013 thanks for that @codergeek121!\r\n\r\nI was still struggling to make it work, and have had to make some modifications to get to a walking skeleton of CSS reloading:\r\n\r\n1. Add some subfolders of `app/assets/stylesheets` to `css_paths`\r\n1. Add `scss` to `css_extensions`\r\n1. Monkey patch `Hotwire::Spark::Change#canonical_changed_path` to always return \"/application.css\" when `action == :reload_css`.\r\n\r\nThe first two points was necessary for any events to get fired in the first place, as my CSS is mainly defined in scss files in subfolders of `app/assets/stylesheets`, imported in `app/assets/stylesheets/application.scss`. Part 3 was to get `application.css` reloaded, in stead of the constituent file that was actually modified.\r\n\r\nIs there something I've misunderstood here? If not, perhaps some additions could be made to streamline this a bit :thinking: ",
+    "comments_url": "https://api.github.com/repos/hotwired/spark/issues/64/comments",
+    "author": "rogerkk",
+    "comments": [
+      {
+        "user": "codergeek121",
+        "created_at": "2025-01-07T21:37:20Z",
+        "body": "I don't think you misunderstood! Currently, there's only basic support for Sprockets, meaning it simply doesn't raise an error if you're using Sprockets. There's no support for sass/scss/coffeescript right now. I think this would also be kind of hard to add in a non-buggy way, without parsing sass imports.\r\n\r\nIf you don't want to monkey patch, you could also try the following instead:\r\n\r\n1. Change the reload method to `:replace`, since this will also reload the `<head>` if there are changes\r\n2. Add the `scss` extension and paths to the **html_paths** and **html_extensions**, which will then trigger an `:replace` reload if a `scss` file is changed\r\n\r\nThis will not do a fine-grained css reload, but a full Turbo visit instead, but maybe this is good enough for your use case."
+      },
+      {
+        "user": "rogerkk",
+        "created_at": "2025-01-08T14:16:16Z",
+        "body": "Ah, nice to know about an alternative approach. The monkey patching is working at the moment, but now I have somewhere to go if/when it causes me too much pain. :sweat_smile:  Thanks again!"
+      },
+      {
+        "user": "jorgemanrubia",
+        "created_at": "2025-01-25T08:49:13Z",
+        "body": "Thanks for the help here @codergeek121 "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution for reloading application.css when constituent SCSS files in subfolders are changed",
+      "An explanation of the current limitations of Sprockets support in the library",
+      "A workable alternative to monkey patching for handling SCSS file changes",
+      "Clear technical guidance that acknowledges the user's current approach while offering alternatives"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:09"
+    }
+  },
+  {
+    "number": 15,
+    "title": "undefined method `hotwire' for #<Rails::Application::Configuration:0x00000000007648> (NoMethodError)",
+    "created_at": "2024-12-18T18:50:23Z",
+    "closed_at": "2024-12-18T20:22:18Z",
+    "labels": [],
+    "url": "https://github.com/hotwired/spark/issues/15",
+    "body": "Rails 7.1.3.4\r\n\r\nAdded the gem to the development group and ran `bundle install`\r\n\r\nUpdated `development.rb`\r\n\r\n```ruby\r\nconfig.hotwire.spark.html_paths += ['app/components']\r\nconfig.hotwire.spark.stimulus_paths += ['app/components']\r\n```\r\n\r\nReceived error:\r\n\r\n```gems/railties-7.1.3.4/lib/rails/railtie/configuration.rb:109:in `method_missing': undefined method `hotwire' for #<Rails::Application::Configuration:0x00000000007648> (NoMethodError)```",
+    "comments_url": "https://api.github.com/repos/hotwired/spark/issues/15/comments",
+    "author": "t2",
+    "comments": [
+      {
+        "user": "robzolkos",
+        "created_at": "2024-12-18T19:54:42Z",
+        "body": "I think you need Rails 8+ for this."
+      },
+      {
+        "user": "t2",
+        "created_at": "2024-12-18T20:22:08Z",
+        "body": "Thank you!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Information about version compatibility for the hotwire configuration",
+      "Explanation for why the NoMethodError is occurring"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:14"
+    }
+  }
+]

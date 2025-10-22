@@ -1,0 +1,33 @@
+[
+  {
+    "number": 43,
+    "title": "Mode FM under Band CB not selectable",
+    "created_at": "2025-04-09T06:29:21Z",
+    "closed_at": "2025-04-09T07:14:15Z",
+    "labels": [],
+    "url": "https://github.com/esp32-si4732/ats-mini/issues/43",
+    "body": "Hello,\n\nI got another issue.\n\nUnder Band CB I'm not able to select Mode FM on my device.\n\nI'd installed V1.09 with rotated display.",
+    "comments_url": "https://api.github.com/repos/esp32-si4732/ats-mini/issues/43/comments",
+    "author": "BrightCGN",
+    "comments": [
+      {
+        "user": "jimjackii",
+        "created_at": "2025-04-09T07:01:42Z",
+        "body": "That is correct. The SI4732 is not capable of FM in the CB band.\n\nRegards, Steffen"
+      },
+      {
+        "user": "BrightCGN",
+        "created_at": "2025-04-09T07:06:09Z",
+        "body": "> That is correct. The SI4732 is not capable of FM in the CB band.\n> \n> Regards, Steffen\n\nThanks for the infos :-)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A clear explanation of whether the feature is possible or not",
+      "Technical reasoning for why a feature limitation exists"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:51"
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "number": 341,
+    "title": "question: why observability/prom-adapter.yaml only handles vllm_num_requests_waiting metric",
+    "created_at": "2025-04-01T16:29:08Z",
+    "closed_at": "2025-04-03T01:45:53Z",
+    "labels": [],
+    "url": "https://github.com/vllm-project/production-stack/issues/341",
+    "body": "In the observability/prom-adapter.yaml configuration, why does the rule only match the metric vllm_num_requests_waiting\n\nCurrent\n\n```\nrules:\n  custom:\n    - seriesQuery: '{__name__=~\"^vllm:num_requests_waiting$\"}'  # Only matches vllm metric\n```\n\nHow to determine additional metrics (e.g., gpu_prefix_cache_hit_rate)",
+    "comments_url": "https://api.github.com/repos/vllm-project/production-stack/issues/341/comments",
+    "author": "ZhouBoXiao",
+    "comments": [
+      {
+        "user": "YuhanLiu11",
+        "created_at": "2025-04-02T05:48:13Z",
+        "body": "Hi @ZhouBoXiao thanks for submitting the issue! \nThis observability/prom-adapter.yaml is used as the metrics for a basic version of autoscaling. You may add more metrics to it if you want to use them for more advanced autoscaling. \n"
+      },
+      {
+        "user": "ZhouBoXiao",
+        "created_at": "2025-04-03T01:45:53Z",
+        "body": "Thank you, I can add personalized metrics as needed,  not limited in the prom-adapter.yaml"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification on the purpose of the prom-adapter.yaml configuration file",
+      "Confirmation that additional custom metrics can be added to the configuration",
+      "Understanding the flexibility of the metrics configuration system"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:18:42"
+    }
+  }
+]

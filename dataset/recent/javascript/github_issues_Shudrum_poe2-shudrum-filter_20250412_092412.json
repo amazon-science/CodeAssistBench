@@ -1,0 +1,50 @@
+[
+  {
+    "number": 13,
+    "title": "waystones with rarity are hidden",
+    "created_at": "2024-12-29T01:58:04Z",
+    "closed_at": "2025-01-01T19:53:04Z",
+    "labels": [],
+    "url": "https://github.com/Shudrum/poe2-shudrum-filter/issues/13",
+    "body": "Thanks for a great filter. I noticed that rare and magic waystones are hidden. I tweaked your filter locally to add a line to show all rarities\r\n\r\n```\r\nShow\r\n  Class \"Waystone\"\r\n  AreaLevel == 82\r\n  Rarity <= Normal\r\n  WaystoneTier >= 16\r\n  PlayAlertSound 4 300\r\n  PlayEffect White\r\n  SetTextColor 200 200 200\r\n  SetBorderColor 74 68 58\r\n  SetBackgroundColor 74 68 58\r\n  SetFontSize 35\r\n  MinimapIcon 1 White Square\r\n```\r\n\r\nI was about to submit a pull request but noticed these are generated! Sorry I can't contribute to javascript, but I still wanted to report the issue",
+    "comments_url": "https://api.github.com/repos/Shudrum/poe2-shudrum-filter/issues/13/comments",
+    "author": "sgodbold",
+    "comments": [
+      {
+        "user": "Shudrum",
+        "created_at": "2024-12-29T15:36:36Z",
+        "body": "Hello and thank you!\r\n\r\nA big update is comming soon. In any case, rare waystones are not hidden, but this filter does not do any distinction between normal / magic and rare waystones because all are importants.\r\n\r\nThe only way the rare one was hidden may be because of the difference between the map tier and the current area level. Maybe the rare should always be displayed."
+      },
+      {
+        "user": "sgodbold",
+        "created_at": "2024-12-29T16:13:42Z",
+        "body": "I believe it was an AreaLevel 52 map and definitely tier 15 waystones. I should have taken a screenshot I suppose. Excited for the update and I think I'll just hold off that. Feel free to close, thank you!"
+      },
+      {
+        "user": "Shudrum",
+        "created_at": "2024-12-29T18:17:38Z",
+        "body": "Thanks for the information! I'll do some tests before closing it."
+      },
+      {
+        "user": "Shudrum",
+        "created_at": "2025-01-01T11:08:55Z",
+        "body": "Hello, found the issue I think, and fixed it. On Waystones tier 15, on + level monsters areas the tier 15 maps can be hidden sometimes. Thanks again."
+      },
+      {
+        "user": "sgodbold",
+        "created_at": "2025-01-01T19:53:04Z",
+        "body": "Man that was a big update. Looks really good I downloaded and verified that magic and rare waystones appear. Thanks again and good luck!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix for waystones of all rarities (normal, magic, rare) being properly displayed in the filter",
+      "Proper handling of high-tier waystones (tier 15+) in different area levels",
+      "Acknowledgment of the reported issue and commitment to investigate",
+      "Timely resolution of the filter functionality issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:21"
+    }
+  }
+]

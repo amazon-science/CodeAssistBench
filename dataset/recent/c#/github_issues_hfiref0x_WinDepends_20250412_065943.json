@@ -1,0 +1,35 @@
+[
+  {
+    "number": 9,
+    "title": "Shell integration",
+    "created_at": "2024-12-06T13:21:58Z",
+    "closed_at": "2025-02-16T03:16:43Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/hfiref0x/WinDepends/issues/9",
+    "body": "RemoveAssoc is never called - easy fix.\r\n\r\nSetAssoc, use a quoted path, for when people have spaces in their file path:\r\n\r\n```\r\ntry\r\n        {\r\n            using (var regKey = Registry.ClassesRoot.CreateSubKey(extKeyName, true))\r\n            {\r\n                if (regKey != null)\r\n                {\r\n                    // Set command value.\r\n                    using (var subKey = regKey.CreateSubKey(\"command\"))\r\n                    {\r\n                        subKey?.SetValue(\"\", $\"\\\"{Application.ExecutablePath}\\\" \\\"%1\\\"\", RegistryValueKind.String);\r\n                    }\r\n\r\n                    // Set icon value.\r\n                    regKey.SetValue(\"Icon\", $\"{Application.ExecutablePath}, 0\", RegistryValueKind.String);\r\n                }\r\n            }\r\n        }\r\n\r\n\r\n```",
+    "comments_url": "https://api.github.com/repos/hfiref0x/WinDepends/issues/9/comments",
+    "author": "AlexW-13",
+    "comments": [
+      {
+        "user": "i486",
+        "created_at": "2025-02-15T00:48:22Z",
+        "body": "@hfiref0x \nIt seems like you forgot to include quotes around the `%1` placeholder. The latest snapshot build is still creating `\"C:\\WinDepends\\bin\\WinDepends.exe\" %1` for the context menu, which doesn't work for files with spaces in their paths.\n\nBTW: Working great on Windows 7. Thanks for this amazing tool."
+      },
+      {
+        "user": "hfiref0x",
+        "created_at": "2025-02-15T03:40:32Z",
+        "body": "@i486 \nYou are right, thanks. This should be fixed now in the above mentioned commit."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Proper handling of file paths with spaces in the shell integration",
+      "Compatibility with Windows 7"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:31"
+    }
+  }
+]

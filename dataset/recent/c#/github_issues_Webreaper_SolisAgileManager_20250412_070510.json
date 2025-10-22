@@ -1,0 +1,213 @@
+[
+  {
+    "number": 153,
+    "title": "v1.0.544.0  on \"Latest\" tag for Raspi Docker",
+    "created_at": "2025-03-19T19:09:31Z",
+    "closed_at": "2025-03-19T19:21:15Z",
+    "labels": [],
+    "url": "https://github.com/Webreaper/SolisAgileManager/issues/153",
+    "body": "I've just ran a pull on my images and got v1.0.544.0 on the \"latest\" tag but expected 1.0.553 according to the releases. \nDid something fail to build? (Not even sure if that's the right terminology, i'm just trying to sound like I know what I'm on about \ud83d\ude1c)",
+    "comments_url": "https://api.github.com/repos/Webreaper/SolisAgileManager/issues/153/comments",
+    "author": "tabannis",
+    "comments": [
+      {
+        "user": "tabannis",
+        "created_at": "2025-03-19T19:10:19Z",
+        "body": "PS I got v1.0.554.0 on DEV tag."
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-19T19:16:00Z",
+        "body": "Yeah, there's a race condition with the container build, so sometimes it fails. I just clicked retry. :)"
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-19T19:21:15Z",
+        "body": "Should be there now. "
+      },
+      {
+        "user": "tabannis",
+        "created_at": "2025-03-19T19:42:44Z",
+        "body": "Yup! TYVM"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation that the latest Docker image has been updated to the expected version",
+      "Explanation of why the version discrepancy occurred",
+      "Resolution of the version discrepancy between the 'latest' tag and the expected release version"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:38"
+    }
+  },
+  {
+    "number": 140,
+    "title": "Schedule Action set once to Inverter and retained",
+    "created_at": "2025-03-11T09:22:31Z",
+    "closed_at": "2025-03-12T13:18:08Z",
+    "labels": [],
+    "url": "https://github.com/Webreaper/SolisAgileManager/issues/140",
+    "body": "Was wondering about the Scheduled Actions specifically for charging actions say 23.30-05.30 in my example where I want to guarantee an overnight charge no matter what.   Is it possible to have this set once to the inverter without it being reset?  So, in the case Solis Agile Manager webserver has an outage (host failure for example) I can be sure an overnight charge will always happen.\n\nI had a look at setting this directly at the Inverter using the secondary or third charging periods (leaving the first period free for Solis Agile Manager to utilise) but this causes a time overlap conflict if the Solis Agile Manager tries to apply charging periods it sees a cheap periods.\n\nThanks for the amazing work on this project and will buy you coffees for such brilliant and simple to use solution.",
+    "comments_url": "https://api.github.com/repos/Webreaper/SolisAgileManager/issues/140/comments",
+    "author": "cs95dtt",
+    "comments": [
+      {
+        "user": "cs95dtt",
+        "created_at": "2025-03-11T09:52:32Z",
+        "body": "I just had a thought the amp value is reset to 0 so any sort of permanent override wouldn't work anyway for 23:30-05:30 charge period I want to set permanently.\n\nI'm over thinking and complicating this.\n\nGreat work nevertheless from you!\n\n"
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-12T13:18:08Z",
+        "body": "Yeah, mixing manual SolisCloud updates with the app becomes complicated because of the potential for conflicts, which then stop the app working correctly. The app pretty much blats over the entire charging setup when it applies the charge state for a new slot, to avoid this. \n\nI think if you just set up a bunch of 'Charge' scheduled actions it should do what you want, though, right? The fact that the 23:30-05:30 charge will be written to the inverter once, at 23:30, each day isn't really a biggie."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to ensure overnight charging happens reliably even if the Solis Agile Manager webserver experiences an outage",
+      "A solution that avoids conflicts between scheduled actions and Solis Agile Manager's dynamic charging periods",
+      "Clarification on how scheduled actions persist or reset on the inverter",
+      "A simple approach that doesn't overcomplicate the charging schedule setup"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:45"
+    }
+  },
+  {
+    "number": 139,
+    "title": "Further issue with detecting Ohme charging",
+    "created_at": "2025-03-11T07:55:41Z",
+    "closed_at": "2025-03-12T13:18:37Z",
+    "labels": [],
+    "url": "https://github.com/Webreaper/SolisAgileManager/issues/139",
+    "body": "The. Updated Ohme software does not let you avoid dynamic charging now so your car may charge randomly overnight if it is plugged in. I don\u2019t think that any notification is sent when this happens so you could see your house battery being used to charge the car overnight. I can\u2019t think of a way round this with software so I think it will have to raised as a bug/problem with Ohme.\n\n",
+    "comments_url": "https://api.github.com/repos/Webreaper/SolisAgileManager/issues/139/comments",
+    "author": "dqj999",
+    "comments": [
+      {
+        "user": "dqj999",
+        "created_at": "2025-03-11T08:12:56Z",
+        "body": "Having thought about this you could use the scheduled action facility to reduce the effect of this. If you set a low power scheduled charge for say the first 4 hours of the cheap period then a high power charge in the last two hours that would correct any clash between the two charging systems and would ensure that the battery was at the desired charge level in the morning, although it might have had a few random charge/discharge cycles."
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-11T08:34:03Z",
+        "body": "Yeah, I was going to suggest that if you set a scheduled action to charge the battery all the way through the cheap overnight period (which you'd probably want anyway) then you could prevent the battery discharging to charge the car. Have you seen the latest dev build allows you to specify amps for each scheduled action?"
+      },
+      {
+        "user": "dqj999",
+        "created_at": "2025-03-11T10:12:29Z",
+        "body": "Yes thanks,  I spotted that just after I made the first comment. Good feature!\n\nDoes that depend on the latest release of the Inverter software?"
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-12T13:18:37Z",
+        "body": "No, it'll work for any version of the firmware. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A workaround solution to prevent house battery depletion when Ohme charger activates randomly",
+      "Confirmation about the ability to set charging power levels for scheduled actions",
+      "Clarification about software compatibility requirements"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:49"
+    }
+  },
+  {
+    "number": 138,
+    "title": "Running in Docker on macOS",
+    "created_at": "2025-03-10T21:54:51Z",
+    "closed_at": "2025-03-11T09:59:41Z",
+    "labels": [],
+    "url": "https://github.com/Webreaper/SolisAgileManager/issues/138",
+    "body": "Has anyone got this running successfully in Docker on macOS?\nI have followed the guidance provided in the release and the docker-compose file, but am seeing these errors when I try to run the container:\n\n```\nsolismanager exited with code 255\nsolismanager  | exec /app/SolisManager: no such file or directory\n```\nAny ideas?  Thanks",
+    "comments_url": "https://api.github.com/repos/Webreaper/SolisAgileManager/issues/138/comments",
+    "author": "0rangutan",
+    "comments": [
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-10T22:02:46Z",
+        "body": "Have a look at the last 3 comments in #124. The alpha tag, with the environment variable in the docker-compose snippet, should work. "
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-03-11T09:59:41Z",
+        "body": "Closing this - the latest image should work (you won't need the env var). Please let me know if it does/doesn't."
+      },
+      {
+        "user": "0rangutan",
+        "created_at": "2025-03-11T10:01:24Z",
+        "body": "Thanks - I have the app running on macOS now!\nWorks with the Alpha and currently with 1.0.522 and the Env variable.\nI'll try it without now..."
+      },
+      {
+        "user": "0rangutan",
+        "created_at": "2025-03-11T10:05:01Z",
+        "body": "Yes, works without the environment variable, thanks!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working Docker configuration for running SolisManager on macOS",
+      "Clear instructions on which Docker image version to use",
+      "Information about environment variable requirements",
+      "A solution that resolves the 'no such file or directory' error"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:57"
+    }
+  },
+  {
+    "number": 87,
+    "title": "Help information on Pricing & Charging Plan Screen cannot be displayed on touch screen device",
+    "created_at": "2025-02-01T15:30:42Z",
+    "closed_at": "2025-02-04T08:35:20Z",
+    "labels": [],
+    "url": "https://github.com/Webreaper/SolisAgileManager/issues/87",
+    "body": "If you hover the mouse cursor over any of the labels at the top of the screen, extra information is displayed e.g. \"Current load being consumed by the house\".\n\nThis doesn't happen on a touch screen device, and currently there is no way to see this info. On the Config Screen there are specific Help Icons that you can click to get more information.  Is this a possibility on this screen?\n\n",
+    "comments_url": "https://api.github.com/repos/Webreaper/SolisAgileManager/issues/87/comments",
+    "author": "dqj999",
+    "comments": [
+      {
+        "user": "Webreaper",
+        "created_at": "2025-02-01T15:36:15Z",
+        "body": "Tool tips don't generally work on touch screen device. Hopefully people will learn what the icons mean so won't need them on a phone.\n\nOne thought I had is to duplicate the colours and icons of the Soliscloud app so people will be familiar. "
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-02-01T15:38:43Z",
+        "body": "One thing I could do is make them tappable or clickable, and display a popup with the description, bit like the `?` icons in the config screen. "
+      },
+      {
+        "user": "dqj999",
+        "created_at": "2025-02-01T15:43:43Z",
+        "body": "Making them clickable would work :-)\n\nThe pair I find confusing are the \"Total Solar PV Generation Today\" and the \"Current Solar PV Generation\".  Maybe putting a Sigma in front of it would help the mathematically oriented amongst us!"
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-02-01T15:52:10Z",
+        "body": "Doesn't the inclusion of the units make it absolutely clear? "
+      },
+      {
+        "user": "dqj999",
+        "created_at": "2025-02-01T17:06:51Z",
+        "body": "Yes it does if I think about it! \n\nDoh!"
+      },
+      {
+        "user": "Webreaper",
+        "created_at": "2025-02-04T08:35:20Z",
+        "body": "Fixed in most recent release. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to access help information on touch screen devices",
+      "Clear visual distinction between current values and cumulative totals"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:06"
+    }
+  }
+]

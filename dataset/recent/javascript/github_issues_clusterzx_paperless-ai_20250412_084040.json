@@ -1,0 +1,253 @@
+[
+  {
+    "number": 330,
+    "title": "Dark theme is not very readable in some places",
+    "created_at": "2025-02-12T14:07:50Z",
+    "closed_at": "2025-02-14T17:49:42Z",
+    "labels": [],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/330",
+    "body": "**Describe the bug**\nThe dark theme seems to be forgotten in some places\n\n**To Reproduce**\nSteps to reproduce the behavior:\n1. Switch to dark theme\n2. browse the page\n\nI believe it does not need any additional information.\n\nOtherwise thank you for the nice tool! <3",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/330/comments",
+    "author": "woozar",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-12T15:04:01Z",
+        "body": "I just stumbled over the dashboard in the Task Runner. Is there anything else you have seen?"
+      },
+      {
+        "user": "bat1939",
+        "created_at": "2025-02-12T16:48:26Z",
+        "body": "Under Settings and AI Function Limits, the titles for the check boxes are in black and hard to read."
+      },
+      {
+        "user": "Analog4Lyfe",
+        "created_at": "2025-02-12T18:03:47Z",
+        "body": "in dark mode that white box background is very hard to read"
+      },
+      {
+        "user": "woozar",
+        "created_at": "2025-02-12T20:35:10Z",
+        "body": "Task runner status and black text in the settings are the two things, that draw my attention in the first place.\n\nAlso I just realised, that the theme trigger (that button in the top right corner) on the \"Manual\" page is not working.\n\nI also found some \"minor\" stuff (I would not have created a ticket for that).\n* would be awesome if the box with the text \"The application is already configured. You can update the configuration below.\" was also darker in dark mode. \n* the background of the pie chart in \"Document Type Distribution\"\n* paperless itself has a dark mode for its pdf preview tiles. is it somehow possible to use that in the Playground in paperless-ai in dark mode? (that is probably more of a feature request)"
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-12T20:56:54Z",
+        "body": "> Task runner status and black text in the settings are the two things, that draw my attention in the first place.\n> \n> Also I just realised, that the theme trigger (that button in the top right corner) on the \"Manual\" page is not working.\n> \n> I also found some \"minor\" stuff (I would not have created a ticket for that).\n> \n> * would be awesome if the box with the text \"The application is already configured. You can update the configuration below.\" was also darker in dark mode.\n> * the background of the pie chart in \"Document Type Distribution\"\n> * paperless itself has a dark mode for its pdf preview tiles. is it somehow possible to use that in the Playground in paperless-ai in dark mode? (that is probably more of a feature request)\n\nThanks for the specific information. Funny how I never realized that the switch on the manual page is not working. \ud83d\ude06 "
+      },
+      {
+        "user": "woozar",
+        "created_at": "2025-02-12T23:27:14Z",
+        "body": "A pleasure to work with people, who react on bug reports. Happy to help with my reports."
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-14T17:49:41Z",
+        "body": "Fixed the issues + also added the invert of documents in playground for better visibility. \nWill be available with the next release."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix readability issues in dark theme across the application",
+      "Fix the theme toggle button functionality on the Manual page",
+      "Improve dark mode consistency across UI elements",
+      "Acknowledgment and communication about the reported issues",
+      "Implementation of fixes in an upcoming release"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:26"
+    }
+  },
+  {
+    "number": 316,
+    "title": "OpenAI API Key is not valid. Please check the key.",
+    "created_at": "2025-02-10T20:59:29Z",
+    "closed_at": "2025-02-10T22:01:15Z",
+    "labels": [],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/316",
+    "body": "Hey Clusterzx,\n I'm just about to set up paperless-ai, now it only fails because of the OpenAI key \"OpenAI API Key is not valid. Please check the key.\" The key is 100% correct... Do you have any idea what else I'm doing wrong?",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/316/comments",
+    "author": "UncleCCC",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-10T21:08:44Z",
+        "body": "Do you have positive balance on this key? Free-Tier does not work."
+      },
+      {
+        "user": "UncleCCC",
+        "created_at": "2025-02-10T21:23:15Z",
+        "body": "Ohhh sorry... That was the mistake, I have little experience with OpenAI... I have a ChatGPT license, I thought this also applies to OpenAI. Now it works thanks for your quick help"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the root cause for the OpenAI API key validation error",
+      "Clarification about OpenAI API access requirements",
+      "A prompt response that addresses the specific error message"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:32"
+    }
+  },
+  {
+    "number": 309,
+    "title": "Rescan after Prompt Description change.",
+    "created_at": "2025-02-09T17:00:39Z",
+    "closed_at": "2025-02-09T19:39:54Z",
+    "labels": [],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/309",
+    "body": "Hi,\n\nThanks for this great tool.\n\nI have one question regarding understanding.\n\nToday I set up paperless-ai and successfully scanned over 400 documents. Tags and types are working fine, and all documents have an \"ai-processed\" tag.\n\nNow I decided to change many settings in the \"Prompt Description\" to optimize the output. I thought I could simply rescan everything and that the optimized prompts would be applied to all documents, but it's not working.\n\nHow can I rescan all documents with the new Prompt Description?\n\nThanks a lot.\n",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/309/comments",
+    "author": "kolossboss",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-09T17:03:10Z",
+        "body": "You could easily go to History and delete the documents you want to reprocess. "
+      },
+      {
+        "user": "kolossboss",
+        "created_at": "2025-02-09T19:22:58Z",
+        "body": "Thx a lot.\n\nWorks great\ud83d\udc4d"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A method to reprocess documents with updated prompt descriptions",
+      "A solution that doesn't require re-uploading the original documents",
+      "A straightforward process that can be applied to multiple documents"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:36"
+    }
+  },
+  {
+    "number": 297,
+    "title": "Failed to get own user ID.  Abort scanning.",
+    "created_at": "2025-02-07T19:10:11Z",
+    "closed_at": "2025-02-07T19:21:06Z",
+    "labels": [],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/297",
+    "body": "\nI am setting up Paperless-AI for the first time, and after configuration I get \"Failed to get own user ID.  Abort scanning.\"\n\nWhat does that mean and how do I fix it?\n",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/297/comments",
+    "author": "Tarpon907",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-07T19:14:59Z",
+        "body": "You have to set there the login username of the user that is also the owner of the api key. "
+      },
+      {
+        "user": "Tarpon907",
+        "created_at": "2025-02-07T19:15:49Z",
+        "body": "It is.\n"
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-07T19:17:19Z",
+        "body": "Does the user have the rights to access the api and also the /api/users endpoint ?"
+      },
+      {
+        "user": "Tarpon907",
+        "created_at": "2025-02-07T19:19:53Z",
+        "body": "My API URL had a trailing slash.  It worked when I removed that.\n"
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-02-07T19:20:59Z",
+        "body": "Ok glad it works now. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the root cause of the 'Failed to get own user ID. Abort scanning' error",
+      "A solution that allows Paperless-AI to successfully connect to the API",
+      "Guidance on proper API configuration for Paperless-AI"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:41"
+    }
+  },
+  {
+    "number": 194,
+    "title": "Chat feature not working with Custom AI agents",
+    "created_at": "2025-01-20T18:51:42Z",
+    "closed_at": "2025-01-20T19:30:20Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/194",
+    "body": "**Describe the bug**\nChat not working with \"Custom\" agents.\n\n**To Reproduce**\nSteps to reproduce the behavior:\n1. Configure a Custom provider, in my case local llama.cpp.\n2. Process a document.\n3. Open a chat for it, from any access.\n\n**Expected behavior**\nChat to start using the custom provider.\n\n\n**Desktop (please complete the following information):**\n - OS: Any\n - Browser: Any\n - Version: 2.30\n\n**Additional context**\nI can see in the logs that the chat feature seems to expect OpenAI:\npaperless-ai           | [ERRO] initializing chat: Error: OpenAI client not initialized\npaperless-ai           |     at ChatService.initializeChat (/app/services/chatService.js:64:15)\n",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/194/comments",
+    "author": "chwoa",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-01-20T19:25:16Z",
+        "body": "You are right! Forgot to implement it there. Pushing an update today!\nThank you very much for reporting."
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-01-20T19:30:20Z",
+        "body": "Fixed :)"
+      },
+      {
+        "user": "chwoa",
+        "created_at": "2025-01-20T19:57:23Z",
+        "body": "That was quick! Confirmed it is working in 2.3.1. Thank you very much!"
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-01-20T20:04:05Z",
+        "body": "You are very welcome \ud83d\udc4d "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Enable chat functionality to work with Custom AI agents/providers",
+      "Remove dependency on OpenAI for chat functionality",
+      "Provide a timely fix for the reported issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:46"
+    }
+  },
+  {
+    "number": 156,
+    "title": "Login failing",
+    "created_at": "2025-01-14T21:10:53Z",
+    "closed_at": "2025-01-14T21:41:57Z",
+    "labels": [],
+    "url": "https://github.com/clusterzx/paperless-ai/issues/156",
+    "body": "**Describe the bug**\r\nAfter finalizing the setup I am not able to log back into the dashboard.\r\n\r\n**To Reproduce**\r\n- finalize setup with user name and password\r\n- save settings\r\n- once restarted, log in through the UI\r\n\r\nlog shows:\r\nLogin attempt for user: PaperlessAI\r\nPassword validation result: false\r\n\r\nI have tried removing the .env (and config) files.\r\nremoved the whole container\r\n\r\nPlease let me know if there is more information I can provide.\r\n",
+    "comments_url": "https://api.github.com/repos/clusterzx/paperless-ai/issues/156/comments",
+    "author": "CreekDuzz",
+    "comments": [
+      {
+        "user": "clusterzx",
+        "created_at": "2025-01-14T21:37:11Z",
+        "body": "You could look into the database what is stored in the \"users\" table. But the password is bcrypt encrypted. \n\nYou can go to any website you want where you can generate a bcrypt hash and paste it the generated hash over the Old one. \n\nBut normally there is no bug or issue known regarding your description. "
+      },
+      {
+        "user": "CreekDuzz",
+        "created_at": "2025-01-14T21:41:57Z",
+        "body": "That was it. I did not think about the DB containing the login info. I removed the old DB and once the new were created, its working. Thank you!"
+      },
+      {
+        "user": "clusterzx",
+        "created_at": "2025-01-14T21:45:47Z",
+        "body": "Maybe you entered only some false login credentials thinking of a different password or capslock. I don't know \ud83d\ude05\n\nBut there is no bug currently known, the login page is present since some versions now. If there was then there would be more people with the same issue. \n\nSo who knows what it was, luckily it works now! Have a great day \u2764\ufe0f"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the login failure issue",
+      "Information about where login credentials are stored",
+      "A method to reset or recreate authentication data"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:51"
+    }
+  }
+]

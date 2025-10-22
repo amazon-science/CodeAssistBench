@@ -1,0 +1,71 @@
+[
+  {
+    "number": 64,
+    "title": "hello, seem the url is broken",
+    "created_at": "2025-04-07T07:29:10Z",
+    "closed_at": "2025-04-09T00:31:28Z",
+    "labels": [],
+    "url": "https://github.com/itcon-pty-au/stremio-ai-search/issues/64",
+    "body": "thanks.",
+    "comments_url": "https://api.github.com/repos/itcon-pty-au/stremio-ai-search/issues/64/comments",
+    "author": "ericvlog",
+    "comments": [
+      {
+        "user": "itcon-pty-au",
+        "created_at": "2025-04-07T11:37:42Z",
+        "body": "Seems like a DNS propogation issue affecting some regions. I have raised a ticket with my new domain provider. Started after I switched my domain provider on Sunday."
+      },
+      {
+        "user": "itcon-pty-au",
+        "created_at": "2025-04-08T07:53:30Z",
+        "body": "Is it working for you now?"
+      },
+      {
+        "user": "ericvlog",
+        "created_at": "2025-04-08T08:50:59Z",
+        "body": "> Is it working for you now?\n\nYup it workings now, maybe just URL down.\n\ud83d\udc4d"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Restoration of access to the previously broken URL",
+      "Acknowledgment of the issue and its status"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:20"
+    }
+  },
+  {
+    "number": 44,
+    "title": "[Bug Report] RPDB API Key",
+    "created_at": "2025-03-13T18:26:33Z",
+    "closed_at": "2025-03-14T13:33:38Z",
+    "labels": [
+      "issue"
+    ],
+    "url": "https://github.com/itcon-pty-au/stremio-ai-search/issues/44",
+    "body": "## Bug Report\n\n**Device Type:** mac\n\n**Error Details:**\n```\nRPDB API Key\n```\n\n**Description:**\nI removed my RPDB API Key but it keeps showing that im using it\n\n---\n*Submitted via Stremio AI Search Addon*",
+    "comments_url": "https://api.github.com/repos/itcon-pty-au/stremio-ai-search/issues/44/comments",
+    "author": "itcon-pty-au",
+    "comments": [
+      {
+        "user": "itcon-pty-au",
+        "created_at": "2025-03-14T02:58:47Z",
+        "body": "It uses default free RPDB API key if you don't provide one."
+      },
+      {
+        "user": "Djlilyazii",
+        "created_at": "2025-03-14T13:30:56Z",
+        "body": "> It uses default free RPDB API key if you don't provide one.\n\nthanks. close ticket. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Explanation of why the RPDB API key appears to be in use even after removal",
+      "Clarification about the default behavior of the system regarding API keys"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:25"
+    }
+  }
+]

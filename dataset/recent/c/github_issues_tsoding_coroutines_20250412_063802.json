@@ -1,0 +1,29 @@
+[
+  {
+    "number": 2,
+    "title": "Link with GCC",
+    "created_at": "2025-01-14T22:06:16Z",
+    "closed_at": "2025-01-24T20:19:58Z",
+    "labels": [],
+    "url": "https://github.com/tsoding/coroutines/issues/2",
+    "body": "You needn't link manually with ld. Everything links and runs fine with GCC so long as you provide the `-no-pie` flag when linking the `.o` files:\r\n\r\n```Makefile\r\nmain: coroutine.o main.o\r\n    gcc -no-pie -o main main.o coroutine.o\r\n```\r\n\r\nI remember you typing `-fno-pic` on stream instead, which is why it didn't work.",
+    "comments_url": "https://api.github.com/repos/tsoding/coroutines/issues/2/comments",
+    "author": "El-Wumbus",
+    "comments": [
+      {
+        "user": "rexim",
+        "created_at": "2025-01-24T20:19:56Z",
+        "body": "Thank you for the suggestion. Resolved by f6edda4f6fdc97310061ca28e97eb71aaeb31f25"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working solution for linking object files with GCC instead of manual linking with ld",
+      "Proper flag identification for preventing position-independent code generation during linking",
+      "A working Makefile configuration for the build process"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:42"
+    }
+  }
+]

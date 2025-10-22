@@ -1,0 +1,40 @@
+[
+  {
+    "number": 3,
+    "title": "Several models were automatically downloaded and all of them were stuffed into the cache space of the C drive",
+    "created_at": "2024-12-05T10:39:25Z",
+    "closed_at": "2024-12-05T15:24:57Z",
+    "labels": [],
+    "url": "https://github.com/huanngzh/ComfyUI-MVAdapter/issues/3",
+    "body": "C drive is limited, Can the author modify the code to change the model into Comfyui/models?",
+    "comments_url": "https://api.github.com/repos/huanngzh/ComfyUI-MVAdapter/issues/3/comments",
+    "author": "coddz",
+    "comments": [
+      {
+        "user": "coddz",
+        "created_at": "2024-12-05T10:59:08Z",
+        "body": "the requirements.txt need checking and changing, for example: \r\ntorch>=2.1.1\r\ntorchvision>=0.16.1\r\ndiffusers>=0.31.0\r\ntransformers>=4.46.3\r\npeft\r\nnumpy>=1.26.2\r\nhuggingface_hub>=0.24.6\r\naccelerate>=1.1.1\r\n\r\nthe torch version is too low, may cause a lot of custom nodes failure."
+      },
+      {
+        "user": "coddz",
+        "created_at": "2024-12-05T11:02:03Z",
+        "body": "the checkpoint(sdxl) and vae(sdxl) of diffusers loader maybe select from the local like ldm, avoid downloading the sdxl base repetitavely."
+      },
+      {
+        "user": "huanngzh",
+        "created_at": "2024-12-05T15:24:28Z",
+        "body": "Thanks for your suggestions! The above issues have been solved.\r\n\r\nBtw, `diffusers` will not download the checkpoints repetitavely due to its cache mechanism. Now the cache dir has been set to `ComfyUI/models/diffusers`."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to change the default model download location from the C drive to a custom directory",
+      "Updated dependency requirements that prevent compatibility issues with custom nodes",
+      "A mechanism to avoid redundant downloads of the same model files",
+      "Proper caching configuration for diffusers models"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:07"
+    }
+  }
+]

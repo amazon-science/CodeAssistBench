@@ -1,0 +1,44 @@
+[
+  {
+    "number": 42,
+    "title": "docker\u73af\u5883\u53d8\u91cf\u6ca1\u751f\u6548",
+    "created_at": "2025-03-15T03:38:54Z",
+    "closed_at": "2025-03-16T06:51:20Z",
+    "labels": [],
+    "url": "https://github.com/linshenkx/prompt-optimizer/issues/42",
+    "body": "\u6d4b\u8bd5-e\u73af\u5883\u53d8\u91cf\u6ca1\u751f\u6548 \u5728ui\u4e2d\u8fd8\u662f\u9700\u8981\u914d\u7f6e\u5bc6\u94a5\n\ndocker run -d -p 8866:80 \\\n  -e VITE_DEEPSEEK_API_KEY=sk-3eb40b308c12312341424e09be71d0 \\\n  --restart unless-stopped \\\n  --name prompt-optimizer \\\n  linshen/prompt-optimizer:1.0.2",
+    "comments_url": "https://api.github.com/repos/linshenkx/prompt-optimizer/issues/42/comments",
+    "author": "ColorfulGhost",
+    "comments": [
+      {
+        "user": "linshenkx",
+        "created_at": "2025-03-16T06:51:20Z",
+        "body": "\u7531\u4e8e\u7eaf\u524d\u7aef\u5de5\u7a0b\u52a0\u8f7d\u4e0d\u4e86\u7cfb\u7edf\u73af\u5883\u53d8\u91cf\u5bfc\u81f4\uff0c\u5df2\u4fee\u590d ecfdfae"
+      },
+      {
+        "user": "lipeng1109",
+        "created_at": "2025-03-21T03:53:30Z",
+        "body": "\u8fd9\u4e2a\u5728\u6700\u65b0\u7248\u672c\u7684\u955c\u50cf\u91cc\u9762\u5df2\u7ecf\u751f\u6548\u4e86\u5417\uff1f\u8fd8\u662f\u9700\u8981\u81ea\u5df1\u62c9\u53d6\u5206\u652f\u6253\u5305\u5462\n"
+      },
+      {
+        "user": "linshenkx",
+        "created_at": "2025-03-21T03:55:24Z",
+        "body": "> \u8fd9\u4e2a\u5728\u6700\u65b0\u7248\u672c\u7684\u955c\u50cf\u91cc\u9762\u5df2\u7ecf\u751f\u6548\u4e86\u5417\uff1f\u8fd8\u662f\u9700\u8981\u81ea\u5df1\u62c9\u53d6\u5206\u652f\u6253\u5305\u5462\n\n\u6700\u65b0\u7684\u5df2\u7ecf\u751f\u6548\u4e86"
+      },
+      {
+        "user": "lipeng1109",
+        "created_at": "2025-03-21T05:07:11Z",
+        "body": "\u662f\u53ef\u4ee5\u7684\uff0c\u6700\u65b0\u7684\u955c\u50cf\uff0c\u6211\u5f3a\u5236\u5237\u65b0\u4e00\u4e0b\u5c31\u53ef\u4ee5\u4e86\uff0c\u975e\u5e38\u611f\u8c22\n\n\n\n> > \u8fd9\u4e2a\u5728\u6700\u65b0\u7248\u672c\u7684\u955c\u50cf\u91cc\u9762\u5df2\u7ecf\u751f\u6548\u4e86\u5417\uff1f\u8fd8\u662f\u9700\u8981\u81ea\u5df1\u62c9\u53d6\u5206\u652f\u6253\u5305\u5462\n> \n> \u6700\u65b0\u7684\u5df2\u7ecf\u751f\u6548\u4e86\n\n\u53ef\u4ee5\u4e86\uff0c\u5f3a\u5236\u5237\u65b0\u5c31\u597d\u4e86\uff0c\u975e\u5e38\u611f\u8c22"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation that environment variables work properly in the latest Docker image",
+      "Clear information about which version of the Docker image contains the fix",
+      "A solution that doesn't require manual code changes or custom builds"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:36"
+    }
+  }
+]

@@ -1,0 +1,45 @@
+[
+  {
+    "number": 5,
+    "title": "Unable to open database at first run",
+    "created_at": "2025-02-18T10:17:47Z",
+    "closed_at": "2025-02-23T22:13:08Z",
+    "labels": [],
+    "url": "https://github.com/dotnetfactory/fluid-calendar/issues/5",
+    "body": "Hi,\n\nI try to install you software, but I have a problem at first start. I wanted to use it with docker.\nI followed the documentation, but at the step, where I have to migrate the database, I have an error:\n\nI run this command: \n\n```\ndocker run --rm \\\n  -v $(pwd)/data:/app/data \\\n  --env-file .env \\\n  eibrahim/fluid-calendar:latest \\\n  npx prisma migrate deploy\n\n```\n\nAnd get this error message: \n\n```\nid-calendar:latest   npx prisma migrate deploy\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"dev.db\" at \"file:/app/data/dev.db\"\n\nError: Schema engine error:\nSQLite database error\nunable to open database file: /app/data/dev.db\n```\n\nI also tried to run: \n\n```\nrm -rf data/* && docker run --rm \\\n  -v $(pwd)/data:/app/data \\\n  --env-file .env \\\n  eibrahim/fluid-calendar:latest \\\n  npx prisma migrate deploy\n```\n\nBut I got same error above. \n\n\nUpdate1: I created an empty file in the data folder (touch dev.db), and re-run the database migration command, but still dont work:\n\n```\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"dev.db\" at \"file:/app/data/dev.db\"\n\n8 migrations found in prisma/migrations\n\nError: SQLite database error\nattempt to write a readonly database\n   0: sql_schema_connector::sql_migration_persistence::initialize\n           with namespaces=None\n             at schema-engine/connectors/sql-schema-connector/src/sql_migration_persistence.rs:14\n   1: schema_core::state::ApplyMigrations\n             at schema-engine/core/src/state.rs:226\n```\n\nI tried everything, run docker with sudo and root user, change the permission of dev.db with chmod to 777, change the owner of the dev.db from user to root, but still read only. ",
+    "comments_url": "https://api.github.com/repos/dotnetfactory/fluid-calendar/issues/5/comments",
+    "author": "bttd",
+    "comments": [
+      {
+        "user": "MooRogue",
+        "created_at": "2025-02-20T00:23:43Z",
+        "body": "I ran into the same problem and had to change the **directory** which would store dev.db to 777 to allow the initial dev.db file to be written"
+      },
+      {
+        "user": "bttd",
+        "created_at": "2025-02-20T09:05:14Z",
+        "body": "> I ran into the same problem and had to change the **directory** which would store dev.db to 777 to allow the initial dev.db file to be written\n\nThanks!\n\nThat's work. But I think this need to be addressed. \n"
+      },
+      {
+        "user": "Garougamesh",
+        "created_at": "2025-02-23T09:14:10Z",
+        "body": "Doesn't work for me, whatever I try the database can't be written to, or even created. Never had any problem like this with any other docker containers. Commands to reset db need to be changed too because it gets called from app folder while trying to use the .env file which is one folder higher. Directory structure makes no sense anyway, why not put everything in data. Why wouldn't I have permission to write a file to a folder I just created? Why do I have to convert a Docker run command when you could easily have written a compose file. Wasted 2 hours of my time on this."
+      },
+      {
+        "user": "eibrahim",
+        "created_at": "2025-02-23T22:14:05Z",
+        "body": "I made some updates.  It's a lot easier to run now... all you have to do is run `docker compose up` see readme for more details.  I also switched to postgresql, so you will lose your data... but you can run `node migrate.js` to move your data from sqlite to postgres"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the database permission issues when running the application in Docker",
+      "A simpler, more streamlined Docker setup process",
+      "Clear documentation on Docker deployment requirements",
+      "A solution that maintains data persistence across Docker container restarts"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 00:59:19"
+    }
+  }
+]

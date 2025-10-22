@@ -1,0 +1,72 @@
+[
+  {
+    "number": 31,
+    "title": "Installing Kreuzberg 3.0.0 via poetry/pip does not install the _ocr module on windows",
+    "created_at": "2025-03-26T08:53:17Z",
+    "closed_at": "2025-03-26T09:41:08Z",
+    "labels": [],
+    "url": "https://github.com/Goldziher/kreuzberg/issues/31",
+    "body": "I recently tried to install Kreuzberg via Poetry using `poetry add kreuzberg`. \nThe line added to my pyproject.toml was `kreuzberg = \"^3.0.0\"`\nThe error that ensued after running my project was:\n```\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"D:\\dev\\landtagszusammenfasser\\collector\\collector\\main.py\", line 10, in <module>\n    from collector.config import CollectorConfiguration\n  File \"D:\\dev\\landtagszusammenfasser\\collector\\collector\\config.py\", line 6, in <module>\n    from collector.scrapercache import ScraperCache\n  File \"D:\\dev\\landtagszusammenfasser\\collector\\collector\\scrapercache.py\", line 5, in <module>\n    from collector.document import Document\n  File \"D:\\dev\\landtagszusammenfasser\\collector\\collector\\document.py\", line 8, in <module>\n    from kreuzberg import ExtractionConfig, extract_file, TesseractConfig, PSMMode\n  File \"C:\\Users\\Benedikt\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\collector-nweI4fBd-py3.13\\Lib\\site-packages\\kreuzberg\\__init__.py\", line 1, in <module>\n    from kreuzberg._ocr._easyocr import EasyOCRConfig\nModuleNotFoundError: No module named 'kreuzberg._ocr'\n```\nAnd indeed, looking at the site-packages in the local environment there is no _ocr module installed even if the module clearly is in main.\nThe contents of the `kreuzberg` site-package are:\n```\n__pycache__/\n__init__.py\n_chunker.py\n_constants.py\n_mime_types.py\n_playa.py\n_registry.py\n_types.py\nexceptions.py\nextraction.py\npy.typed\n```\n\nI tried the same via pip in poetry's venv (pip install kreuzberg) as well as installing various extras [easyocr/paddleocr/all], but none of these options actually installed the _ocr package.\n\nThe issue is not present in 2.1, where everything works smoothly.\n\nIs this a known issue? Did I overlook something? Help is appreciated!",
+    "comments_url": "https://api.github.com/repos/Goldziher/kreuzberg/issues/31/comments",
+    "author": "Chrystalkey",
+    "comments": [
+      {
+        "user": "Goldziher",
+        "created_at": "2025-03-26T09:14:59Z",
+        "body": "thanks for reporing this. \n\nVery weird. I will have to take a look into this asap. "
+      },
+      {
+        "user": "Goldziher",
+        "created_at": "2025-03-26T09:36:56Z",
+        "body": "Hi, please see if version 3.0.1 resolves the issue for you. \n\nI verified this locally - the tar.gz file is correct. Wanna be absolutely sure though."
+      },
+      {
+        "user": "Chrystalkey",
+        "created_at": "2025-03-26T09:41:08Z",
+        "body": "Yes, the module is found and the extraction is running. Thanks a lot for the quick fix!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix that resolves the missing module error",
+      "A working installation of Kreuzberg with OCR functionality on Windows",
+      "A timely resolution to the package installation issue",
+      "A solution that works with their existing package management setup (Poetry/pip)"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:06:57"
+    }
+  },
+  {
+    "number": 3,
+    "title": "TesseractNotFoundError: \"tesseract is not installed or it's not in your PATH\" during image extraction",
+    "created_at": "2025-02-07T16:15:51Z",
+    "closed_at": "2025-02-07T18:18:24Z",
+    "labels": [],
+    "url": "https://github.com/Goldziher/kreuzberg/issues/3",
+    "body": "When attempting to extract text from an image file (e.g., `page1_img1.png`) using Kreuzberg, the following error is encountered:\n\n```\nTraceback (most recent call last):\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/pytesseract/pytesseract.py\", line 275, in run_tesseract\n    proc = subprocess.Popen(cmd_args, **subprocess_args())\n  File \"/path/to/python3.10/subprocess.py\", line 971, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n  File \"/path/to/python3.10/subprocess.py\", line 1863, in _execute_child\n    raise child_exception_type(errno_num, err_msg, err_filename)\nFileNotFoundError: [Errno 2] No such file or directory: 'tesseract'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/path/to/project/main.py\", line 35, in <module>\n    asyncio.run(main())\n  File \"/path/to/python3.10/asyncio/runners.py\", line 44, in run\n    return loop.run_until_complete(main)\n  File \"/path/to/python3.10/asyncio/base_events.py\", line 649, in run_until_complete\n    return future.result()\n  File \"/path/to/project/main.py\", line 29, in main\n    await extract_image()\n  File \"/path/to/project/main.py\", line 14, in extract_image\n    result = await extract_file(\"page1_img1.png\")\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/kreuzberg/extraction.py\", line 138, in extract_file\n    return ExtractionResult(content=await _extract_image_with_tesseract(file_path), mime_type=PLAIN_TEXT_MIME_TYPE)\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/kreuzberg/_extractors.py\", line 156, in _extract_image_with_tesseract\n    return normalize_spaces(cast(str, image_to_string(str(file_path))))\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/pytesseract/pytesseract.py\", line 486, in image_to_string\n    return {\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/pytesseract/pytesseract.py\", line 489, in <lambda>\n    Output.STRING: lambda: run_and_get_output(*args),\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/pytesseract/pytesseract.py\", line 352, in run_and_get_output\n    run_tesseract(**kwargs)\n  File \"/path/to/project/.venv/lib/python3.10/site-packages/pytesseract/pytesseract.py\", line 280, in run_tesseract\n    raise TesseractNotFoundError()\npytesseract.pytesseract.TesseractNotFoundError: tesseract is not installed or it's not in your PATH. See README file for more information.\n```\n\n**Steps to Reproduce:**  \n1. Install and set up Kreuzberg in a Python 3.10 environment.  \n2. Attempt to extract text from an image file (e.g., `page1_img1.png`) using the `extract_file` method.  \n3. Observe the traceback indicating that Tesseract is not found.\n\n**Expected Behavior:**  \nThe library should either provide a clear error message with instructions on how to install Tesseract or handle the missing dependency gracefully by suggesting that the Tesseract package be downloaded and installed.\n\n**Additional Context:**  \n- **Operating System:** Linux  \n- **Python Version:** 3.10  \n- The error clearly indicates that Tesseract OCR is not installed or not available in the PATH. Since Tesseract is required for image text extraction, it might be beneficial to update the documentation (or error messaging) with installation instructions or suggestions to download the package if it is missing.\n\nAny guidance on how to resolve this issue or suggestions for improving the dependency check would be appreciated.",
+    "comments_url": "https://api.github.com/repos/Goldziher/kreuzberg/issues/3/comments",
+    "author": "Programmer-RD-AI",
+    "comments": [
+      {
+        "user": "Goldziher",
+        "created_at": "2025-02-07T18:13:46Z",
+        "body": "Hi. The readme has a section about dependencies. \n\nIn a nutshell, install them \ud83d\ude01"
+      },
+      {
+        "user": "Programmer-RD-AI",
+        "created_at": "2025-02-07T18:18:24Z",
+        "body": "Got it, thank you :)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear direction on where to find installation instructions for the required dependency",
+      "Brief, straightforward guidance that acknowledges the need to install the missing dependency",
+      "Confirmation that the error was due to missing dependencies rather than a code issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:07:06"
+    }
+  }
+]

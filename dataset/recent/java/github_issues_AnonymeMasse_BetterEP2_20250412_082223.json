@@ -1,0 +1,39 @@
+[
+  {
+    "number": 1,
+    "title": "Rechtschreibfehler in DynamischesArray/README.md korrigiert",
+    "created_at": "2025-03-31T20:40:15Z",
+    "closed_at": "2025-04-01T11:49:47Z",
+    "labels": [],
+    "url": "https://github.com/AnonymeMasse/BetterEP2/pull/1",
+    "body": "btw gibt es einen Grund warum du Umlaute mit ae usw schreibst?",
+    "comments_url": "https://api.github.com/repos/AnonymeMasse/BetterEP2/issues/1/comments",
+    "author": "JulianBnder",
+    "comments": [
+      {
+        "user": "bendermeister",
+        "created_at": "2025-04-01T11:01:40Z",
+        "body": "Ich verwende eine qwerty tastatur und hab mir keine Keybinds gesetzt, weil ich eigentlich immer auf english schreibe"
+      },
+      {
+        "user": "bendermeister",
+        "created_at": "2025-04-01T11:05:52Z",
+        "body": "moechtest du auch einfach ein contributor status haben? Dann kannst du selbst mergen"
+      },
+      {
+        "user": "bendermeister",
+        "created_at": "2025-04-01T11:49:44Z",
+        "body": "Jo ich habe jetzt deinen Typo fix selbst reingepackt weil sich die Ordner struktur geaendert hat und ich keine Ahnung habe wie ich git sage dass er das trotzdem mergen soll.\r\n\r\nDanke fuer den Typo fix!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation for why umlauts are written as 'ae', 'oe', etc. instead of '\u00e4', '\u00f6', etc.",
+      "Acknowledgment of the user's contribution in fixing typos",
+      "Information about how the contribution was handled"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:29"
+    }
+  }
+]

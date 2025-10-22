@@ -1,0 +1,41 @@
+[
+  {
+    "number": 7,
+    "title": "ModuleNotFoundError: No module named 'mcp'",
+    "created_at": "2025-03-01T23:49:53Z",
+    "closed_at": "2025-03-02T04:44:41Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/HazyResearch/minions/issues/7",
+    "body": "When following the instructions for the demo, after running streamlit run app.py, the browser displays this error:\n\nTraceback\nFile \"/Users/username/code/python/minions/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/exec_code.py\", line 121, in exec_func_with_error_handling\n    result = func()\nFile \"/Users/username/code/python/minions/.venv/lib/python3.13/site-packages/streamlit/runtime/scriptrunner/script_runner.py\", line 591, in code_to_exec\n    exec(code, module.__dict__)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^\nFile \"/Users/username/code/python/minions/app.py\", line 4, in <module>\n    from minions.minions_mcp import SyncMinionsMCP, MCPConfigManager\nFile \"/Users/username/code/python/minions/minions/minions_mcp.py\", line 14, in <module>\n    from mcp import ClientSession, StdioServerParametersusername",
+    "comments_url": "https://api.github.com/repos/HazyResearch/minions/issues/7/comments",
+    "author": "developer-nome",
+    "comments": [
+      {
+        "user": "ANarayan",
+        "created_at": "2025-03-02T00:36:58Z",
+        "body": "@developer-nome please make sure to install mcp.\n\nRun `pip install mcp`"
+      },
+      {
+        "user": "danbider",
+        "created_at": "2025-03-02T04:20:48Z",
+        "body": "or alternatively rerun \n```\npip install -e .\n```\nsince `mcp` was introduced recently to the `setup.py` file."
+      },
+      {
+        "user": "developer-nome",
+        "created_at": "2025-03-02T04:44:41Z",
+        "body": "Works now that mcp was introduced recently to the setup.py file. Thank you!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the missing 'mcp' module dependency",
+      "Instructions that can be executed within the user's existing environment",
+      "An explanation of why the dependency was missing"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:04:51"
+    }
+  }
+]

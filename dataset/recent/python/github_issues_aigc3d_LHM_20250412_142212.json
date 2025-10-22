@@ -1,0 +1,81 @@
+[
+  {
+    "number": 69,
+    "title": "Error with Gradio: TypeError: argument of type 'bool' is not iterable",
+    "created_at": "2025-04-02T20:12:32Z",
+    "closed_at": "2025-04-03T20:14:13Z",
+    "labels": [],
+    "url": "https://github.com/aigc3d/LHM/issues/69",
+    "body": "Hey, I have been getting this error. Tried fixing it but couldn't. Do you guys want me to share complete error logs? \nPlease let me know a fix. thanks and if possible create a docker file which allows the setup to be easy. \n\n```\nERROR:    Exception in ASGI application\nTraceback (most recent call last):\n  File \"/workspace/venv/lib/python3.10/site-packages/uvicorn/protocols/http/h11_impl.py\", line 403, in run_asgi\n    result = await app(  # type: ignore[func-returns-value]\n  File \"/workspace/venv/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py\", line 60, in __call__\n    return await self.app(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/fastapi/applications.py\", line 1054, in __call__\n    await super().__call__(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/applications.py\", line 113, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/middleware/errors.py\", line 187, in __call__\n    raise exc\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/middleware/errors.py\", line 165, in __call__\n    await self.app(scope, receive, _send)\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio/route_utils.py\", line 760, in __call__\n    await self.app(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py\", line 62, in __call__\n    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/_exception_handler.py\", line 62, in wrapped_app\n    raise exc\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/_exception_handler.py\", line 51, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/routing.py\", line 715, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/routing.py\", line 735, in app\n    await route.handle(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/routing.py\", line 288, in handle\n    await self.app(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/routing.py\", line 76, in app\n    await wrap_app_handling_exceptions(app, request)(scope, receive, send)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/_exception_handler.py\", line 62, in wrapped_app\n    raise exc\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/_exception_handler.py\", line 51, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/routing.py\", line 73, in app\n    response = await f(request)\n  File \"/workspace/venv/lib/python3.10/site-packages/fastapi/routing.py\", line 301, in app\n    raw_response = await run_endpoint_function(\n  File \"/workspace/venv/lib/python3.10/site-packages/fastapi/routing.py\", line 214, in run_endpoint_function\n    return await run_in_threadpool(dependant.call, **values)\n  File \"/workspace/venv/lib/python3.10/site-packages/starlette/concurrency.py\", line 39, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func, *args)\n  File \"/workspace/venv/lib/python3.10/site-packages/anyio/to_thread.py\", line 56, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n  File \"/workspace/venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py\", line 2470, in run_sync_in_worker_thread\n    return await future\n  File \"/workspace/venv/lib/python3.10/site-packages/anyio/_backends/_asyncio.py\", line 967, in run\n    result = context.run(func, *args)\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio/routes.py\", line 427, in main\n    gradio_api_info = api_info(False)\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio/routes.py\", line 456, in api_info\n    app.api_info = app.get_blocks().get_api_info()\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio/blocks.py\", line 2782, in get_api_info\n    python_type = client_utils.json_schema_to_python_type(info)\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 893, in json_schema_to_python_type\n    type_ = _json_schema_to_python_type(schema, schema.get(\"$defs\"))\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 947, in _json_schema_to_python_type\n    des = [\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 948, in <listcomp>\n    f\"{n}: {_json_schema_to_python_type(v, defs)}{get_desc(v)}\"\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 955, in _json_schema_to_python_type\n    f\"str, {_json_schema_to_python_type(schema['additionalProperties'], defs)}\"\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 901, in _json_schema_to_python_type\n    type_ = get_type(schema)\n  File \"/workspace/venv/lib/python3.10/site-packages/gradio_client/utils.py\", line 863, in get_type\n    if \"const\" in schema:\nTypeError: argument of type 'bool' is not iterable\n```",
+    "comments_url": "https://api.github.com/repos/aigc3d/LHM/issues/69/comments",
+    "author": "notaibin",
+    "comments": [
+      {
+        "user": "hitsz-zuoqi",
+        "created_at": "2025-04-03T01:14:43Z",
+        "body": "this is due to the update of gradio\uff0ctry install pydantic==2.8.0"
+      },
+      {
+        "user": "notaibin",
+        "created_at": "2025-04-03T08:01:46Z",
+        "body": "> this is due to the update of gradio\uff0ctry install pydantic==2.8.0\n\nHey thanks, that solved it. but ran into another issue:\n  File \"/workspace/venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1159, in convert\n    return t.to(\ntorch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU \n\nI actually have two 16 GB T4s, the process only acknowledges one of them.\n "
+      },
+      {
+        "user": "hitsz-zuoqi",
+        "created_at": "2025-04-03T09:46:24Z",
+        "body": "> > this is due to the update of gradio\uff0ctry install pydantic==2.8.0\n> \n> Hey thanks, that solved it. but ran into another issue:\n>   File \"/workspace/venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1159, in convert\n>     return t.to(\n> torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU \n> \n> I actually have two 16 GB T4s, the process only acknowledges one of them.\n>  \n\nemmm\uff0ccurrently 24gb is able for lhm\uff0cwe will update a light version which can running on 16gb"
+      },
+      {
+        "user": "notaibin",
+        "created_at": "2025-04-03T12:35:07Z",
+        "body": "> > > this is due to the update of gradio\uff0ctry install pydantic==2.8.0\n> > \n> > \n> > Hey thanks, that solved it. but ran into another issue:\n> > File \"/workspace/venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1159, in convert\n> > return t.to(\n> > torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU\n> > I actually have two 16 GB T4s, the process only acknowledges one of them.\n> \n> emmm\uff0ccurrently 24gb is able for lhm\uff0cwe will update a light version which can running on 16gb\n\nhey thanks for the amazing work. I think you didn't acknowledge that I have 2x16 GB T4s. So, is it ncessary to have a GPU with at least 24 GB VRAM because 2x16 should also get the job done? but it only acknowledges 1 during the inference."
+      },
+      {
+        "user": "lingtengqiu",
+        "created_at": "2025-04-03T17:05:06Z",
+        "body": "> > > > this is due to the update of gradio\uff0ctry install pydantic==2.8.0\n> > > \n> > > \n> > > Hey thanks, that solved it. but ran into another issue:\n> > > File \"/workspace/venv/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1159, in convert\n> > > return t.to(\n> > > torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU\n> > > I actually have two 16 GB T4s, the process only acknowledges one of them.\n> > \n> > \n> > emmm\uff0ccurrently 24gb is able for lhm\uff0cwe will update a light version which can running on 16gb\n> \n> hey thanks for the amazing work. I think you didn't acknowledge that I have 2x16 GB T4s. So, is it ncessary to have a GPU with at least 24 GB VRAM because 2x16 should also get the job done? but it only acknowledges 1 during the inference.\n\nYes you are right! we currently have trained LHM-mini, which can be run on single 16G card."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution to the TypeError related to Gradio and pydantic compatibility",
+      "Guidance on GPU memory requirements for running the model",
+      "Information about model variants that can run on lower VRAM GPUs"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:07:32"
+    }
+  },
+  {
+    "number": 60,
+    "title": "Error on Custom Video Motion Processing  No module named 'mmcv.parallel'",
+    "created_at": "2025-03-29T11:24:10Z",
+    "closed_at": "2025-03-31T07:35:43Z",
+    "labels": [],
+    "url": "https://github.com/aigc3d/LHM/issues/60",
+    "body": "\nHello There, \nI am testing the 'Custom Video Motion Processing' part and installed \n\ncd ./engine/pose_estimation\npip install -v -e third-party/ViTPose\npip install ultralytics\n\nI am able to run inference pipeline -\nbash ./inference.sh ./configs/inference/human-lrm-500M.yaml LHM-500M ./train_data/example_imgs/ ./train_data/motion_video/mimo1/smplx_params\n\n\nBut when I'm running this line of code-\npython ./engine/pose_estimation/video2motion.py --video_path ./train_data/demo.mp4 --output_path ./train_data/custom_motion\n\nIt is always throwing error on mmpose,  I tried to install different version of mmpose using mim install,  no luck.\nCould you let me know what am I missing, or the correct compatible libraries.\nERROR-\n\nLHM$ python ./engine/pose_estimation/video2motion.py --video_path ./train_data/demo.mp4 --output_path ./train_data/custom_motion\nTraceback (most recent call last):\n  File \"/workspace/ComfyUI/custom_nodes/LHM/./engine/pose_estimation/video2motion.py\", line 28, in <module>\n    from blocks.detector import DetectionModel\n  File \"/workspace/ComfyUI/custom_nodes/LHM/engine/pose_estimation/blocks/detector.py\", line 7, in <module>\n    from mmpose.apis.inference import batch_inference_pose_model\n  File \"/venv/main/lib/python3.10/site-packages/mmpose/apis/__init__.py\", line 2, in <module>\n    from .inference import (inference_bottom_up_pose_model,\n  File \"/venv/main/lib/python3.10/site-packages/mmpose/apis/inference.py\", line 9, in <module>\n    from mmcv.parallel import collate, scatter\nModuleNotFoundError: No module named 'mmcv.parallel'\n\n\n\n----------------\n\n\nLHM$ python ./engine/pose_estimation/video2motion.py --video_path ./train_data/demo.mp4 --output_path ./train_data/custom_motion\n/venv/main/lib/python3.10/site-packages/torch/cuda/__init__.py:619: UserWarning: Can't initialize NVML\n  warnings.warn(\"Can't initialize NVML\")\n/venv/main/lib/python3.10/site-packages/albumentations/__init__.py:13: UserWarning: A new version of Albumentations is available: 2.0.5 (you have 1.4.15). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.\n  check_for_updates()\nTraceback (most recent call last):\n  File \"/workspace/ComfyUI/custom_nodes/LHM/./engine/pose_estimation/video2motion.py\", line 28, in <module>\n    from blocks.detector import DetectionModel\n  File \"/workspace/ComfyUI/custom_nodes/LHM/engine/pose_estimation/blocks/detector.py\", line 7, in <module>\n    from mmpose.apis.inference import batch_inference_pose_model\nImportError: cannot import name 'batch_inference_pose_model' from 'mmpose.apis.inference' (/venv/main/lib/python3.10/site-packages/mmpose/apis/inference.py)\n\n--------------------------------\n\nLHM$ python ./engine/pose_estimation/video2motion.py --video_path ./train_data/demo.mp4 --output_path ./train_data/custom_motion\n/venv/main/lib/python3.10/site-packages/torch/cuda/__init__.py:619: UserWarning: Can't initialize NVML\n  warnings.warn(\"Can't initialize NVML\")\n/venv/main/lib/python3.10/site-packages/albumentations/__init__.py:13: UserWarning: A new version of Albumentations is available: 2.0.5 (you have 1.4.15). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.\n  check_for_updates()\nTraceback (most recent call last):\n  File \"/workspace/ComfyUI/custom_nodes/LHM/./engine/pose_estimation/video2motion.py\", line 28, in <module>\n    from blocks.detector import DetectionModel\n  File \"/workspace/ComfyUI/custom_nodes/LHM/engine/pose_estimation/blocks/detector.py\", line 7, in <module>\n    from mmpose.apis.inference import batch_inference_pose_model\nImportError: cannot import name 'batch_inference_pose_model' from 'mmpose.apis.inference' (/venv/main/lib/python3.10/site-packages/mmpose/apis/inference.py)\n\n",
+    "comments_url": "https://api.github.com/repos/aigc3d/LHM/issues/60/comments",
+    "author": "AIExplorer25",
+    "comments": [
+      {
+        "user": "rencosmo",
+        "created_at": "2025-03-29T16:01:23Z",
+        "body": "pip install mmcv==1.7.2"
+      },
+      {
+        "user": "AIExplorer25",
+        "created_at": "2025-03-29T16:16:09Z",
+        "body": "Yes, found it, the new version has moved multiple modules to mmengine."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the correct dependency version needed to resolve the import error",
+      "Understanding of why the import error occurred",
+      "A solution that resolves the 'No module named mmcv.parallel' error"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:07:38"
+    }
+  }
+]

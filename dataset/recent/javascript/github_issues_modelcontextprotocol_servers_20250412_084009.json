@@ -1,0 +1,37 @@
+[
+  {
+    "number": 300,
+    "title": "Brave search mcp server error: fetch is not defined",
+    "created_at": "2024-12-10T23:16:32Z",
+    "closed_at": "2024-12-11T00:30:53Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/modelcontextprotocol/servers/issues/300",
+    "body": "**Describe the bug**\r\nI have configured the brave search mcp server on my mac, but when Claude tried to used got **Error: fetch is not defined**\r\n\r\n**To Reproduce**\r\nSteps to reproduce the behavior:\r\n1. Configure the brave search mcp server like this\r\n\"brave-search\": {\r\n        \"command\": \"npx\",\r\n        \"args\": [\r\n          \"-y\",\r\n          \"@modelcontextprotocol/server-brave-search\"\r\n        ],\r\n        \"env\": {\r\n          \"BRAVE_API_KEY\": \"BSASaoHXXXXXXXXXXXX\"\r\n        }\r\n      }\r\n2. Restart Claude Desktop app\r\n3. look for the MCP available tools\r\n4. got the brave_web_search tools listed\r\n5. ask about something like: look something about steve jobs \r\n6. Claude tried to do\r\n{\r\n  `count`: 5,\r\n  `query`: `Steve Jobs biography achievements Apple history`\r\n}\r\n\r\n**Expected behavior**\r\nTo use the results from the brave search API\r\n\r\n**Logs**\r\nIf applicable, add logs to help explain your problem.\r\n\r\n**Additional context**\r\nMy current Claude Desktop version is Version 0.7.5 (0.7.5)\r\n",
+    "comments_url": "https://api.github.com/repos/modelcontextprotocol/servers/issues/300/comments",
+    "author": "juanmacedan1co",
+    "comments": [
+      {
+        "user": "juanmacedan1co",
+        "created_at": "2024-12-11T00:31:49Z",
+        "body": "the fix was to include the correct node version in the ENV \r\nPATH=/Users/username/.nvm/versions/node/v20.18.0/bin:/usr/local/bin:/usr/bin:/bin"
+      },
+      {
+        "user": "wolf019",
+        "created_at": "2025-01-07T09:26:50Z",
+        "body": "Thanks for reporting this issue! I encountered the same \"Error: fetch is not defined\" problem on my mac.\r\n\r\nThe solution that worked for me was updating the Node version in the PATH environment variable in the claude_desktop_config.json:\r\n\r\n```\r\n{\r\n  \"mcpServers\": {\r\n    \"brave-search\": {\r\n      \"command\": \"npx\",\r\n      \"args\": [\r\n        \"-y\",\r\n        \"@modelcontextprotocol/server-brave-search\"\r\n      ],\r\n      \"env\": {\r\n        \"BRAVE_API_KEY\": \"your-api-key\",\r\n        \"PATH\": \"/Users/username/.nvm/versions/node/v20.18.0/bin:/usr/local/bin:/usr/bin:/bin\"\r\n      }\r\n    }\r\n  }\r\n}\r\n```\r\n\r\nKey points:\r\n1. Make sure to use a recent Node version (I updated from v16 to v20)\r\n2. Include the full PATH with all system directories\r\n3. Restart Claude Desktop after making these changes\r\n\r\nThis resolved the fetch not defined error and now the Brave search functionality works perfectly!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the 'fetch is not defined' error when using Brave search MCP server",
+      "A proper Node.js environment configuration for the MCP server",
+      "Clear instructions for modifying the Claude Desktop configuration",
+      "A working integration between Claude Desktop and Brave search functionality"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:01:48"
+    }
+  }
+]

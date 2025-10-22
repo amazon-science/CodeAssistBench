@@ -1,0 +1,42 @@
+[
+  {
+    "number": 19,
+    "title": "Setting up V3 on Mac",
+    "created_at": "2025-02-21T23:27:46Z",
+    "closed_at": "2025-02-24T18:46:14Z",
+    "labels": [
+      "enhancement"
+    ],
+    "url": "https://github.com/coleam00/Archon/issues/19",
+    "body": "I'm running into issues getting the MCP setup on Mac. \n\n1. The original venv / setup kept referencing .exe files and failing to set up the virtual environment. \n2. I made some updates to make it run on Mac -- I can launch the virtual environment. When putting my MCP code into Cursor (it's the venv python file then a space then the path to the py file) it says no tools. Any help for mac users would be great. ",
+    "comments_url": "https://api.github.com/repos/coleam00/Archon/issues/19/comments",
+    "author": "TheMattBerman",
+    "comments": [
+      {
+        "user": "taylor-aparai",
+        "created_at": "2025-02-23T00:13:13Z",
+        "body": "Got this working by change \"Scripts\" to \"bin\" and removing .exe from python.exe. \n\nMy final looked like: \n\n`/Users/{username}/Documents/code/mcp/archon/iterations/v3-mcp-support/venv/bin/python /Users/{username}/Documents/code/mcp/archon/iterations/v3-mcp-support/mcp_server.py`\n\n\nThis is a bit hacky... but I think perfected python path resolution would be OS-specific...\n\n``` # Construct the paths\n    # Handle different venv binary locations based on OS\n    if sys.platform == \"win32\":\n        python_path = os.path.join(base_path, 'venv', 'Scripts', 'python.exe')\n    else:\n        python_path = os.path.join(base_path, 'venv', 'bin', 'python')``` \n\n"
+      },
+      {
+        "user": "coleam00",
+        "created_at": "2025-02-24T18:46:14Z",
+        "body": "> Got this working by change \"Scripts\" to \"bin\" and removing .exe from python.exe.\n> \n> My final looked like:\n> \n> `/Users/{username}/Documents/code/mcp/archon/iterations/v3-mcp-support/venv/bin/python /Users/{username}/Documents/code/mcp/archon/iterations/v3-mcp-support/mcp_server.py`\n> \n> This is a bit hacky... but I think perfected python path resolution would be OS-specific...\n> \n> ```\n>     # Handle different venv binary locations based on OS\n>     if sys.platform == \"win32\":\n>         python_path = os.path.join(base_path, 'venv', 'Scripts', 'python.exe')\n>     else:\n>         python_path = os.path.join(base_path, 'venv', 'bin', 'python')``` \n> ```\n\nThis is great, thanks @taylor-aparai! Looks very similar to the approach for #20 which I will be merging soon to resolve this."
+      },
+      {
+        "user": "TheMattBerman",
+        "created_at": "2025-02-26T03:28:20Z",
+        "body": "Thank you @taylor-aparai for the quick fix and @coleam00 for getting this great repo up. I ended up with a hybrid approach with this and #20 which ended up working for me. Thank you! "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that adapts the MCP setup process for Mac OS compatibility",
+      "Proper path configuration for Python virtual environment on Mac",
+      "A working command to launch the MCP server on Mac",
+      "Cross-platform compatibility approach for the codebase"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:21"
+    }
+  }
+]

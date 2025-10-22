@@ -1,0 +1,45 @@
+[
+  {
+    "number": 155,
+    "title": "#113: Semantic Kernel",
+    "created_at": "2025-02-06T04:43:11Z",
+    "closed_at": "2025-02-25T06:57:30Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/ai-dev-gallery/pull/155",
+    "body": "fixes #113 \r\n\r\nNeeded to add a dependency and update another for this, so would appreciate a double check that nothing went awry.\r\n\r\nAlso, this sample takes *forever* to load. Not sure if there is any way around it.",
+    "comments_url": "https://api.github.com/repos/microsoft/ai-dev-gallery/issues/155/comments",
+    "author": "zateutsch",
+    "comments": [
+      {
+        "user": "zateutsch",
+        "created_at": "2025-02-06T19:44:55Z",
+        "body": "@nmetulev this sample has some problems, I'm investigating"
+      },
+      {
+        "user": "azchohfi",
+        "created_at": "2025-02-07T22:27:52Z",
+        "body": "@zateutsch I've fixed the sample with a more generic solution (using IChatClient's overload). This will also work well will PhiSilica, so its only a plus :) The package you were referencing have its own implementation of the equivalent of IChatClient for ORT, so we should not use it (it was fixed to the CPU version)."
+      },
+      {
+        "user": "zateutsch",
+        "created_at": "2025-02-07T23:23:53Z",
+        "body": "I don't think we should merge this until I've double checked that that memory leak is gone"
+      },
+      {
+        "user": "zateutsch",
+        "created_at": "2025-02-10T21:02:58Z",
+        "body": "> I don't think we should merge this until I've double checked that that memory leak is gone\r\n\r\nOkay, I took a look at this and everything seems to get garbage collected a lot quicker with `AsChatCompletionService`. Something about cancellation during `Unloaded` is still weird with this sample, and it stays in memory for 10-15s compared to the other samples that get collected almost right away. This only happens if you navigate during generation, it works as expected if the sample is idle and you navigate.\r\n\r\nI think it should be fine to merge how it is now. @nmetulev "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that eliminates or significantly reduces memory leaks in the Semantic Kernel sample",
+      "A more generic implementation approach that works with multiple models/services",
+      "Proper dependency management that doesn't cause other issues",
+      "Acceptable performance characteristics for the sample"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:00:41"
+    }
+  }
+]

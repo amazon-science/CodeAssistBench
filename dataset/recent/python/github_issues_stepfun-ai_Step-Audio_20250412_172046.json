@@ -1,0 +1,71 @@
+[
+  {
+    "number": 115,
+    "title": "\u6307\u4ee4\u9075\u5faa\u95ee\u9898",
+    "created_at": "2025-02-27T04:18:25Z",
+    "closed_at": "2025-03-03T03:45:22Z",
+    "labels": [],
+    "url": "https://github.com/stepfun-ai/Step-Audio/issues/115",
+    "body": "\u6ce8\u610f\u5230tts\u4e2d\u7684zeroshot\u7684systemtoken\n`\u4f5c\u4e3a\u4e00\u540d\u5353\u8d8a\u7684\u58f0\u4f18\u6f14\u5458\uff0c\u4f60\u7684\u4efb\u52a1\u662f\u6839\u636e\u6587\u672c\u4e2d\uff08\uff09\u6216()\u62ec\u53f7\u5185\u6807\u6ce8\u7684\u60c5\u611f\u3001\u8bed\u79cd\u6216\u65b9\u8a00\u3001\u97f3\u4e50\u54fc\u5531\u3001\u8bed\u97f3\u8c03\u6574\u7b49\u6807\u7b7e\uff0c\u4ee5\u4e30\u5bcc\u7ec6\u817b\u7684\u60c5\u611f\u548c\u81ea\u7136\u987a\u7545\u7684\u8bed\u8c03\u6765\u6717\u8bfb\u6587\u672c\u3002\\n# \u60c5\u611f\u6807\u7b7e\u6db5\u76d6\u4e86\u591a\u79cd\u60c5\u7eea\u72b6\u6001\uff0c\u5305\u62ec\u4f46\u4e0d\u9650\u4e8e\uff1a\\n- \"\u9ad8\u51741\"\\n- \"\u9ad8\u51742\"\\n- \"\u751f\u6c141\"\\n- \"\u751f\u6c142\"\\n- \"\u60b2\u4f241\"\\n- \"\u6492\u5a071\"\\n\\n# \u8bed\u79cd\u6216\u65b9\u8a00\u6807\u7b7e\u5305\u542b\u591a\u79cd\u8bed\u8a00\u6216\u65b9\u8a00\uff0c\u5305\u62ec\u4f46\u4e0d\u9650\u4e8e\uff1a\\n- \"\u4e2d\u6587\"\\n- \"\u82f1\u6587\"\\n- \"\u97e9\u8bed\"\\n- \"\u65e5\u8bed\"\\n- \"\u56db\u5ddd\u8bdd\"\\n- \"\u7ca4\u8bed\"\\n- \"\u5e7f\u4e1c\u8bdd\"\\n\\n# \u97f3\u4e50\u54fc\u5531\u6807\u7b7e\u5305\u542b\u591a\u79cd\u7c7b\u578b\u6b4c\u66f2\u54fc\u5531\uff0c\u5305\u62ec\u4f46\u4e0d\u9650\u4e8e\uff1a\\n- \"RAP\"\\n- \"\u54fc\u5531\"\\n\\n# \u8bed\u97f3\u8c03\u6574\u6807\u7b7e\uff0c\u5305\u62ec\u4f46\u4e0d\u9650\u4e8e\uff1a\\n- \"\u6162\u901f1\"\\n- \"\u6162\u901f2\"\\n- \"\u5feb\u901f1\"\\n- \"\u5feb\u901f2\"\\n\\n\u8bf7\u5728\u6717\u8bfb\u65f6\uff0c\u6839\u636e\u8fd9\u4e9b\u60c5\u611f\u6807\u7b7e\u7684\u6307\u793a\uff0c\u8c03\u6574\u4f60\u7684\u60c5\u611f\u3001\u8bed\u6c14\u3001\u8bed\u8c03\u548c\u54fc\u5531\u8282\u594f\uff0c\u4ee5\u786e\u4fdd\u6587\u672c\u7684\u60c5\u611f\u548c\u610f\u4e49\u5f97\u5230\u51c6\u786e\u800c\u751f\u52a8\u7684\u4f20\u8fbe\uff0c\u5982\u679c\u6ca1\u6709()\u6216\uff08\uff09\u62ec\u53f7\uff0c\u5219\u6839\u636e\u6587\u672c\u8bed\u4e49\u5185\u5bb9\u81ea\u7531\u6f14\u7ece\u3002`\n\n\u6211\u7684\u8c03\u7528\u65b9\u5f0f\u7c7b\u4f3c\u4e8e\n\n(\"\u9ad8\u51741\")xxxxxx\n\n\u4f46\u662f\u5b9e\u9645\u4f7f\u7528\u4e2d\uff0c\u6307\u4ee4\u9075\u5faa\u6548\u679c\u8f83\u5dee\uff0c\u751a\u81f3\u8fd8\u4f1a\u51fa\u73b0\u628a\u62ec\u53f7\u5185\u6307\u4ee4\u5ff5\u51fa\u6765\u7684\u95ee\u9898\uff0c\u8fd9\u4e2a\u662f\u6211\u7684\u6253\u5f00\u65b9\u5f0f\u4e0d\u5bf9\u4e48\uff1f",
+    "comments_url": "https://api.github.com/repos/stepfun-ai/Step-Audio/issues/115/comments",
+    "author": "boji123",
+    "comments": [
+      {
+        "user": "mabuyun",
+        "created_at": "2025-02-27T06:44:24Z",
+        "body": "\u62ec\u53f7\u5185\u4e0d\u5e94\u8be5\u52a0\u5f15\u53f7\uff0c\u4f60\u8bd5\u4e0b\u4e0b\u9762\u7684\u6587\u672c\u5e94\u8be5\u53ef\u4ee5\n\uff08\u56db\u5ddd\u8bdd\uff09\u4f60\u4eca\u5929\u5403\u996d\u4e86\u5417"
+      },
+      {
+        "user": "boji123",
+        "created_at": "2025-02-27T08:35:02Z",
+        "body": "\u8bed\u901f\u6709\u663e\u8457\u6539\u5584\uff0c\u56db\u5ddd\u8bdd\u53ef\u4ee5\u8bf4\uff1b\n\u4f46\u662f\u60c5\u7eea\u4e0d\u591f\u660e\u663e\uff0c\u7ca4\u8bed\u5e7f\u5dde\u8bdd\u53d1\u97f3\u9519\u8bef"
+      },
+      {
+        "user": "mabuyun",
+        "created_at": "2025-02-27T08:49:55Z",
+        "body": "\u8fd9\u5c5e\u4e8e\u6548\u679c\u95ee\u9898\uff0c\u6307\u4ee4\u9075\u5faa\u6d4b\u8bd5\u53ef\u4ee5\u901a\u8fc7 tts_app.py \u8fdb\u884c"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correct syntax for using emotion/dialect tags in TTS system",
+      "Guidance on how to properly invoke the TTS system with emotion/dialect instructions",
+      "Information about how to test instruction compliance"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:55"
+    }
+  },
+  {
+    "number": 100,
+    "title": "\u5173\u4e8einstruction tags",
+    "created_at": "2025-02-25T03:10:30Z",
+    "closed_at": "2025-02-26T10:11:29Z",
+    "labels": [],
+    "url": "https://github.com/stepfun-ai/Step-Audio/issues/100",
+    "body": "\u8bba\u6587\u4e2d\u63cf\u8ff0\u300ehappiness, anger, sadness, and speed variations like fast and slow, each divided into five hierarchical levels.\u300f \u600e\u6837\u52a01\u52305\u7ea7\u6807\u7b7e\uff1f\u6bd4\u5982\uff08fast1\uff09\u3001\uff08fast2\uff09\u4e00\u76f4\u5230\uff08fast5\uff09\u5417\uff1f",
+    "comments_url": "https://api.github.com/repos/stepfun-ai/Step-Audio/issues/100/comments",
+    "author": "shanhaidexiamo",
+    "comments": [
+      {
+        "user": "786440445",
+        "created_at": "2025-02-25T06:32:46Z",
+        "body": "> \u8bba\u6587\u4e2d\u63cf\u8ff0\u300ehappiness, anger, sadness, and speed variations like fast and slow, each divided into five hierarchical levels.\u300f \u600e\u6837\u52a01\u52305\u7ea7\u6807\u7b7e\uff1f\u6bd4\u5982\uff08fast1\uff09\u3001\uff08fast2\uff09\u4e00\u76f4\u5230\uff08fast5\uff09\u5417\uff1f\n\n\u4e0d\u662f\u7684\u54c8\uff0c\u5207\u5206\u4e3a5\u7ea7\u6807\u7b7e\uff0c\u6bd4\u5982 \u6162\u901f2\uff0c\u6162\u901f1\uff0c\u5feb\u901f1\uff0c\u5feb\u901f2\uff0c\u52a0\u4e0a\u6b63\u5e38\u7684\u4e00\u5171\u662f\u4e94\u7ea7\u6807\u7b7e\u3002"
+      },
+      {
+        "user": "shanhaidexiamo",
+        "created_at": "2025-02-25T06:51:15Z",
+        "body": "> > \u8bba\u6587\u4e2d\u63cf\u8ff0\u300ehappiness, anger, sadness, and speed variations like fast and slow, each divided into five hierarchical levels.\u300f \u600e\u6837\u52a01\u52305\u7ea7\u6807\u7b7e\uff1f\u6bd4\u5982\uff08fast1\uff09\u3001\uff08fast2\uff09\u4e00\u76f4\u5230\uff08fast5\uff09\u5417\uff1f\n> \n> \u4e0d\u662f\u7684\u54c8\uff0c\u5207\u5206\u4e3a5\u7ea7\u6807\u7b7e\uff0c\u6bd4\u5982 \u6162\u901f2\uff0c\u6162\u901f1\uff0c\u5feb\u901f1\uff0c\u5feb\u901f2\uff0c\u52a0\u4e0a\u6b63\u5e38\u7684\u4e00\u5171\u662f\u4e94\u7ea7\u6807\u7b7e\u3002\n\n\u539f\u6765\u662f\u8fd9\u6837\uff0c\u975e\u5e38\u611f\u8c22~"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of how the hierarchical levels for emotions and speed variations are structured",
+      "Practical examples of how to format the emotion and speed tags",
+      "Clarification that 'normal' is included as one of the five levels"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:00"
+    }
+  }
+]

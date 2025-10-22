@@ -1,0 +1,83 @@
+[
+  {
+    "number": 8,
+    "title": "llm-audio ignores playVolume setting from clients",
+    "created_at": "2025-02-03T12:44:46Z",
+    "closed_at": "2025-02-08T01:20:30Z",
+    "labels": [],
+    "url": "https://github.com/m5stack/StackFlow/issues/8",
+    "body": "Environment: StackFlow v1.4.0 and M5Module-LLM dev branch\n\nThe playVolume setting is not available from M5Module-LLM library on arduino.\nThe below code makes no effect.\n```\n    /* Setup Audio module */\n    M5.Display.printf(\">> Setup audio..\\n\");\n    m5_module_llm::ApiAudioSetupConfig_t audio_config;\n    audio_config.playVolume = 0.01;  \n    module_llm.audio.setup(audio_config);\n```\nWhen I changed the value of \"volume\" of \"play_param\" in /opt/m5stack/share/audio.json,  the volume got quietter as expected. So I doubt that the volume setting from json might not be implemented in v1.4.0.\n",
+    "comments_url": "https://api.github.com/repos/m5stack/StackFlow/issues/8/comments",
+    "author": "nyasu3w",
+    "comments": [
+      {
+        "user": "Abandon-ht",
+        "created_at": "2025-02-06T07:12:55Z",
+        "body": "The playVolume parameter is obsolete in StackFlow 1.3 and later versions. Use json for configuration instead."
+      },
+      {
+        "user": "nyasu3w",
+        "created_at": "2025-02-06T14:47:04Z",
+        "body": "Oh, it is obsolete. How do I change volumes of awake_wav(kws) and tts?"
+      },
+      {
+        "user": "Abandon-ht",
+        "created_at": "2025-02-07T02:25:28Z",
+        "body": "Modify the value of volume in the play_param item in the /opt/m5stack/share/audio.json file."
+      },
+      {
+        "user": "dianjixz",
+        "created_at": "2025-02-07T06:42:28Z",
+        "body": "Before calling the audio unit, you can use the following:\n```\n{\n    \"request_id\": \"1\",\n    \"work_id\": \"audio\",\n    \"action\": \"setup\",\n    \"object\": \"audio.play\",\n    \"data\": {\n        \"volume\": 0.5\n        }\n}\n```\nInitialize the audio module to dynamically configure the volume.\n"
+      },
+      {
+        "user": "nyasu3w",
+        "created_at": "2025-02-07T11:53:34Z",
+        "body": "Thanks for good information.\nMy understanding is that \"playVolume\" is renamed to \"volume\", and it is not imeplemented yet in M5Module-LLM library.\n(And it seems that more configurations are supported in llm_audio by CONFIG_AUTO_SET macro.)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Information about how to properly configure audio volume in StackFlow v1.4.0",
+      "Clarification on why the original approach (using playVolume parameter) wasn't working",
+      "Specific methods to dynamically control audio volume programmatically",
+      "Understanding of the relationship between configuration options in different versions/libraries"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:02:23"
+    }
+  },
+  {
+    "number": 7,
+    "title": "llm_llm suddenly causes error in handling multi-byte utf8 string",
+    "created_at": "2025-01-27T13:34:38Z",
+    "closed_at": "2025-02-08T01:19:19Z",
+    "labels": [],
+    "url": "https://github.com/m5stack/StackFlow/issues/7",
+    "body": "Environment: StackFlow v1.4.0 and M5Module-LLM dev branch\n\nThe output string of llm_llm is sent separetedly in json format, but the separation point can be at wrong point inside of multi-byte character. When this wrong separation happens, maybe the json output is corrupted to make some error.\n\nIf llm_llm gets \"\u30ac\u30f3\u30c0\u30e0\u306b\u3064\u3044\u3066\u8a9e\u3063\u3066\u304f\u3060\u3055\u3044\" (in ja language) as input for inference, it will stop by the below error.\n[W][inference][ 199]: lLaMa_->Run have error!\n\nThe result for the input is always \"(snip) \u4f5c\u54c1\u306f\u30011960\u5e74\u306b\u767a\u58f2\u3055\u308c\u305f(snip)\", and separated at \"\u767a\"character\n\"\u4f5c\u54c1\u306f\u3001\", \"196\", \"0\u5e74\u306bXX\", \"Y\u58f2\u3055\u308c\u305f\"\n(\u767a is 3 bytes char 0xe799ba: XX=e799 Y=ba )\n\nIf json output is stopped, no error seems to happen.\nExtended log is the following. Ignore 6066d1, it is my logging mistake.\n\n[I][task_output][ 249]: send:\u4f5c\u54c1\u306f\u3001\n[I][task_output][ 251]: datalen:12\n[I][task_output][ 253]: data:e4,bd,9c,e5,93,81,e3,81\n[I][task_output][ 255]: data:af,6066d1\n[I][task_output][ 273]: send stream\n[I][task_output][ 249]: send:196\n[I][task_output][ 251]: datalen:3\n[I][task_output][ 273]: send stream\n[I][task_output][ 249]: send:0\u5e74\u306b\ufffd\ufffd\n[I][task_output][ 251]: datalen:9\n[I][task_output][ 253]: data:30,e5,b9,b4,e3,81,ab,e7\n[I][task_output][ 255]: data:99,6066d1\n// if json is output, the error is here.\n[I][task_output][ 249]: send:\ufffd\u58f2\u3055\u308c\u305f\n[I][task_output][ 251]: datalen:13\n[I][task_output][ 253]: data:ba,e5,a3,b2,e3,81,95,e3\n[I][task_output][ 255]: data:82,6066d1\n[I][task_output][ 273]: send stream\n\nThe logging code is like this in llm_llm::task_output()\n```\n        SLOGI(\"send:%s\", data.c_str());   // this is the original logging \n        const char* cstr = data.c_str();\n        SLOGI(\"datalen:%d\",data.length());\n        if(data.length() > 8)\n            SLOGI(\"data:%x,%x,%x,%x,%x,%x,%x,%x\",cstr[0],cstr[1],cstr[2],cstr[3],cstr[4],cstr[5],cstr[6],cstr[7]);\n        if(data.length() > 8)  SLOGI(\"data:%x, _%x_ \",cstr[8]);  // mistake\n```",
+    "comments_url": "https://api.github.com/repos/m5stack/StackFlow/issues/7/comments",
+    "author": "nyasu3w",
+    "comments": [
+      {
+        "user": "Abandon-ht",
+        "created_at": "2025-02-06T08:43:16Z",
+        "body": "Thanks for your feedback. The cached token content is incorrectly truncated when output. I will fix it.\n\n```cpp\nif (cached_token.size() >= 3)\n{\n\tfloat t_cost_ms = t_cost.cost();\n\tfloat token_per_sec = token_ids.size() / (t_cost_ms / 1000);\n\tauto tmp_out = tokenizer->Decode(cached_token);\n\tprintf(\"tmp_out: %s\\n\", tmp_out.c_str());\n\t_attr.runing_callback(cached_token.data(), cached_token.size(), tmp_out.c_str(), token_per_sec, _attr.reserve);\n\tcached_token.clear();\n}\n```\n\nThis problem can be avoided by changing \"if (cached_token.size() >= 3)\" to \"if (cached_token.size() >= 5)\"."
+      },
+      {
+        "user": "nyasu3w",
+        "created_at": "2025-02-06T14:43:55Z",
+        "body": "Thanks for the information. I can enjoy LLM(s) in Japanese with the code even before it is released."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the UTF-8 character truncation issue in the LLM output",
+      "Support for properly displaying Japanese language content",
+      "A solution that works with their existing setup (StackFlow v1.4.0 and M5Module-LLM)",
+      "A timely solution they could implement before an official release"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:02:33"
+    }
+  }
+]

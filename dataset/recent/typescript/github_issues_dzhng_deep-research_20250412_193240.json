@@ -1,0 +1,44 @@
+[
+  {
+    "number": 6,
+    "title": "Not starting",
+    "created_at": "2025-02-06T12:41:06Z",
+    "closed_at": "2025-02-07T16:46:24Z",
+    "labels": [],
+    "url": "https://github.com/dzhng/deep-research/issues/6",
+    "body": "Hi, I get \n`> open-deep-research@0.0.1 start\n> tsx --env-file=.env.local src/run.ts` on start and it exits (on Windows)",
+    "comments_url": "https://api.github.com/repos/dzhng/deep-research/issues/6/comments",
+    "author": "korzen",
+    "comments": [
+      {
+        "user": "dzhng",
+        "created_at": "2025-02-06T17:37:57Z",
+        "body": "what environment are you running this in?"
+      },
+      {
+        "user": "UOW37",
+        "created_at": "2025-02-07T14:30:40Z",
+        "body": "You may want to upgrade your Node.js to the latest version or to a version that supports dotenv out of the box."
+      },
+      {
+        "user": "dzhng",
+        "created_at": "2025-02-07T16:46:38Z",
+        "body": "yea check you're running >node 22 pls"
+      },
+      {
+        "user": "korzen",
+        "created_at": "2025-02-07T20:12:08Z",
+        "body": "OK, it worked! However I see that the code is hardcoded to o3-mini and, for some reason, I don't have access to it in  OpenAI's API."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Information about Node.js version requirements for the application",
+      "A solution that allows the application to properly start and run on Windows",
+      "Guidance on environment configuration for the application"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:25"
+    }
+  }
+]

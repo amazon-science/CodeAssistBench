@@ -1,0 +1,108 @@
+[
+  {
+    "number": 63,
+    "title": "Troubles using new SSE",
+    "created_at": "2025-03-27T23:34:38Z",
+    "closed_at": "2025-03-27T23:56:46Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/playwright-mcp/issues/63",
+    "body": "Can't think you guys enough for this work !! \n\nI tried the new SSE support and it fails because --port is unknown\n\n```\nnpx @playwright/mcp:latest _V\nVersion 0.0.5\nnpx @playwright/macp:latest --port 8931\nerror: unknown option '--port'\n```\n\nI looked into the feature, and tried to replicate the cli.js -- module not found\n\n```\nnode cli.js --port 1234\nError: Cannot find module './lib/program'\nRequire stack:\n- /Users/ajoslin/Desktop/Development/playwright-mcp/cli.js\n    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)\n    at Function._load (node:internal/modules/cjs/loader:1055:27)\n    at TracingChannel.traceSync (node:diagnostics_channel:322:14)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)\n    at Module.require (node:internal/modules/cjs/loader:1311:12)\n    at require (node:internal/modules/helpers:136:16)\n    at Object.<anonymous> (/Users/ajoslin/Desktop/Development/playwright-mcp/cli.js:18:1)\n    at Module._compile (node:internal/modules/cjs/loader:1554:14)\n    at Object..js (node:internal/modules/cjs/loader:1706:10)\n    at Module.load (node:internal/modules/cjs/loader:1289:32) {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: [ '/Users/ajoslin/Desktop/Development/playwright-mcp/cli.js' ]\n}\n\nNode.js v22.14.0\n```\nI'm off the try that `mcp-playwright-cdp`\n\nCheers!\nAl;\n",
+    "comments_url": "https://api.github.com/repos/microsoft/playwright-mcp/issues/63/comments",
+    "author": "ajoslin103",
+    "comments": [
+      {
+        "user": "medioxor",
+        "created_at": "2025-03-27T23:48:38Z",
+        "body": "i am also running into this issue"
+      },
+      {
+        "user": "pavelfeldman",
+        "created_at": "2025-03-27T23:56:46Z",
+        "body": "You folks are too quick, I just published v0.0.6 that has it."
+      },
+      {
+        "user": "medioxor",
+        "created_at": "2025-03-27T23:58:17Z",
+        "body": "amazing work @pavelfeldman !!!\n"
+      },
+      {
+        "user": "ajoslin103",
+        "created_at": "2025-03-28T00:11:38Z",
+        "body": "I've been trying to get it running in n8n\n\nif you `cd ~/.n8n/nodes/` and `npm install playwright-mcp`\n\nThen you can connect in and STDIO session using \n\nnpx & @playwright/macp:latest\n\nAnd then is Glorious !!\n\n(the mcp-playwright-cdp didn;t work for me)"
+      },
+      {
+        "user": "ajoslin103",
+        "created_at": "2025-03-28T00:13:36Z",
+        "body": "I love this new world of mcp !!!  (or I will 15mins ago)  \ud83e\udd23\n"
+      },
+      {
+        "user": "ajoslin103",
+        "created_at": "2025-03-28T13:54:04Z",
+        "body": "The new SSE is working Perfectly !!\n\nYou guys Rock!!"
+      },
+      {
+        "user": "ajoslin103",
+        "created_at": "2025-04-04T03:26:35Z",
+        "body": "Closing with complete success!!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Access to a working version of the SSE feature in the Playwright MCP tool",
+      "Clear command-line instructions for using the SSE functionality",
+      "Compatibility with their specific environment (n8n)",
+      "A timely update or fix to the reported issue"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:43"
+    }
+  },
+  {
+    "number": 7,
+    "title": "Playwright Version Mismatch Error `(428 Precondition Required)`",
+    "created_at": "2025-03-24T01:46:41Z",
+    "closed_at": "2025-03-28T18:41:00Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/playwright-mcp/issues/7",
+    "body": "**Description:**\nWhen connecting to the Playwright MCP server, I encountered a `428 Precondition Required` error due to a version mismatch between the server and client:\n\n**Error details:**\n```\nError: browserType.connect: WebSocket error: ws://localhost:59985/ 428 Precondition Required\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Playwright version mismatch:                       \u2551\n\u2551   - server version: v1.51                          \u2551\n\u2551   - client version: v1.52                          \u2551\n\u2551                                                    \u2551\n\u2551 If you are using VSCode extension, restart VSCode. \u2551\n\u2551                                                    \u2551\n\u2551 If you are connecting to a remote service,         \u2551\n\u2551 keep your local Playwright version in sync         \u2551\n\u2551 with the remote service version.                   \u2551\n\u2551                                                    \u2551\n\u2551 <3 Playwright Team                                 \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n```\n\n**Steps to Reproduce:**\n1. Start Playwright server using:\n   ```\n   npx playwright@latest run-server\n   ```\n   Output:\n   ```\n   Listening on ws://localhost:59985/\n   ```\n\n2. Configure MCP client with the following:\n   ```json\n   {\n     \"mcpServers\": {\n       \"playwright\": {\n         \"command\": \"npx\",\n         \"args\": [\"@playwright/mcp@latest\"],\n         \"env\": {\n           \"PLAYWRIGHT_WS_ENDPOINT\": \"ws://localhost:59985/\"\n         }\n       }\n     }\n   }\n   ```\n\n3. Attempt connection; observe the version mismatch error.\n\n**Expected behavior:**\nSuccessful connection without version mismatch error.\n\n**Workaround Attempted:**\nPinning both server and client explicitly to the same version (`v1.51` or `v1.52`) does **not** resolve the issue.\n\n**Environment:**\n- Playwright MCP client version: `v1.52`\n- Playwright server version: `v1.51`\n- OS/environment details (optional): [Add if relevant]\n\n**Suggested Fix:**\nInvestigate internal compatibility handling or provide explicit documentation on resolving server-client mismatches beyond simple version pinning.\n\nThank you!\n\n",
+    "comments_url": "https://api.github.com/repos/microsoft/playwright-mcp/issues/7/comments",
+    "author": "yottahmd",
+    "comments": [
+      {
+        "user": "hanchuanjun",
+        "created_at": "2025-03-24T05:30:52Z",
+        "body": "I'm experiencing the same problem."
+      },
+      {
+        "user": "Skn0tt",
+        "created_at": "2025-03-24T07:33:36Z",
+        "body": "Instead of `npx playwright@latest run-server`, try `npx playwright@1.51.0 run-server`."
+      },
+      {
+        "user": "yottahmd",
+        "created_at": "2025-03-24T10:36:28Z",
+        "body": "I'm running the server on version v1.51.0, but the client is using v1.52.0."
+      },
+      {
+        "user": "yottahmd",
+        "created_at": "2025-03-24T10:40:07Z",
+        "body": "Playwright hasn't released version 1.52.0 yet.\n\nWorkaround:\n```sh\nnpx playwright@1.52.0-alpha-2025-03-21 run-server\n```"
+      },
+      {
+        "user": "pavelfeldman",
+        "created_at": "2025-03-28T18:41:00Z",
+        "body": "Check out the new README, we now recommend using MCP SSE to run browser remotely. Happy this works though!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the version mismatch error between Playwright server and client",
+      "A specific command or configuration that allows the server and client to work together despite version differences",
+      "Information about compatible version combinations for Playwright server and client",
+      "A workaround that doesn't require downgrading the client version"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:50"
+    }
+  }
+]

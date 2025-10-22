@@ -1,0 +1,52 @@
+[
+  {
+    "number": 36,
+    "title": "v3 overwriting .wav files creating incomplete short book",
+    "created_at": "2025-01-29T23:44:23Z",
+    "closed_at": "2025-02-01T23:22:03Z",
+    "labels": [
+      "v3"
+    ],
+    "url": "https://github.com/santinic/audiblez/issues/36",
+    "body": "After updating to v3 `pip install --upgrade audiblez` and creating a new book `audiblez Durarara\\ Vol\\ 4.epub  -v af_bella  -s 1.0` short chapters are created and if looking directly at the folder in File Explorer, you notice the file always changing in size and often becoming much shorter. Tested on new virtual env as well.",
+    "comments_url": "https://api.github.com/repos/santinic/audiblez/issues/36/comments",
+    "author": "erictbar",
+    "comments": [
+      {
+        "user": "santinic",
+        "created_at": "2025-01-30T08:30:42Z",
+        "body": "Yes, thanks, I rolled back to 0.2.2. v3 will need more work"
+      },
+      {
+        "user": "sameh0",
+        "created_at": "2025-01-31T11:34:22Z",
+        "body": "@erictbar could you please checkout if the fix works for you ?"
+      },
+      {
+        "user": "erictbar",
+        "created_at": "2025-01-31T14:13:51Z",
+        "body": "Yes, branch `v3` is working for me."
+      },
+      {
+        "user": "santinic",
+        "created_at": "2025-01-31T16:33:03Z",
+        "body": "@erictbar fix chunks up the text file basically at random, so the pronunciation is unnatural. I'm moving v3 to use spacy for sentence splitting"
+      },
+      {
+        "user": "santinic",
+        "created_at": "2025-02-01T12:05:28Z",
+        "body": "Please, update and try again. v3.1 comes with a lot of changes"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the issue of incomplete/shortened .wav files in v3",
+      "Proper handling of text-to-speech processing that doesn't cut audio files short",
+      "A stable version that processes complete audiobooks correctly",
+      "Compatibility with the command line interface pattern they were using"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:18:05"
+    }
+  }
+]

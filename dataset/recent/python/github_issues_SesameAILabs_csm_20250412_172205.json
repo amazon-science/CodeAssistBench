@@ -1,0 +1,40 @@
+[
+  {
+    "number": 123,
+    "title": "Error processing multiple transcripts",
+    "created_at": "2025-03-27T00:45:14Z",
+    "closed_at": "2025-03-27T09:13:36Z",
+    "labels": [],
+    "url": "https://github.com/SesameAILabs/csm/issues/123",
+    "body": "I get up to this point and get the following error:\n\n```\nRuntimeError                              Traceback (most recent call last)\n<ipython-input-36-a8de7bbe24cc> in <cell line: 0>()\n     20     return audio_tensor\n     21 \n---> 22 segments = [\n     23     Segment(text=transcript, speaker=speaker, audio=load_audio(audio_path))\n     24     for transcript, speaker, audio_path in zip(transcripts, speakers, audio_paths)\n\n5 frames\n/usr/local/lib/python3.11/dist-packages/torio/io/_streaming_media_decoder.py in __init__(self, src, format, option, buffer_size)\n    524             self._be = ffmpeg_ext.StreamingMediaDecoderFileObj(src, format, option, buffer_size)\n    525         else:\n--> 526             self._be = ffmpeg_ext.StreamingMediaDecoder(os.path.normpath(src), format, option)\n    527 \n    528         i = self._be.find_best_audio_stream()\n\nRuntimeError: Failed to open the input \"utterance_0.wav\" (No such file or directory).\nException raised from get_input_format_context at /__w/audio/audio/pytorch/audio/src/libtorio/ffmpeg/stream_reader/stream_reader.cpp:42 (most recent call first):\nframe #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x96 (0x7af35e777f86 in /usr/local/lib/python3.11/dist-packages/torch/lib/libc10.so)\n```\n\nI copied the code that was provided and still no dice.  What am I missing or is there a bug in the code?\n\n`speakers = [0, 1, 0, 0]\ntranscripts = [\n    \"Hey how are you doing.\",\n    \"Pretty good, pretty good.\",\n    \"I'm great.\",\n    \"So happy to be speaking to you.\",\n]\naudio_paths = [\n    \"utterance_0.wav\",\n    \"utterance_1.wav\",\n    \"utterance_2.wav\",\n    \"utterance_3.wav\",\n]\n\ndef load_audio(audio_path):\n    audio_tensor, sample_rate = torchaudio.load(audio_path)\n    audio_tensor = torchaudio.functional.resample(\n        audio_tensor.squeeze(0), orig_freq=sample_rate, new_freq=generator.sample_rate\n    )\n    return audio_tensor\n\nsegments = [\n    Segment(text=transcript, speaker=speaker, audio=load_audio(audio_path))\n    for transcript, speaker, audio_path in zip(transcripts, speakers, audio_paths)\n]\naudio = generator.generate(\n    text=\"Me too, this is some cool stuff huh?\",\n    speaker=1,\n    context=segments,\n    max_audio_length_ms=10_000,\n)\n\ntorchaudio.save(\"audio.wav\", audio.unsqueeze(0).cpu(), generator.sample_rate)`",
+    "comments_url": "https://api.github.com/repos/SesameAILabs/csm/issues/123/comments",
+    "author": "vleandro09",
+    "comments": [
+      {
+        "user": "vleandro09",
+        "created_at": "2025-03-27T00:51:24Z",
+        "body": "Sorry very new to all this...is the expectation here (correct me if I'm wrong) is to provide these audio waves pre-recorded with the transcript?  Or is the expectation that we're building a matrix?  In other words utterance wave 0 should be the [0] index of the transcript?"
+      },
+      {
+        "user": "ZackHodari",
+        "created_at": "2025-03-27T09:13:36Z",
+        "body": "> RuntimeError: Failed to open the input \"utterance_0.wav\" (No such file or directory).\nThis file does not exist, you will need to pick audio that you want to provide the model with if using context.\n\nThe contextual example in the readme is for demonstration purposes\n\nYou can use run_csm.py, this uses files that do exist"
+      },
+      {
+        "user": "vleandro09",
+        "created_at": "2025-03-30T18:15:57Z",
+        "body": "Got it.  Thank you so much!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification about the source of audio files referenced in the code",
+      "Explanation of the error message related to missing files",
+      "Alternative approach to run the code successfully",
+      "Clarification about the purpose of the example code in the documentation"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:31"
+    }
+  }
+]

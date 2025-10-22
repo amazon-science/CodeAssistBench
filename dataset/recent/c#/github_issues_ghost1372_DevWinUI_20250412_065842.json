@@ -1,0 +1,115 @@
+[
+  {
+    "number": 34,
+    "title": "'System.TypeLoadException' in DevWinUI.Controls.dll launching app with Win SDK 1.7 Preview 1",
+    "created_at": "2025-02-12T21:43:30Z",
+    "closed_at": "2025-02-13T15:15:12Z",
+    "labels": [],
+    "url": "https://github.com/ghost1372/DevWinUI/issues/34",
+    "body": "Hi!  I am getting 'System.TypeLoadException' in DevWinUI.Controls.dll launching app with Win SDK 1.7 Preview 1, app won't launch.  Known issue?  Thanks!",
+    "comments_url": "https://api.github.com/repos/ghost1372/DevWinUI/issues/34/comments",
+    "author": "MPITech",
+    "comments": [
+      {
+        "user": "ghost1372",
+        "created_at": "2025-02-12T22:23:24Z",
+        "body": "Hi, are you using v8.0.0-preview6 ? Or are you using the source code directly?\nI'll look into this further tomorrow, I have to sleep now it is 2-AM. (sorry \ud83d\ude05)\nI didn't see any problems while testing some new code today. (I used it directly.)"
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2025-02-12T22:27:47Z",
+        "body": "Hi, goodnight!  Sorry I didn't mention, yes, I am using 8.0.0 preview 6 and I see a dozen of those same errors in the Immediate Window in VS and the app crashes without showing the main window.  When I reverted back to 1.7 exp 3, it was fine again.  Thanks!  (I am not using the source code directly, just the nuget packages)"
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2025-02-12T22:36:19Z",
+        "body": "Upon further examination, I am seeing \"Exception thrown: 'System.TypeLoadException' in DevWinUI.Controls.dll\" a dozen times in the immediate window even with SDK 1.7 exp 3 and the application still loads okay.\n\nI checked the event viewer and the crash in my app with SDK 1.7 preview 1 is actually happening in Microsoft.UI.Xaml.dll, version: 3.1.7.0,  So it is likely not your issue, I just never noticed those DevWinUI.Controls.dll entries before when using SDK 1.7 exp 3 but I guess they have always been there.  Is there a way I can get more info for you on that error short of sending source code, which I am not permitted to do?  Thanks!"
+      },
+      {
+        "user": "ghost1372",
+        "created_at": "2025-02-12T22:43:15Z",
+        "body": "I will be releasing a new version soon based on Preview 1. I am finalizing some things and if all goes well I will release it tomorrow."
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2025-02-12T22:46:16Z",
+        "body": "Ok thanks!"
+      },
+      {
+        "user": "ghost1372",
+        "created_at": "2025-02-13T15:15:12Z",
+        "body": "Hi @MPITech \nUsing both WSSDK v1.7- Preview and Experimental at the same time in the same project causes this problem, v8.0.0-Preview 7 is based on WASDK v1.7-Preview 1. And there is no problem.\n\nUnfortunately, at the last minute, while testing the new codes, I realized that StartupHelper class was not working properly for packaged applications, but as I promised you, I uploaded the new version.\nAnd the StartupHelper problem will be fixed in the next version."
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2025-02-13T15:23:01Z",
+        "body": "Hi, I wasn't using 1.7 preview and experimental at the same time, but DevWinUI Preview 7 and SDK 1.7 Preview 1 together are now fine and my app no longer crashes on startup, thanks a lot!\n\nI do see one error on launch in the immediate window on startup now:  Exception thrown: 'System.InvalidCastException' in DevWinUI.dll that wasn't there before.  Is there anything I can do to get you more information for that?  I don't see any functionality problems yet."
+      },
+      {
+        "user": "ghost1372",
+        "created_at": "2025-02-13T15:27:52Z",
+        "body": "> Hi, I wasn't using 1.7 preview and experimental at the same time, but DevWinUI Preview 7 and SDK 1.7 Preview 1 together are now fine and my app no longer crashes on startup, thanks a lot!\n> \n> I do see one error on launch in the immediate window on startup now: Exception thrown: 'System.InvalidCastException' in DevWinUI.dll that wasn't there before. Is there anything I can do to get you more information for that? I don't see any functionality problems yet.\n\nThis problem was caused because DevWinUI was using the experimental version and you were using the preview version.\n It's good that the problem has been fixed.\n\nIt might be because of the HomeLandingPage, I made some changes to it to remove the dependency on the communityToolkit package. \n\nYou can check if the error still occurs by disabling the HomeLandingPage, but it is a bit difficult to check because the crash does not occur."
+      },
+      {
+        "user": "ghost1372",
+        "created_at": "2025-02-13T16:23:16Z",
+        "body": "@MPITech i tested DevWinUI.GalleryApp and i did not see any  **InvalidCastException**, can you provide a sample repro project?"
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2025-02-13T17:35:14Z",
+        "body": "@ghost1372 I will do my best, I am at work right now but I will see if I can replicate in a small project when I can.  TY"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the application crash when using Win SDK 1.7 Preview 1",
+      "Compatibility between DevWinUI and the latest Windows SDK versions",
+      "Clear identification of the source of the error",
+      "Timely updates to the library that address compatibility issues"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:36"
+    }
+  },
+  {
+    "number": 10,
+    "title": "[Question] Best practice for ThemeService in multi-window application?",
+    "created_at": "2024-12-07T02:06:40Z",
+    "closed_at": "2024-12-07T12:14:24Z",
+    "labels": [
+      "enhancement"
+    ],
+    "url": "https://github.com/ghost1372/DevWinUI/issues/10",
+    "body": "Hi,\r\n\r\nWhen using the ThemeService, it must be initialized with the window as a parameter.  In a multi-window app, should a new ThemeService be created for each window and its settings set to the main application window's settings?  Or should the main window's ThemeService just call .Initialize() on the newly created window?\r\n\r\nAlso, what is the best method for applying changes to the settings (tint color, backdrop) to all open windows?  If the above answer is to create a separate TheemService for each window, should I just apply the settings to each window's ThemeService in a loop?\r\n\r\nThanks!",
+    "comments_url": "https://api.github.com/repos/ghost1372/DevWinUI/issues/10/comments",
+    "author": "MPITech",
+    "comments": [
+      {
+        "user": "ghost1372",
+        "created_at": "2024-12-07T04:57:30Z",
+        "body": "It is not good to create multiple instances of a class for each window.\nYou can get backdrop and ElementTheme from ThemeService and manually set it in window loaded/ctor method.\nI am considering adding multi-window support to the ThemeService.\nBut this requires you to track the windows that are created.\n\nFor example:\n```\nWindow newWindow = new Window();\nWindowHelper.TrackWindow(newWindow);\n```\n\nThe TrackWindow method adds the windows to a dictionary, and finally the ThemeService can access the windows and apply theme/backdrop..."
+      },
+      {
+        "user": "ghost1372",
+        "created_at": "2024-12-07T12:14:24Z",
+        "body": "Hi @MPITech \r\ni added Multi-Window support for ThemeService.\r\nwhen you created a window, you have to use `TrackWindow `like this:\r\n\r\n`WindowHelper.TrackWindow(myWindow);`\r\nthen ThemeService will use a foreach in a list and apply all backdrop/elementTheme/Tint,....\r\n"
+      },
+      {
+        "user": "MPITech",
+        "created_at": "2024-12-07T12:43:02Z",
+        "body": "Awesome, thanks.  I was already tracking windows so this will be easy to integrate.  Thanks again."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution for managing themes across multiple windows without creating multiple ThemeService instances",
+      "A mechanism to apply theme changes (tint color, backdrop) to all open windows simultaneously",
+      "Integration with existing window tracking functionality",
+      "Clear guidance on the architectural approach for theme management in multi-window applications"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:40"
+    }
+  }
+]

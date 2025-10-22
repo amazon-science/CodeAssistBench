@@ -1,0 +1,72 @@
+[
+  {
+    "number": 465,
+    "title": "Deep copy a VectorSchemaRoot?",
+    "created_at": "2024-12-24T12:29:02Z",
+    "closed_at": "2024-12-26T05:46:13Z",
+    "labels": [
+      "Type: enhancement"
+    ],
+    "url": "https://github.com/apache/arrow-java/issues/465",
+    "body": "### Describe the enhancement requested\r\n\r\nI'm writing a convertor method to convert a base64 encoded byte array into Arrow batches and returns it to the user.\r\n\r\n```java\r\npublic List<VectorSchemaRoot> readArrowBatches(String rows, BufferAllocator allocator) {\r\n    final List<VectorSchemaRoot> batches = new ArrayList<>();\r\n    final byte[] data = Base64.getDecoder().decode(rows);\r\n    final ByteArrayInputStream stream = new ByteArrayInputStream(data);\r\n    try (final ArrowStreamReader reader = new ArrowStreamReader(stream, allocator)) {\r\n        while (reader.loadNextBatch()) {\r\n            batches.add(new Table(reader.getVectorSchemaRoot()).toVectorSchemaRoot());\r\n        }\r\n    } catch (IOException e) {\r\n        throw new UncheckedIOException(e);\r\n    }\r\n    return batches;\r\n}\r\n```\r\n\r\nSince `ArrowStreamReader` replace the batch referred by `getVectorSchemaRoot` in each iteration, I have to do a deepcopy of VectorSchemaRoot every time.\r\n\r\nCurrently, I use Table's method as a workaround, but wonder if `VectorSchemaRoot` deserves a `copy` method, or I implement such a typically use case in a wrong way.",
+    "comments_url": "https://api.github.com/repos/apache/arrow-java/issues/465/comments",
+    "author": "tisonkun",
+    "comments": [
+      {
+        "user": "lidavidm",
+        "created_at": "2024-12-26T03:59:54Z",
+        "body": "You should use VectorLoader/VectorUnloader to \"move\" the contents of the reader's root into your own"
+      },
+      {
+        "user": "tisonkun",
+        "created_at": "2024-12-26T05:38:54Z",
+        "body": "That seems exactly what the inner of `Table` does. Do we have some util or a `copy` method for that. Or I just wrap by myself .. It seems quite a common usage and I don't want to hook outside of arrow-java.\r\n\r\n```java\r\nwhile (reader.loadNextBatch()) {\r\n    final VectorSchemaRoot source = reader.getVectorSchemaRoot();\r\n    final VectorUnloader unloader = new VectorUnloader(source);\r\n    final VectorSchemaRoot copy = VectorSchemaRoot.create(source.getSchema(), allocator);\r\n    final VectorLoader loader = new VectorLoader(copy);\r\n    loader.load(unloader.getRecordBatch());\r\n    batches.add(copy);\r\n}\r\n```"
+      },
+      {
+        "user": "lidavidm",
+        "created_at": "2024-12-26T05:43:07Z",
+        "body": "That is the intended usage. What is the problem?\r\n\r\n(Note that you can also just keep an array of the batches from the unloader, and load/stream them through a root as necessary.)"
+      },
+      {
+        "user": "tisonkun",
+        "created_at": "2024-12-26T05:46:09Z",
+        "body": "OK thanks. Yes it seems a list of ArrowRecordBatch owns the buffer and doesn't need to tune with the lifecycle of allocator."
+      },
+      {
+        "user": "tisonkun",
+        "created_at": "2024-12-26T05:56:55Z",
+        "body": "Emmm .. No. The ArrowRecordBatch's buffer is still bound to the allocator, and it doesn't have the schema info where we need to store elsewhere."
+      },
+      {
+        "user": "lidavidm",
+        "created_at": "2024-12-26T06:00:19Z",
+        "body": "Yes, there isn't really any way of untying things from an allocator (this is intentional). There are APIs to transfer memory between allocators (or you can just keep a single allocator across different contexts)."
+      },
+      {
+        "user": "tisonkun",
+        "created_at": "2024-12-26T06:02:21Z",
+        "body": "@lidavidm Thanks for your information! Is there some docs/cookbook for copy VectorSchemaRoot? It seems challenging to ensure the lifetime of both data and allocator are aligned and I suppose some demo code would help a lot."
+      },
+      {
+        "user": "tisonkun",
+        "created_at": "2024-12-26T06:03:25Z",
+        "body": "For example, when I wrote:\r\n\r\n```java\r\n        while (reader.loadNextBatch()) {\r\n            final VectorSchemaRoot source = reader.getVectorSchemaRoot();\r\n            final VectorSchemaRoot copy = VectorSchemaRoot.create(source.getSchema(), allocator);\r\n            new VectorLoader(copy).load(new VectorUnloader(source).getRecordBatch());\r\n            batches.add(copy);\r\n        }\r\n```\r\n\r\nIt seems the intermediate ArrowRecordBatch should be closed but it's very easy to get it wrong and receive a runtime exception .."
+      },
+      {
+        "user": "lidavidm",
+        "created_at": "2024-12-26T06:16:48Z",
+        "body": "Unfortunately not. You should do something like\r\n\r\n```java\r\ntry (var batch = unloader.getRecordBatch()) {\r\n  loader.load(batch);\r\n}\r\n```"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear guidance on the proper way to copy a VectorSchemaRoot",
+      "Information about memory management and allocator lifecycle",
+      "Code examples showing proper resource handling",
+      "Documentation or cookbook references for common Arrow operations"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:03"
+    }
+  }
+]

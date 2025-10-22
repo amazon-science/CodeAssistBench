@@ -1,0 +1,40 @@
+[
+  {
+    "number": 158,
+    "title": "How can use my own local model when my when local environment cannot connect to the Internet.",
+    "created_at": "2025-03-19T06:24:45Z",
+    "closed_at": "2025-03-24T08:28:38Z",
+    "labels": [],
+    "url": "https://github.com/zilliztech/deep-searcher/issues/158",
+    "body": "This is really an excellent project\uff01Thank you for your contributions\uff01 I would like to ask if it's possible to download the model from Hugging Face to use locally instead of accessing it through the API?",
+    "comments_url": "https://api.github.com/repos/zilliztech/deep-searcher/issues/158/comments",
+    "author": "CALVINhzy1",
+    "comments": [
+      {
+        "user": "SimFG",
+        "created_at": "2025-03-19T09:41:11Z",
+        "body": "you can try to use:\nLLM, Ollama; (before using, you should run the qwq llm according ollama)\n```\nconfig.set_provider_config(\"llm\", \"Ollama\", {\"model\": \"qwq\"})\n```\nEmbedding, pymilvus-model;\n```\nconfig.set_provider_config(\"embedding\", \"MilvusEmbedding\", {\"model\": \"BAAI/bge-base-en-v1.5\"})\n```"
+      },
+      {
+        "user": "CALVINhzy1",
+        "created_at": "2025-03-24T08:09:29Z",
+        "body": "Thanks for your reply, the problem has solved! If we need to use local embedding model, we can download the model we need from huggingface offline, copy the model folder and specify the path of the model folder. "
+      },
+      {
+        "user": "SimFG",
+        "created_at": "2025-03-24T08:25:57Z",
+        "body": "If the issue has been solved, please help me close the issue. Thanks a lot"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Instructions for using local models without internet connection",
+      "Guidance on how to specify local model paths",
+      "Information about downloading models from Hugging Face for offline use",
+      "Configuration instructions for local model integration"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:04:58"
+    }
+  }
+]

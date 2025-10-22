@@ -1,0 +1,35 @@
+[
+  {
+    "number": 95,
+    "title": "\u8282\u70b9\u4e0d\u4f7f\u7528\u8868\u5355\u7684\u8bdd\uff0c\u5e94\u8be5\u600e\u4e48\u8bbe\u7f6e\u548c\u8c03\u6574\uff0cbase-node\u8be5\u5982\u4f55\u8c03\u6574",
+    "created_at": "2025-03-26T08:26:11Z",
+    "closed_at": "2025-03-26T08:58:21Z",
+    "labels": [],
+    "url": "https://github.com/bytedance/flowgram.ai/issues/95",
+    "body": "\u6587\u6863\u53ea\u5199\u4e86\u8fdb\u9636\u7684\u8868\u5355\u8c03\u7528\uff0c\u4f46\u5e76\u6ca1\u6709\u5199\u4e0d\u4f7f\u7528\u8868\u5355\u7684\u5199\u6cd5\uff0c\u5e0c\u671b\u80fd\u8865\u5145",
+    "comments_url": "https://api.github.com/repos/bytedance/flowgram.ai/issues/95/comments",
+    "author": "brysonLin247",
+    "comments": [
+      {
+        "user": "xiamidaxia",
+        "created_at": "2025-03-26T08:38:13Z",
+        "body": "\u8868\u5355\u76ee\u524d\u4e3b\u8981\u7528\u6765\u5904\u7406 \u8282\u70b9\u7684 data \u5b57\u6bb5\uff0c\u53ef\u4ee5\u770b\u4e0b demo-free-layout-simple \u8fd9\u4e2a\u4f8b\u5b50\n\n\u5982\u679c\u4e0d\u60f3\u7528\u8868\u5355\n1, formMeta.render \u914d\u7f6e\u6539\u6210 null\uff0c\u56e0\u4e3a\u4e0d\u60f3\u7528\u6e32\u67d3\n2\uff0c\u53ef\u4ee5\u5728 \u8282\u70b9\u6e32\u67d3\u91cc\u3002\u4e0d\u8c03\u7528 form.render,  \u7136\u540e\u901a\u8fc7 form.getValueIn \u548c form.setValueIn \u53bb\u4fee\u6539\u8282\u70b9\u7684 data \u6570\u636e\uff08\u770b\u4f60\u4eec\u662f\u5426\u6709 data \u5b57\u6bb5\uff09\n\n```\n      getNodeDefaultRegistry(type) {\n        return {\n          type,\n          formMeta: {\n            render: () => null, // \u6539\u6210 null\n          },\n        };\n        /**\n         * Render Node\n         */\n        renderDefaultNode: (props: WorkflowNodeProps) => {\n          const { form } = useNodeRender();\n          return (\n            <WorkflowNodeRenderer className=\"demo-free-node\" node={props.node}>\n              {form?.render()} // \u4e0d\u7528\u8fd9\u4e2a\n            </WorkflowNodeRenderer>\n          );\n        },\n\n```"
+      },
+      {
+        "user": "brysonLin247",
+        "created_at": "2025-03-26T08:49:04Z",
+        "body": "\u5341\u5206\u611f\u8c22\uff01"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Instructions on how to configure nodes without using forms",
+      "Clear steps for modifying the node configuration to disable form rendering",
+      "Alternative approaches for handling node data without forms",
+      "Code examples or references to demonstrate the non-form approach"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:29"
+    }
+  }
+]

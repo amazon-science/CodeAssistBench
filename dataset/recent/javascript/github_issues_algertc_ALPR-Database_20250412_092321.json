@@ -1,0 +1,34 @@
+[
+  {
+    "number": 1,
+    "title": "Cannot remove plates from Known Plates Dashboard",
+    "created_at": "2024-11-18T15:07:37Z",
+    "closed_at": "2024-11-18T18:28:00Z",
+    "labels": [],
+    "url": "https://github.com/algertc/ALPR-Database/issues/1",
+    "body": "Running on Linux Docker with the latest repo changes.\r\n\r\nTested in both Chrome and Safari.\r\n\r\nClicking on the delete button within the table of known plates doesn't delete the plate.\r\n\r\nConsole Log:\r\n\r\n```Failed to remove from known plates: ReferenceError: removeFromKnownPlates is not defined```",
+    "comments_url": "https://api.github.com/repos/algertc/ALPR-Database/issues/1/comments",
+    "author": "TinyShark",
+    "comments": [
+      {
+        "user": "algertc",
+        "created_at": "2024-11-18T18:28:00Z",
+        "body": "Thank you. Fix pushed. \r\n\r\n`docker compose down`, then `docker compose up -d` should fix. If not, `docker pull algertc/alpr-dashboard` and that should pull the latest version."
+      },
+      {
+        "user": "TinyShark",
+        "created_at": "2024-11-19T00:11:27Z",
+        "body": "pulling the new image got it to work. Known plates are being removed correctly now.\r\n\r\nMany thanks!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that fixes the 'removeFromKnownPlates is not defined' error",
+      "Clear instructions on how to apply the fix to their Docker environment",
+      "Restoration of the ability to remove plates from the Known Plates Dashboard"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:01:39"
+    }
+  }
+]

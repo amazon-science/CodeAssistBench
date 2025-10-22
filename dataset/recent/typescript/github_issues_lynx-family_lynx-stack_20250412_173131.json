@@ -1,0 +1,37 @@
+[
+  {
+    "number": 221,
+    "title": "[Bug]: Module not found: Can't resolve 'crypto'",
+    "created_at": "2025-03-16T01:18:42Z",
+    "closed_at": "2025-03-20T05:35:01Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/lynx-family/lynx-stack/issues/221",
+    "body": "### System Info\n\n  System:\n    OS: Windows 11 10.0.26100\n    CPU: (8) x64 Intel(R) Core(TM) Ultra 7 258V\n    Memory: 17.39 GB / 31.48 GB\n  Binaries:\n    Node: 23.5.0 - C:\\Program Files\\nodejs\\node.EXE\n    npm: 10.9.2 - C:\\Program Files\\nodejs\\npm.CMD\n    pnpm: 9.15.0 - ~\\.bun\\bin\\pnpm.EXE\n    bun: 1.1.33 - ~\\.bun\\bin\\bun.EXE\n  npmPackages:\n    @lynx-js/qrcode-rsbuild-plugin: ^0.3.4 => 0.3.4\n    @lynx-js/react: ^0.105.2 => 0.105.2\n    @lynx-js/react-rsbuild-plugin: ^0.9.2 => 0.9.2\n    @lynx-js/rspeedy: ^0.8.4 => 0.8.4\n    @lynx-js/types: ^3.2.0 => 3.2.0\n\n### Details\n\nbun run build fails with the following error\n\n```Tip: \"crypto\" is a built-in Node.js module. It cannot be imported in client-side code.\nCheck if you need to import Node.js module. If needed, you can use \"@rsbuild/plugin-node-polyfill\" to polyfill it.\n\nerror   Rspack build failed.\n    at file:///C:/Users/ancie/OneDrive/Documents/GitHub/veme-lynx/node_modules/@rsbuild/core/dist/index.js:6374:87\n    at finalCallback (C:\\Users\\ancie\\OneDrive\\Documents\\GitHub\\veme-lynx\\node_modules\\@rspack\\core\\dist\\index.js:14973:9)       \n    at C:\\Users\\ancie\\OneDrive\\Documents\\GitHub\\veme-lynx\\node_modules\\@rspack\\core\\dist\\index.js:15005:16\n    at done (C:\\Users\\ancie\\OneDrive\\Documents\\GitHub\\veme-lynx\\node_modules\\@rspack\\lite-tapable\\dist\\index.js:473:13)\n    at promise.then.index (C:\\Users\\ancie\\OneDrive\\Documents\\GitHub\\veme-lynx\\node_modules\\@rspack\\lite-tapable\\dist\\index.js:493:25)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\nerror: script \"build\" exited with code 1```\n\n### Reproduce link\n\n_No response_\n\n### Reproduce Steps\n\n1. bun install @aws-sdk/cloudfront-signer\n\n2. use anywhere in the app\n\n// API utility functions for VEME Lynx\nimport { getSignedUrl } from \"@aws-sdk/cloudfront-signer\";\n\n3. bun run build",
+    "comments_url": "https://api.github.com/repos/lynx-family/lynx-stack/issues/221/comments",
+    "author": "yungyoda",
+    "comments": [
+      {
+        "user": "upupming",
+        "created_at": "2025-03-17T02:42:08Z",
+        "body": "Hi @yungyoda, as the error message says `Check if you need to import Node.js module. If needed, you can use \"@rsbuild/plugin-node-polyfill\" to polyfill it.`, `crypto` is a Node.js module, maybe you should use polyfill to bundle it correctly!"
+      },
+      {
+        "user": "yungyoda",
+        "created_at": "2025-03-20T05:34:42Z",
+        "body": "thanks @upupming the unobvious answer, using his point, was to add this to my lynx.config.ts\n\n` import { defineConfig } from '@lynx-js/rspeedy'\n\nimport { pluginQRCode } from '@lynx-js/qrcode-rsbuild-plugin'\nimport { pluginReactLynx } from '@lynx-js/react-rsbuild-plugin'\nimport { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'\n\nexport default defineConfig({\n  plugins: [\n    pluginQRCode({\n      schema(url) {\n        // We use `?fullscreen=true` to open the page in LynxExplorer in full screen mode\n        return `${url}?fullscreen=true`\n      },\n    }),\n    pluginReactLynx(),\n    pluginNodePolyfill({\n      globals: {\n        Buffer: true,\n        // process: true,\n      },\n      protocolImports: true,\n    }),\n  ],\n})`"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the 'Module not found: Can't resolve crypto' error when building the application",
+      "Guidance on how to properly handle Node.js built-in modules in a client-side application",
+      "Instructions for configuring the application to use appropriate polyfills for Node.js modules",
+      "A solution compatible with their existing tech stack (Lynx.js, RSBuild, Bun)"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:43"
+    }
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "number": 16,
+    "title": "HeliBoard integration",
+    "created_at": "2025-01-13T09:55:42Z",
+    "closed_at": "2025-01-13T13:41:00Z",
+    "labels": [],
+    "url": "https://github.com/woheller69/whisperIME/issues/16",
+    "body": "Just a quick question, how do I get HeliBoard to call Whisper instead of the Google voice assistant when pressing the mic button in the toolbar?",
+    "comments_url": "https://api.github.com/repos/woheller69/whisperIME/issues/16/comments",
+    "author": "C-O-D",
+    "comments": [
+      {
+        "user": "woheller69",
+        "created_at": "2025-01-13T10:13:22Z",
+        "body": "Just switch off Google voice input method in Android settings"
+      },
+      {
+        "user": "C-O-D",
+        "created_at": "2025-01-13T12:22:11Z",
+        "body": "Okay, thanks..."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A simple method to configure HeliBoard to use Whisper instead of Google voice assistant",
+      "Instructions that don't require technical expertise or complex setup"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:56"
+    }
+  }
+]

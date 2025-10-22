@@ -1,0 +1,125 @@
+[
+  {
+    "number": 13,
+    "title": "Some tools return error messages in Claude Desktop",
+    "created_at": "2025-04-03T16:18:59Z",
+    "closed_at": "2025-04-04T15:15:10Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/CoderGamester/mcp-unity/issues/13",
+    "body": "I used mcp-unity with Claude Desktop. When Claude used the select_gameobject or execute_menu_item tools, they were executed correctly in the Unity editor, but the message returned to Claude Desktop as a result of using the tools was \"Unsupported content type: undefined\". Claude judges that this tool is not working properly. On the other hand, the notify_message tool returns the message \"Message displayed:\" correctly. I looked at the source a little, and noticed that in the Unity extension, notify_message returns a json containing \"type\", while select_gameobject and execute_menu_item do not contain a \"type\". And I think the error is occurring because the websocket server code is trying to access a non-existent \"type\". Sorry if I'm mistaken.",
+    "comments_url": "https://api.github.com/repos/CoderGamester/mcp-unity/issues/13/comments",
+    "author": "umiyuki",
+    "comments": [
+      {
+        "user": "CoderGamester",
+        "created_at": "2025-04-03T21:13:45Z",
+        "body": "thank you for the report @umiyuki \n\nwill investigate this as soon as I fix the current resources."
+      },
+      {
+        "user": "CoderGamester",
+        "created_at": "2025-04-04T00:12:54Z",
+        "body": "@umiyuki I fixed the issue. You were correct that the output was missing the text field to work properly. Should work fine now\nPlease let me know if you have any further issues"
+      },
+      {
+        "user": "umiyuki",
+        "created_at": "2025-04-04T15:15:10Z",
+        "body": "Thank you for your quick response. I have confirmed that it has been fixed to return a normal response. I will close the issue."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix for tools returning proper responses in Claude Desktop",
+      "Resolution of the 'Unsupported content type: undefined' error message",
+      "Proper formatting of tool responses to include necessary fields",
+      "Consistent behavior across different tools in the Unity extension"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:53"
+    }
+  },
+  {
+    "number": 11,
+    "title": "README Suggestion: Unity *needs to be* in focus or tools may time out",
+    "created_at": "2025-04-01T18:17:03Z",
+    "closed_at": "2025-04-02T23:35:18Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/CoderGamester/mcp-unity/issues/11",
+    "body": "According to my testing (Mac / Apple Silicon), essentially all of the tools rely on the Unity window being in focus to execute, potentially because its main thread heavily throttles function calls if the application is not in focus. In other words, you might see the tool requests time out UNLESS you switch back to Unity to let them execute.\n\nMarking \"Run in Background\" seems to only affect builds, as far as I can tell, and doesn't help.  \n\nThere may be a way around this, but for now, everyone using this should know this limitation.",
+    "comments_url": "https://api.github.com/repos/CoderGamester/mcp-unity/issues/11/comments",
+    "author": "dsarno",
+    "comments": [
+      {
+        "user": "alexander-andrianov",
+        "created_at": "2025-04-02T08:24:54Z",
+        "body": "+1, can confirm this behavior too. Based on how Unity handles thread prioritization, it\u2019s likely some intentional optimization to throttle background processes (at least on Apple Silicon)\n@dsarno did you test it on windows / intel?"
+      },
+      {
+        "user": "dsarno",
+        "created_at": "2025-04-02T13:36:04Z",
+        "body": "Alexander I didn\u2019t test on PC but would definitely be interested if it made\r\na difference.\r\n"
+      },
+      {
+        "user": "CoderGamester",
+        "created_at": "2025-04-02T20:00:33Z",
+        "body": "This was a problem indeed. Thank you for reporting\nI pushed a new fix today @dsarno @alexander-andrianov \n\nIt is a messy issue with Unity only allowing to run Editor code on the mainThread, but thankfully it was solvable \n\nCan you try again?\nShould be fine by now"
+      },
+      {
+        "user": "dsarno",
+        "created_at": "2025-04-02T23:32:23Z",
+        "body": "This was fixed for me @CoderGamester !  Well done!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that allows tools to execute properly without requiring Unity to be in focus",
+      "A fix that addresses the thread prioritization issue on Apple Silicon Macs",
+      "A solution that prevents tool request timeouts"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:59"
+    }
+  },
+  {
+    "number": 5,
+    "title": "Missing ConsoleWindowUtility on Unity 2022.3",
+    "created_at": "2025-03-20T09:48:31Z",
+    "closed_at": "2025-03-24T06:53:20Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/CoderGamester/mcp-unity/issues/5",
+    "body": "```\nLibrary/PackageCache/com.gamelovers.mcp-unity@7d2a2dab10/Editor/Resources/GetConsoleLogsResource.cs(96,13): error CS0103: The name 'ConsoleWindowUtility' does not exist in the current context\n```",
+    "comments_url": "https://api.github.com/repos/CoderGamester/mcp-unity/issues/5/comments",
+    "author": "trungdlp-wolffun",
+    "comments": [
+      {
+        "user": "CoderGamester",
+        "created_at": "2025-03-21T21:50:39Z",
+        "body": "Good report\nlooking now into that"
+      },
+      {
+        "user": "CoderGamester",
+        "created_at": "2025-03-22T14:10:19Z",
+        "body": "@trungdlp-wolffun apologies for the delay\n\nI pushed a fix for the issue.\nLet me know if you still have problems"
+      },
+      {
+        "user": "trungdlp-wolffun",
+        "created_at": "2025-03-24T06:53:20Z",
+        "body": "It works well, thanks a lot @CoderGamester "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the missing ConsoleWindowUtility error in Unity 2022.3",
+      "Compatibility with the user's Unity 2022.3 environment",
+      "Resolution that allows the package to compile without errors"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:03"
+    }
+  }
+]

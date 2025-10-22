@@ -1,0 +1,69 @@
+[
+  {
+    "number": 8,
+    "title": "Non-desired tags when plugin is installled on several PC with synced database",
+    "created_at": "2024-12-13T09:32:50Z",
+    "closed_at": "2024-12-18T15:50:11Z",
+    "labels": [
+      "enhancement"
+    ],
+    "url": "https://github.com/SciImage/zotero-attachment-scanner/issues/8",
+    "body": "Hi\r\nI use Zotero on several Pcs, on which I installed attachment-scanner. My database in synchronized.\r\nIt seems that a scan has been operated quickly after the plugin installation (I installed the plugin at the very opening of application)  : non-desired tags  (all three categories and with default simpole format) appeared since I had scanned previously on another PC with non-default options. I guess this scan is triggered by the monitoring option which is set as on by default. If so and if I'm not wrong perhaps would it be more secure to set it as off by default ?\r\nThis is not a great problem since tags can be easily removed.\r\nBest regards\r\nYves",
+    "comments_url": "https://api.github.com/repos/SciImage/zotero-attachment-scanner/issues/8/comments",
+    "author": "ynedelec3",
+    "comments": [
+      {
+        "user": "SciImage",
+        "created_at": "2024-12-18T15:50:11Z",
+        "body": "The default is changed to off in v0.3.0. Thanks!"
+      },
+      {
+        "user": "ynedelec3",
+        "created_at": "2024-12-18T18:33:26Z",
+        "body": "Great, thanks "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Changing the default monitoring setting from 'on' to 'off' in the plugin",
+      "Preventing unexpected tag creation when the plugin is installed on multiple synced devices",
+      "Acknowledgment of the user's feedback about default settings"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:57"
+    }
+  },
+  {
+    "number": 2,
+    "title": "Plugin can't be stopped",
+    "created_at": "2024-12-06T18:05:02Z",
+    "closed_at": "2024-12-11T03:57:44Z",
+    "labels": [
+      "enhancement"
+    ],
+    "url": "https://github.com/SciImage/zotero-attachment-scanner/issues/2",
+    "body": "There's no option or command to cancel the scan, which is useful when scanning too many records.",
+    "comments_url": "https://api.github.com/repos/SciImage/zotero-attachment-scanner/issues/2/comments",
+    "author": "gvlx",
+    "comments": [
+      {
+        "user": "SciImage",
+        "created_at": "2024-12-11T03:57:44Z",
+        "body": "v 0.2.0, as you wished\r\n- A \"Cancel Attachment Scanning\" menu item is now available in the \u201cTools\u201d menu."
+      },
+      {
+        "user": "gvlx",
+        "created_at": "2024-12-19T16:33:30Z",
+        "body": "Works as designed on 0.3.0"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to cancel an ongoing scan operation",
+      "An accessible interface element to trigger the cancellation"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:03"
+    }
+  }
+]

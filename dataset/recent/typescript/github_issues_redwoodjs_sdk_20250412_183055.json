@@ -1,0 +1,44 @@
+[
+  {
+    "number": 296,
+    "title": "Quick Start doc - Start developing not working with yarn",
+    "created_at": "2025-04-10T13:20:10Z",
+    "closed_at": "2025-04-10T13:59:09Z",
+    "labels": [],
+    "url": "https://github.com/redwoodjs/sdk/issues/296",
+    "body": "Quick start with yarn does not work (yet?)\n\nsteps tried\n\n1. npx degit redwoodjs/sdk/starters/standard rwsdk-one\n2. cd rwsdk-one\n3. yarn install\n- fails\n- need to remove packageManager line in package.json\n- yarn install\n- completes ok\n4. yarn dev\n- fails\n- Project has no .wrangler directory yet, assuming fresh install: running `pnpm dev:init`...\n4. yarn dev:init\n- ok\n5. yarn dev\n- fails\n- ExecaError: Command failed with exit code 1: pnpm wrangler types\n\n\nIt appears that pnpm is hard-coded. Consider putting note in Getting Started doc that yarn is not working at this time.",
+    "comments_url": "https://api.github.com/repos/redwoodjs/sdk/issues/296/comments",
+    "author": "rkmitra1",
+    "comments": [
+      {
+        "user": "peterp",
+        "created_at": "2025-04-10T13:55:07Z",
+        "body": "Weird, I swear I tested this a few days ago. I'll take a look again."
+      },
+      {
+        "user": "justinvdm",
+        "created_at": "2025-04-10T13:58:27Z",
+        "body": "@peterp there were some remaining ones it seems, fixing in #297 and will test out replacing with yarn in standard starter after that's released."
+      },
+      {
+        "user": "justinvdm",
+        "created_at": "2025-04-10T14:13:18Z",
+        "body": "Thank you @rkmitra1. We've removed the last remaining places where we were referencing `pnpm`. I tested out the standard starter with yarn and works now. You should be good to go now."
+      },
+      {
+        "user": "rkmitra1",
+        "created_at": "2025-04-10T14:16:32Z",
+        "body": "Works for me now. Thanks.\n\nFYI. This is i just a peculiarity of my yarn set up, but i have to remove pnp files and add .yarnrc.yml file, delete yarn.lock.\n\nthen\n1. yarn install\n2. yarn dev\nWorks :)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Ability to use yarn instead of pnpm with the RedwoodJS SDK starter",
+      "Working development environment setup process with yarn",
+      "Removal of pnpm-specific references in the codebase"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:17"
+    }
+  }
+]

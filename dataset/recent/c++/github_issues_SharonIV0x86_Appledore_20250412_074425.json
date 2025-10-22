@@ -1,0 +1,80 @@
+[
+  {
+    "number": 43,
+    "title": "Add Custom Edge Sorting with Predicate Function added edgeRetrieval.cpp",
+    "created_at": "2025-01-15T14:37:41Z",
+    "closed_at": "2025-01-18T14:58:18Z",
+    "labels": [
+      "enhancement",
+      "ADVANCED",
+      "SWOC"
+    ],
+    "url": "https://github.com/SharonIV0x86/Appledore/pull/43",
+    "body": "closes: #34 \r\n\r\nTested and works",
+    "comments_url": "https://api.github.com/repos/SharonIV0x86/Appledore/issues/43/comments",
+    "author": "ash01825",
+    "comments": [
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-16T10:00:26Z",
+        "body": "@ash01825 I am not able to edit these files in the PR, maybe you have disabled the option that allows maintainers to edit the code. \r\n\r\nThere are a few changes need to be done, the first one is to include ``<functional>`` header in ``GraphMatrix.h`` without which ``std::function`` wont work.\r\nSecond one is to add a check in your ``getAllEdges`` function, if the graph is unweighted you cannot really return anything, so throw an exception at that point.\r\n\r\nIf you can enable the option that allows me to edit the code in the PR then it will be good, as i have to do some changes in example and the function also."
+      },
+      {
+        "user": "ash01825",
+        "created_at": "2025-01-16T10:12:18Z",
+        "body": "shouldn't getAllEdges return all existing Edges for Unweighted Graphs too?"
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-16T10:26:41Z",
+        "body": "> shouldn't getAllEdges return all existing Edges for Unweighted Graphs too?\r\n\r\nInteresting, well yes it can, but in the returned tuple \r\n```cpp\r\nstd::vector<std::tuple<VertexType, VertexType, EdgeType>\r\n```\r\nthe ``EdgeType`` will be ``UnweightedG`` and user cannot actually use ``UnweightedG`` anywhere, maybe there is a way we can return \r\nthis for weighted graphs\r\n```cpp\r\nstd::vector<std::tuple<VertexType, VertexType, EdgeType>\r\n```\r\nand this for unweighted graphs?\r\n```cpp\r\nstd::vector<std::tuple<VertexType, VertexType>\r\n```"
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-16T10:46:18Z",
+        "body": "@ash01825 Possibly we can utilize ``std::variant`` but will require more code. although this is not that important as of now.\r\n\r\n> > shouldn't getAllEdges return all existing Edges for Unweighted Graphs too?\r\n> \r\n> Interesting, well yes it can, but in the returned tuple\r\n> \r\n> ```c++\r\n> std::vector<std::tuple<VertexType, VertexType, EdgeType>\r\n> ```\r\n> \r\n> the `EdgeType` will be `UnweightedG` and user cannot actually use `UnweightedG` anywhere, maybe there is a way we can return this for weighted graphs\r\n> \r\n> ```c++\r\n> std::vector<std::tuple<VertexType, VertexType, EdgeType>\r\n> ```\r\n> \r\n> and this for unweighted graphs?\r\n> \r\n> ```c++\r\n> std::vector<std::tuple<VertexType, VertexType>\r\n> ```\r\n\r\n"
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-17T05:22:48Z",
+        "body": "@ash01825 any update?"
+      },
+      {
+        "user": "ash01825",
+        "created_at": "2025-01-17T08:12:16Z",
+        "body": "yeah sorry was out yesterday yeah I've made the changes"
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-17T08:23:22Z",
+        "body": "> yeah sorry was out yesterday yeah I've made the changes\r\n\r\nIts fine no issues, the thing i am concerned about is that i want to make some changes to your current example file in this PR, but i dont have the permission to do so as you must have unchecked the ``allow maintainers to edit files`` while making this PR due to which i am not able to edit the files. \r\n\r\nSo either you give me permission to edit the code or i'll have to make those changes after merging the PR, your call."
+      },
+      {
+        "user": "ash01825",
+        "created_at": "2025-01-17T11:22:39Z",
+        "body": "Yeah I've turned on the allow edit my maintainers\ud83d\udc4d"
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-17T12:39:04Z",
+        "body": "@ash01825 I have approved the changes and PR will be merged in sometime. Till then you are free to work on some other issue."
+      },
+      {
+        "user": "SharonIV0x86",
+        "created_at": "2025-01-18T14:58:53Z",
+        "body": "@ash01825 The PR is merged, and points are assigned to you. Thank you for contributing, kindly star \u2b50 the repository as it shows appreciation to repository maintainers for their work."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Inclusion of necessary header files for the implementation",
+      "Proper handling of edge retrieval for both weighted and unweighted graphs",
+      "Enabling maintainer edit permissions on the PR",
+      "Functional implementation that passes testing",
+      "Addressing all feedback from code review"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:00:21"
+    }
+  }
+]

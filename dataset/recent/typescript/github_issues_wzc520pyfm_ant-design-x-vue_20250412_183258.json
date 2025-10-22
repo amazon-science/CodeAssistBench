@@ -1,0 +1,61 @@
+[
+  {
+    "number": 176,
+    "title": "[Bug]Sender\u7ec4\u4ef6\u5728setup\u5199\u6cd5\u4e0b\u65e0\u6cd5\u6e05\u7a7a\u6216\u91cd\u7f6e\u8f93\u5165\u6846\u4e2d\u7684\u6587\u5b57",
+    "created_at": "2025-03-20T02:45:39Z",
+    "closed_at": "2025-04-10T12:32:46Z",
+    "labels": [
+      "FAQ"
+    ],
+    "url": "https://github.com/wzc520pyfm/ant-design-x-vue/issues/176",
+    "body": "\u5982\u9898",
+    "comments_url": "https://api.github.com/repos/wzc520pyfm/ant-design-x-vue/issues/176/comments",
+    "author": "sdlddr",
+    "comments": [
+      {
+        "user": "wzc520pyfm",
+        "created_at": "2025-03-20T03:36:02Z",
+        "body": "\u6765\u6bb5\u590d\u73b0\u4ee3\u7801\u6211\u6392\u67e5\u4e0b"
+      },
+      {
+        "user": "sdlddr",
+        "created_at": "2025-03-21T07:02:56Z",
+        "body": "```tsx\nconst value=ref('') //\u5bf9\u8bdd\u6846\u5199\u7684\u6587\u672c\u5185\u5bb9\nconst handleMsgSubmit = (msg:string)=>{\n\tmessage.success('Send: '+msg);\n\tinPush.value = true;\n\tapiAgent.onRequest({content:msg,mode:hasDeep.value? 'r1':'v3'});\n\temit('onSend',{\n\t\tmsg:msg,\n\t\tisDeep:hasDeep.value,\n\t\tisNet:hasNet.value,\n\t\tuploadType:uploadType.value,\n\t\tuploadList:fileItems.value,\n\t});\n\tvalue.value = ''\n}\n// \u2026\u2026\n<Sender\n  :loading=\"inPush||recording\" \n  :allow-speech=\"speechOption\"\n  placeholder=\"\u7535\u8111\u7aef\u8bf7\u7528 `Shift + Enter` \u952e\u6362\u884c\" \n  :value=\"value\"\n  @submit=\"handleMsgSubmit\"\n  @cancel=\"handleCancel\"\n  :styles=\"{input:{maxHeight:'100px'}}\"></Sender>\n```"
+      },
+      {
+        "user": "wzc520pyfm",
+        "created_at": "2025-03-21T16:36:23Z",
+        "body": "\u4f7f\u7528 `:value=\"value\"` \u65f6\u4e3a\u53d7\u63a7\u6a21\u5757\uff0c\u8fd8\u9700\u8981\u4e3aSender\u4f20\u5165onChange: \n`@change=\"(v) => value = v\"` "
+      },
+      {
+        "user": "sdlddr",
+        "created_at": "2025-03-24T04:07:57Z",
+        "body": "\u4e3a\u4f55\u4e0d\u8ba9\u7ec4\u4ef6\u5185\u90e8\u5b9e\u73b0v-model\uff1f"
+      },
+      {
+        "user": "wzc520pyfm",
+        "created_at": "2025-03-24T06:50:59Z",
+        "body": "> \u4e3a\u4f55\u4e0d\u8ba9\u7ec4\u4ef6\u5185\u90e8\u5b9e\u73b0v-model\uff1f\n\n\u5728\u8ba1\u5212\u4e2d\uff0c\u6709\u7a7a\u4e5f\u53ef\u4ee5\u5e2e\u5fd9\u63d0\u4e2apr\u2764\ufe0f"
+      },
+      {
+        "user": "wzc520pyfm",
+        "created_at": "2025-03-25T12:06:06Z",
+        "body": "\u73b0\u5728Sender\u5df2\u7ecf\u652f\u6301`v-model:value=\"value\"`\u4e86\uff0c\u53ef\u4ee5\u4f7f\u7528`v-model:value=\"value\"` \u66ff\u4ee3value\u548conChange\u4e86"
+      },
+      {
+        "user": "sdlddr",
+        "created_at": "2025-04-03T02:05:19Z",
+        "body": "\u5b8c\u7f8e\uff01Thank you"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to reset or clear the input text in the Sender component when using the setup syntax",
+      "A simple, declarative approach to implement two-way data binding with the Sender component",
+      "Support for Vue's standard component interaction patterns in the Sender component"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:11"
+    }
+  }
+]

@@ -1,0 +1,227 @@
+[
+  {
+    "number": 76,
+    "title": "DOCKER_MODS= on arm64 image?",
+    "created_at": "2025-02-04T20:49:18Z",
+    "closed_at": "2025-02-14T23:12:34Z",
+    "labels": [],
+    "url": "https://github.com/calibrain/calibre-web-automated-book-downloader/issues/76",
+    "body": "is the DOCKER_MODS=calibre still needed? i saw a commit that removed it but seems to be for amd64 only?\n\nI'm running on arm64 rock-5b board ",
+    "comments_url": "https://api.github.com/repos/calibrain/calibre-web-automated-book-downloader/issues/76/comments",
+    "author": "Fuckingnameless",
+    "comments": [
+      {
+        "user": "calibrain",
+        "created_at": "2025-02-04T21:00:11Z",
+        "body": "Oh, you are right, no need for the calibre MODS anymore, I am offloading that to CWA instead :P "
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2025-02-05T00:04:23Z",
+        "body": "But its if you are using the arm version\nWhich is still not rolled out to `:latest` docker\nIts for the`CF_BYPASS` branch for now"
+      },
+      {
+        "user": "Fuckingnameless",
+        "created_at": "2025-02-11T15:26:23Z",
+        "body": "eh sorry i confused repos, meant to ask on CWA's, so you're saying i need a DOCKER_MOD on your image too? or only on crocodilestick's?\n\ni just tested his latest image with your CF_Bypass branch and everything seems to be working even PDF ingest/conversion"
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2025-02-14T23:12:34Z",
+        "body": "No you dont need it in any of the repos, it was too cumbersome and I dropped it and he implemented it directly in the containers.\n\nSo no, you dont need the DOCKER_MODS anymore"
+      },
+      {
+        "user": "Fuckingnameless",
+        "created_at": "2025-02-15T21:43:14Z",
+        "body": "> But its if you are using the arm version Which is still not rolled out to `:latest` docker Its for the`CF_BYPASS` branch for now\n\njust confirming\n it is NOT needed for any branch right?"
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2025-02-16T00:31:42Z",
+        "body": "Exact, DOCKER_MODS is not needed for CWA-BD (or CWA anymore)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear confirmation about whether DOCKER_MODS=calibre is required for arm64 architecture",
+      "Information about which branches or versions require DOCKER_MODS",
+      "Clarification about repository-specific requirements",
+      "Unambiguous, definitive answer that resolves confusion"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:45"
+    }
+  },
+  {
+    "number": 52,
+    "title": "Whatever book I download: corrupt",
+    "created_at": "2025-01-10T19:35:51Z",
+    "closed_at": "2025-01-11T08:03:45Z",
+    "labels": [],
+    "url": "https://github.com/calibrain/calibre-web-automated-book-downloader/issues/52",
+    "body": "Epub is downloaded just fine:\r\n`2025-01-10 19:31:21,919 - book_manager - INFO - Download finished. Writing to /tmp/cwa-book-downloader/0335e2f8e48c0d3757b9065f6cb804ff.epub\r\n`\r\nBut is recognized as corrupt:\r\n\r\n```\r\n2025-01-10 19:31:21,920 - backend - INFO - Verifying book health: /tmp/cwa-book-downloader/0335e2f8e48c0d3757b9065f6cb804ff.epub\r\n2025-01-10 19:31:28,947 - backend - INFO - Health check result: \r\nOut of 1, 0 are good, 1 are corrupt and 0 need manual inspection\r\n2025-01-10 19:31:28,947 - backend - INFO - Book 0335e2f8e48c0d3757b9065f6cb804ff download failed\r\n```\r\n\r\nHaven't found the tmp folder yet, so can't determine if it's actually corrupt or not.",
+    "comments_url": "https://api.github.com/repos/calibrain/calibre-web-automated-book-downloader/issues/52/comments",
+    "author": "gmeijers",
+    "comments": [
+      {
+        "user": "calibrain",
+        "created_at": "2025-01-10T20:03:57Z",
+        "body": "If the book is corrupted, i will automatically delete it\r\nSo, I just tried for the specific book you downloaded, and it seems fine\r\n\r\nThis might be actually an issue moving the book to $INGEST_DIR (which by default is `/cwa-book-ingest`)\r\nI would bet its a permission issue\r\nTry to go in the docker and write to that folder and see if you are getting any errors ?\r\n\r\nBasically the logic is :\r\nDownload to a temp folder\r\nConvert to Epub with output to actual folder \r\n(even if its an epub, we still convert it to epub to test if its properly formatted. This will be dropped in the next release since CWA will be dooing that instead)\r\n\r\nI guess during the conversion process, the script is unable to write to /cwa-book-ingest for some reason (try chmod 777 or mount another folder instead )\r\n"
+      },
+      {
+        "user": "gmeijers",
+        "created_at": "2025-01-11T08:03:45Z",
+        "body": "You're right, it was a permission issue. It's solved, and it's probably me but I still don't completely get it:\r\n\r\n- I can touch test.epub in tmp/cwa-book-downloader\r\n- I can mv the .epub to cwa-book-ingest\r\n- Problem when running the program \u00af\\_(\u30c4)_/\u00af\r\n\r\nI chmod cwa-book-ingest to 777, now everything is fine until I redeploy the container."
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2025-01-11T08:13:19Z",
+        "body": "It seems to be a permission issue with the folder\r\nYou can either run as root (set UID and GID as 0)\r\nOr delete the mounted folder from your computer and let docker automatically create it in the docker compose"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution to the file permission issues preventing successful book processing",
+      "An explanation of why manually moving files works but the program fails",
+      "A persistent solution that survives container redeployment"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:51"
+    }
+  },
+  {
+    "number": 42,
+    "title": "No Log file?",
+    "created_at": "2025-01-07T13:45:46Z",
+    "closed_at": "2025-01-07T19:04:51Z",
+    "labels": [],
+    "url": "https://github.com/calibrain/calibre-web-automated-book-downloader/issues/42",
+    "body": "Hello,\r\n\r\nI've ran the docker from ghcy and I found out I don't have any log in /var/logs, is that normal? The folder is empty. I tried deleting the folder and on next run, it create it back but still empty. I did change UID to 99 (the image do throw a warning because it's below 1000 but that's required for unraid) but even reverting to 1000 doesn't fix it.\r\n\r\nThank you",
+    "comments_url": "https://api.github.com/repos/calibrain/calibre-web-automated-book-downloader/issues/42/comments",
+    "author": "nodiaque",
+    "comments": [
+      {
+        "user": "calibrain",
+        "created_at": "2025-01-07T19:05:24Z",
+        "body": "Oups, you are right, I was never writing to it\r\nI fixed it, can you repull and retry now ?"
+      },
+      {
+        "user": "nodiaque",
+        "created_at": "2025-01-07T19:34:24Z",
+        "body": "Docker fail to start\r\n\r\nPermissionError: [Errno 13] Permission denied: '/var/log/cwa-book-downloader'"
+      },
+      {
+        "user": "nodiaque",
+        "created_at": "2025-01-07T19:37:15Z",
+        "body": "I think it's suppose to be /var/logs/? missing s I think."
+      },
+      {
+        "user": "nodiaque",
+        "created_at": "2025-01-07T19:39:42Z",
+        "body": "I made it work by mapping a path\r\n/var/log/cwa-book-downloader to a path on my guess. But I think it fail to create the folder else since that folder belong to root."
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2025-01-07T20:31:36Z",
+        "body": "Oh by bad, I had an uncommitted change to create the folder !\r\nThank you for the heads up\r\nits now fixed"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working log file system in the Docker container",
+      "Proper permissions for the log directory",
+      "Compatibility with custom UID settings",
+      "Clear documentation about log file locations"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:56"
+    }
+  },
+  {
+    "number": 35,
+    "title": "Improve Mobile Usability, pan right in results to see the buttons",
+    "created_at": "2025-01-04T15:29:51Z",
+    "closed_at": "2025-01-06T16:07:14Z",
+    "labels": [],
+    "url": "https://github.com/calibrain/calibre-web-automated-book-downloader/issues/35",
+    "body": "I know designing for mobile is probably a huge can of worms.  But there are times when using my phone is more convenient, and when I try to use it I can initiate a search which is great.  But the results are usually unusable, since I cannot fully pan over to the right where the buttons are.  If even that one piece could somehow be fixed when using the mobile, being able to click detail/download or fully read the results, that would be great.",
+    "comments_url": "https://api.github.com/repos/calibrain/calibre-web-automated-book-downloader/issues/35/comments",
+    "author": "yroyathon",
+    "comments": [
+      {
+        "user": "99brae",
+        "created_at": "2025-01-04T17:35:21Z",
+        "body": "Ran into this issue as well. Should be ideally a one/few line change. "
+      },
+      {
+        "user": "cthorne",
+        "created_at": "2025-01-04T23:29:57Z",
+        "body": "Try repulling your docker image, I submitted (and had approved) a PR to resolve this."
+      },
+      {
+        "user": "yroyathon",
+        "created_at": "2025-01-05T00:02:25Z",
+        "body": "Hooray it's fixed!  I'm on iPhone mobile/safari.  Thank you, this is great! "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Enable full horizontal scrolling/panning in mobile view to access UI elements on the right side",
+      "Make detail/download buttons accessible on mobile devices",
+      "Ensure search results are fully readable on mobile devices",
+      "Solution works on iPhone/Safari mobile browser"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:16:01"
+    }
+  },
+  {
+    "number": 12,
+    "title": "Best approach to change ports?",
+    "created_at": "2024-12-19T20:12:20Z",
+    "closed_at": "2024-12-20T02:24:32Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/calibrain/calibre-web-automated-book-downloader/issues/12",
+    "body": "Wondering best approach to remap ports for both the main app and the cloudflare proxy?  Tried using the ENV variables, that didn't work (still used 8084 and 8000), tried remapping ports directly and that seemed to work but couldn't connect to the Cloudflare proxy w/localhost or got errors using an IP instead (connection refused).  \r\n\r\nGuessing I'm just doing something incorrect, but would see shifting ports as a pretty big need for many.",
+    "comments_url": "https://api.github.com/repos/calibrain/calibre-web-automated-book-downloader/issues/12/comments",
+    "author": "necromancyr",
+    "comments": [
+      {
+        "user": "calibrain",
+        "created_at": "2024-12-19T21:56:59Z",
+        "body": "You are totally correct\r\nI messed up my docker compose,\r\nIts fixed now, see #13"
+      },
+      {
+        "user": "necromancyr",
+        "created_at": "2024-12-19T22:49:03Z",
+        "body": "To map the ports for cloudflarebypassforscraping service should just add port maps under there, correct?  That's the other part - both ports need to be modifiable.  "
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2024-12-19T22:53:29Z",
+        "body": "Sadly, cloudflarebypassforscraping port can't be changed, it's hardcoded from their service\r\nBut it shouldn't matter, since we are not exposing it\r\nIts only used internally, and by hostname so you can have another service in your compose using the same port and it will work fine\r\n\r\nWhy are you trying to change the port ?"
+      },
+      {
+        "user": "necromancyr",
+        "created_at": "2024-12-20T01:40:53Z",
+        "body": "Thanks - you answered my question.  I was overthinking it and trying to remap more than I needed to.  Thanks!  This is addressed and working great!  (Now I just need a UI element in CWA to link to this! :))\r\n"
+      },
+      {
+        "user": "calibrain",
+        "created_at": "2024-12-20T02:24:32Z",
+        "body": "I am talking with the creator of CWA about that :P \r\nFor now I have a hack where I apply inject the button in the HTML before spinning the CWA docker, I might clean it up a bit and share it next week"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification on which ports need to be remapped and which cannot be changed",
+      "Understanding of how the internal port mapping works with the cloudflare proxy service",
+      "A working configuration that allows the user to run the service without port conflicts"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:16:06"
+    }
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "number": 102,
+    "title": "\u0412\u0435\u0440\u043d\u0443\u043b \u043b\u043e\u043a\u0430\u043b\u044c\u043d\u043e\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u0434\u043b\u044f \u0443\u0436\u0435 \u043f\u0440\u043e\u0448\u0438\u0442\u043e\u0433\u043e \u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u0430",
+    "created_at": "2025-03-17T08:00:56Z",
+    "closed_at": "2025-03-25T19:11:38Z",
+    "labels": [],
+    "url": "https://github.com/slacky1965/tuya_thermostat_zrd/pull/102",
+    "body": null,
+    "comments_url": "https://api.github.com/repos/slacky1965/tuya_thermostat_zrd/issues/102/comments",
+    "author": "ilkh",
+    "comments": [
+      {
+        "user": "ixmax",
+        "created_at": "2025-03-20T06:42:03Z",
+        "body": "\u0417\u0430\u043f\u044f\u0442\u0430\u044f \u0432 \u043a\u043e\u043d\u0446\u0435 \u0441\u0442\u0440\u043e\u043a\u0438 \u043b\u0438\u0448\u043d\u044f\u044f, \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0442\u0430\u043a:\r\n`    {\r\n        \"url\": \"images/6565-0391-10143001-tuya_thermostat_zrd.zigbee\"\r\n    }`\r\n\u0418\u043d\u0430\u0447\u0435 \u0432\u044b\u043b\u0435\u0442\u0430\u0435\u0442 \u043e\u0448\u0438\u0431\u043a\u0430 \u043f\u0440\u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f\r\n\r\n> z2m: Failed to check if update available for '%device_name%' (Expected double-quoted property name in JSON at position %num% (line 21 column 5))"
+      },
+      {
+        "user": "ilkh",
+        "created_at": "2025-03-20T09:13:32Z",
+        "body": "> \u0417\u0430\u043f\u044f\u0442\u0430\u044f \u0432 \u043a\u043e\u043d\u0446\u0435 \u0441\u0442\u0440\u043e\u043a\u0438 \u043b\u0438\u0448\u043d\u044f\u044f, \u0434\u043e\u043b\u0436\u043d\u043e \u0431\u044b\u0442\u044c \u0442\u0430\u043a: ` { \"url\": \"images/6565-0391-10143001-tuya_thermostat_zrd.zigbee\" }` \u0418\u043d\u0430\u0447\u0435 \u0432\u044b\u043b\u0435\u0442\u0430\u0435\u0442 \u043e\u0448\u0438\u0431\u043a\u0430 \u043f\u0440\u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0435 \u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f\r\n> \r\n> > z2m: Failed to check if update available for '%device_name%' (Expected double-quoted property name in JSON at position %num% (line 21 column 5))\r\n\r\n\u0421\u043f\u0430\u0441\u0438\u0431\u043e, \u043f\u043e\u043f\u0440\u0430\u0432\u0438\u043b"
+      },
+      {
+        "user": "slacky1965",
+        "created_at": "2025-03-20T16:10:40Z",
+        "body": "\u0414\u0430 \u044d\u0442\u043e \u0441\u043a\u043e\u0440\u043e \u0441\u0442\u0430\u043d\u0435\u0442 \u043d\u0435 \u0432\u0430\u0436\u043d\u043e. \u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u044f \u0431\u0443\u0434\u0443\u0442 \u043f\u0440\u0438\u0434\u043b\u0435\u0442\u0430\u0442\u044c \u043e\u0442 \u0441\u0430\u043c\u043e\u0433\u043e z2m, \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u044c\u043d\u043e \u043f\u0440\u043e\u043f\u0438\u0441\u044b\u0432\u0430\u0442\u044c \u043d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043d\u0443\u0436\u043d\u043e \u0431\u0443\u0434\u0435\u0442 ..."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correction of JSON syntax error by removing the trailing comma",
+      "Information that resolves the error message about double-quoted property names in JSON",
+      "A working JSON configuration that allows the system to check for updates without errors"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:23"
+    }
+  },
+  {
+    "number": 58,
+    "title": "I Cannot update to 1.0.08",
+    "created_at": "2025-01-06T13:43:23Z",
+    "closed_at": "2025-01-06T15:44:21Z",
+    "labels": [],
+    "url": "https://github.com/slacky1965/tuya_thermostat_zrd/issues/58",
+    "body": "Hi,\r\n\r\nThank you for this firmware, I have a couple of these (Tuya_Thermostat_r01) and they are working well for me on 1.0.07.\r\n\r\nI am trying to update them to the 1.0.08 version. I have `local_ota_index.json` as specified and have confirmed it is being used by z2m. I have the `1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee` present in the images subfolder.\r\n\r\nDespite this, z2m says there is no update available when checking these devices.\r\n\r\nI have since tried updating my z2m and the configuration from this repo to the 2.0 version however the new `local_ota_index.json` specifies an extra entry for `tuya_thermostat_zrd.zigbee` \r\n\r\n```\r\n    {\r\n        \"url\": \"images/tuya_thermostat_zrd.zigbee\"\r\n    }\r\n```\r\n\r\nWhich gives an error in z2m as this file doesn't exist. What should this file be? A copy of the full name `1141-d3a3-1111114b-tuya_thermostat_zrd.zigbee` or something else?\r\n\r\nIf I remove the new entry in `local_ota_index.json` I have the same behaviour as the pre-2.0 version, no updates available for the devices.\r\n\r\nThanks again!",
+    "comments_url": "https://api.github.com/repos/slacky1965/tuya_thermostat_zrd/issues/58/comments",
+    "author": "csutcliff",
+    "comments": [
+      {
+        "user": "devbis",
+        "created_at": "2025-01-06T15:15:13Z",
+        "body": "@csutcliff  To upgrade custom firmware you need to put \r\n6565-0391-10083001-tuya_thermostat_zrd.zigbee  to the corresponding folder (e.g. images in your case) and add it to local_ota file:\r\n\r\n```json\r\n{\r\n        \"url\": \"images/6565-0391-10083001-tuya_thermostat_zrd.zigbee\"\r\n}\r\n```\r\n\r\nd3a3 file is used for the initial flashing only. Now for upgraded devices the manufacturer code is 6565"
+      },
+      {
+        "user": "csutcliff",
+        "created_at": "2025-01-06T15:44:21Z",
+        "body": "excellent, that's what I was missing, thank you!"
+      },
+      {
+        "user": "slacky1965",
+        "created_at": "2025-01-06T15:55:33Z",
+        "body": "For an easy upgrade, you need to rename the file `6565-0391-XXXXXXXX-tuya_thermostat_zrd.zigbee` to `tuya_thermostat_zrd.zigbee` and do this every time you want to get the next version of the firmware. And leave the previous entry in **local_ota_index.json**. \r\n\r\n```\r\n    {\r\n        \"url\": \"images/tuya_thermostat_zrd.zigbee\"\r\n    }\r\n```\r\n\r\nThen you won't need to restart **zigbee2mqtt** every time before updating."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of the correct firmware file naming convention for updates",
+      "Instructions for properly configuring the local_ota_index.json file",
+      "Information about the difference between initial flashing and subsequent updates",
+      "A working solution that enables firmware updates to version 1.0.08"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:32"
+    }
+  }
+]

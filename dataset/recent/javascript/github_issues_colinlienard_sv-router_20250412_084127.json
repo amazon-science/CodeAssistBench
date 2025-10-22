@@ -1,0 +1,34 @@
+[
+  {
+    "number": 68,
+    "title": "Cannot to use both layout and catchall at the same level",
+    "created_at": "2025-04-02T22:24:43Z",
+    "closed_at": "2025-04-03T16:26:11Z",
+    "labels": [],
+    "url": "https://github.com/colinlienard/sv-router/issues/68",
+    "body": "I cannot use both a layout and a catchall route at the same level. For instance, this renders MyPage but not Layout:\n\n```\n      '/poc': {\n        '*breadcrumbs': MyPage,\n        layout: Layout,\n      }\n```",
+    "comments_url": "https://api.github.com/repos/colinlienard/sv-router/issues/68/comments",
+    "author": "lmaccherone",
+    "comments": [
+      {
+        "user": "colinlienard",
+        "created_at": "2025-04-03T16:28:38Z",
+        "body": "Hey @lmaccherone thanks for reporting this!\nI published a new version with the fix, should be good now"
+      },
+      {
+        "user": "lmaccherone",
+        "created_at": "2025-04-03T17:34:34Z",
+        "body": "Thanks! That fixed it."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix that allows simultaneous use of layout and catchall routes at the same level",
+      "Proper rendering of both the Layout and MyPage components when configured together",
+      "Timely resolution through a version update"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:37"
+    }
+  }
+]

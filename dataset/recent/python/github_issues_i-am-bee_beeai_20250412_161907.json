@@ -1,0 +1,39 @@
+[
+  {
+    "number": 516,
+    "title": "docs: update copyright",
+    "created_at": "2025-04-08T01:05:04Z",
+    "closed_at": "2025-04-09T14:26:52Z",
+    "labels": [],
+    "url": "https://github.com/i-am-bee/beeai/pull/516",
+    "body": null,
+    "comments_url": "https://api.github.com/repos/i-am-bee/beeai/issues/516/comments",
+    "author": "jenna-winkler",
+    "comments": [
+      {
+        "user": "JanPokorny",
+        "created_at": "2025-04-09T11:03:20Z",
+        "body": "@jenna-winkler Is the copyright year intentionally missing?"
+      },
+      {
+        "user": "jenna-winkler",
+        "created_at": "2025-04-09T13:04:49Z",
+        "body": "> @jenna-winkler Is the copyright year intentionally missing?\r\n\r\n@JanPokorny good catch I checked with the LF because this is the string they provided me with but they said that wasn\u2019t intentional we can include year  "
+      },
+      {
+        "user": "JanPokorny",
+        "created_at": "2025-04-09T13:53:01Z",
+        "body": "@jenna-winkler OK nice, it's easier if I don't have to hack NWA to _not_ include year \ud83d\ude01 In that case I'll just update the NWA config in this PR so that the checks pass"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation that including the copyright year is appropriate",
+      "Permission to update the NWA configuration to include the year",
+      "Clarification on the official copyright notice format"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:14:45"
+    }
+  }
+]

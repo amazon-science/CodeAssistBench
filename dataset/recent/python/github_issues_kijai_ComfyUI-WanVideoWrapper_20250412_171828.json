@@ -1,0 +1,143 @@
+[
+  {
+    "number": 334,
+    "title": "Error when excuting 1.3B control lora example workflow",
+    "created_at": "2025-03-28T09:28:14Z",
+    "closed_at": "2025-03-28T12:14:20Z",
+    "labels": [],
+    "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper/issues/334",
+    "body": "Both the nodes and workflow json file are latest.\n```\ngot prompt\nencoded latents shape torch.Size([1, 16, 13, 96, 64])\nFETCH ComfyRegistry Data: 5/80\nFETCH ComfyRegistry Data: 10/80\nin_channels:  16\nModel type: t2v, num_heads: 12, num_layers: 30\nModel variant detected: 1_3B\nTeaCache: Using cache device: cpu\nmodel_type FLOW\nUsing accelerate to load and assign model weights to device...\nLoading transformer parameters to cpu: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 825/825 [00:00<00:00, 14996.67it/s]\nLoading LoRA: wan\\wan2 with strength: 1.0\nControl-LoRA detected, patching model...\nLoading model and applying LoRA weights:: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 458/458 [00:00<00:00, 586.94it/s]\nMoving diffusion model from cuda:0 to cpu\n!!! Exception during processing !!! Empty image embeds must be provided for T2V (Text to Video\nTraceback (most recent call last):\n  File \"D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\execution.py\", line 327, in execute\n    output_data, output_ui, has_subgraph = get_output_data(obj, input_data_all, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb)\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\execution.py\", line 202, in get_output_data\n    return_values = _map_node_over_list(obj, input_data_all, obj.FUNCTION, allow_interrupt=True, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\execution.py\", line 174, in _map_node_over_list\n    process_inputs(input_dict, i)\n  File \"D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\execution.py\", line 163, in process_inputs\n    results.append(getattr(obj, func)(**inputs))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\custom_nodes\\ComfyUI-WanVideoWrapper\\nodes.py\", line 1801, in process\n    raise ValueError(\"Empty image embeds must be provided for T2V (Text to Video\")\nValueError: Empty image embeds must be provided for T2V (Text to Video\n```",
+    "comments_url": "https://api.github.com/repos/kijai/ComfyUI-WanVideoWrapper/issues/334/comments",
+    "author": "cheezecrisp",
+    "comments": [
+      {
+        "user": "kijai",
+        "created_at": "2025-03-28T09:41:29Z",
+        "body": "Wrong model selected, it needs to be the new Fun-Control model, link is in the workflow, based on your log you have a normal 1.3B model selected."
+      },
+      {
+        "user": "cheezecrisp",
+        "created_at": "2025-03-28T09:49:51Z",
+        "body": "> Wrong model selected, it needs to be the new Fun-Control model, link is in the workflow, based on your log you have a normal 1.3B model selected.\n\nTried the fun model and got another error:\n```\nRuntimeError: The size of tensor a (32) must match the size of tensor b (36) at non-singleton dimension 1\n```\n\nI used this workflow several days ago (before the fun models came out) and it worked well at that time, so I think it's nothing to do with the fun models."
+      },
+      {
+        "user": "kijai",
+        "created_at": "2025-03-28T11:17:05Z",
+        "body": "Right sorry, misread... forgot about whole control lora, should work now."
+      },
+      {
+        "user": "cheezecrisp",
+        "created_at": "2025-03-28T12:14:21Z",
+        "body": "> Right sorry, misread... forgot about whole control lora, should work now.\n\nGreat! It's fixed now"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix that resolves the error when executing the 1.3B control lora example workflow",
+      "Compatibility with the existing workflow setup rather than requiring new models",
+      "A solution that addresses the specific error about empty image embeds for T2V"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:03:12"
+    }
+  },
+  {
+    "number": 318,
+    "title": "Wan fun control reference image ignored",
+    "created_at": "2025-03-27T10:36:05Z",
+    "closed_at": "2025-03-27T11:04:56Z",
+    "labels": [],
+    "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper/issues/318",
+    "body": "Testing the example control workflow. Connecting the reference image to the wan empty embeds does nothing.\n\nIn other words the output is the same with the default connections or with reference image, like the reference image is completely ignored.",
+    "comments_url": "https://api.github.com/repos/kijai/ComfyUI-WanVideoWrapper/issues/318/comments",
+    "author": "luxdelux7",
+    "comments": [
+      {
+        "user": "kijai",
+        "created_at": "2025-03-27T10:57:01Z",
+        "body": "> Testing the example control workflow. Connecting the reference image to the wan empty embeds does nothing.\n> \n> In other words the output is the same with the default connections or with reference image, like the reference image is completely ignored.\n\nYou don't connect it to the empty, that's just for T2V, you connect it straight to the sampler when using reference image."
+      },
+      {
+        "user": "luxdelux7",
+        "created_at": "2025-03-27T11:04:56Z",
+        "body": "Ah thank you. I was stupidly just connecting to the empty embeds as the note was above it.\n\nIt indeed works! Awesome. Now to test further."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear instructions on the correct connection point for the reference image in the control workflow",
+      "Explanation of the distinction between Text-to-Video (T2V) connections and reference image connections",
+      "Simple, direct guidance that corrects the user's workflow configuration"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:03:19"
+    }
+  },
+  {
+    "number": 200,
+    "title": "wanvideo control workflow error",
+    "created_at": "2025-03-11T17:16:37Z",
+    "closed_at": "2025-03-12T06:10:32Z",
+    "labels": [],
+    "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper/issues/200",
+    "body": " File \"E:\\ComfyUI_py312\\ComfyUI\\execution.py\", line 202, in get_output_data\n    return_values = _map_node_over_list(obj, input_data_all, obj.FUNCTION, allow_interrupt=True, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\ComfyUI\\execution.py\", line 174, in _map_node_over_list\n    process_inputs(input_dict, i)\n  File \"E:\\ComfyUI_py312\\ComfyUI\\execution.py\", line 163, in process_inputs\n    results.append(getattr(obj, func)(**inputs))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\ComfyUI\\custom_nodes\\ComfyUI-WanVideoWrapper\\nodes.py\", line 1717, in process\n    noise_pred, self.teacache_state = predict_with_cfg(\n                                      ^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\ComfyUI\\custom_nodes\\ComfyUI-WanVideoWrapper\\nodes.py\", line 1486, in predict_with_cfg\n    noise_pred_cond, teacache_state_cond = transformer(\n                                           ^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\python_embeded\\Lib\\site-packages\\torch\\nn\\modules\\module.py\", line 1736, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\python_embeded\\Lib\\site-packages\\torch\\nn\\modules\\module.py\", line 1747, in _call_impl\n    return forward_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\ComfyUI\\custom_nodes\\ComfyUI-WanVideoWrapper\\wanvideo\\modules\\model.py\", line 746, in forward\n    x = self.unpatchify(x, grid_sizes)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"E:\\ComfyUI_py312\\ComfyUI\\custom_nodes\\ComfyUI-WanVideoWrapper\\wanvideo\\modules\\model.py\", line 767, in unpatchify\n    x = x[:math.prod(v)].view(*v, *self.patch_size, c)\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: shape '[14, 120, 67, 1, 2, 2, 16]' is invalid for input of size 7257600\n\nPrompt executed in 68.14 seconds",
+    "comments_url": "https://api.github.com/repos/kijai/ComfyUI-WanVideoWrapper/issues/200/comments",
+    "author": "NeilWang079",
+    "comments": [
+      {
+        "user": "dvschultz",
+        "created_at": "2025-03-12T05:48:39Z",
+        "body": "I also got this"
+      },
+      {
+        "user": "dvschultz",
+        "created_at": "2025-03-12T05:56:20Z",
+        "body": "video input h/w needs to be divisible by 16"
+      },
+      {
+        "user": "NeilWang079",
+        "created_at": "2025-03-12T06:10:32Z",
+        "body": "Thanks"
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation of the cause of the runtime error",
+      "A clear, concise solution to resolve the video dimension error"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:03:37"
+    }
+  },
+  {
+    "number": 106,
+    "title": "Various dimension issues",
+    "created_at": "2025-03-02T14:51:46Z",
+    "closed_at": "2025-03-02T23:02:10Z",
+    "labels": [],
+    "url": "https://github.com/kijai/ComfyUI-WanVideoWrapper/issues/106",
+    "body": "I can get things running well at certain dimensions, e.g. 848 x 480, or 1280 x 720, however there are other dimensions which cause errors to kick up. \n\n640 x 360 gives this error\n\n```\n# ComfyUI Error Report\n## Error Details\n- **Node ID:** 27\n- **Node Type:** WanVideoSampler\n- **Exception Type:** RuntimeError\n- **Exception Message:** The size of tensor a (45) must match the size of tensor b (44) at non-singleton dimension 3\n## Stack Trace\n```\n  File \"/notebooks/ComfyUI/execution.py\", line 327, in execute\n    output_data, output_ui, has_subgraph = get_output_data(obj, input_data_all, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb)\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/notebooks/ComfyUI/execution.py\", line 202, in get_output_data\n    return_values = _map_node_over_list(obj, input_data_all, obj.FUNCTION, allow_interrupt=True, execution_block_cb=execution_block_cb, pre_execute_cb=pre_execute_cb)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/notebooks/ComfyUI/execution.py\", line 174, in _map_node_over_list\n    process_inputs(input_dict, i)\n\n  File \"/notebooks/ComfyUI/execution.py\", line 163, in process_inputs\n    results.append(getattr(obj, func)(**inputs))\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/notebooks/ComfyUI/custom_nodes/ComfyUI-WanVideoWrapper/nodes.py\", line 1249, in process\n    temp_x0 = sample_scheduler.step(\n              ^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/notebooks/ComfyUI/custom_nodes/ComfyUI-WanVideoWrapper/wanvideo/utils/fm_solvers.py\", line 754, in step\n    model_output = self.convert_model_output(model_output, sample=sample)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n  File \"/notebooks/ComfyUI/custom_nodes/ComfyUI-WanVideoWrapper/wanvideo/utils/fm_solvers.py\", line 383, in convert_model_output\n    x0_pred = sample - sigma_t * model_output\n              ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~\n\n```\n\nNearby dimensions such as 648x360 kick up a slightly different error, purporting to be from EnhanceAVideo. My online instance just ran out of time though, so I'll update this thread once I've managed to get back on it!\n\n",
+    "comments_url": "https://api.github.com/repos/kijai/ComfyUI-WanVideoWrapper/issues/106/comments",
+    "author": "SRagy",
+    "comments": [
+      {
+        "user": "kijai",
+        "created_at": "2025-03-02T15:12:49Z",
+        "body": "The model seems to require the dimensions to be divisible by 16 at least, not sure of the exact requirement, but I bet that error is because 360 / 16 = 22.5"
+      },
+      {
+        "user": "SRagy",
+        "created_at": "2025-03-02T23:02:10Z",
+        "body": "Yes, that was it, thanks."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Explanation of dimension requirements for the model",
+      "Identification of the root cause of the dimension-related errors"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:03:59"
+    }
+  }
+]

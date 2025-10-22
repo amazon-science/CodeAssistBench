@@ -1,0 +1,34 @@
+[
+  {
+    "number": 3,
+    "title": "error compiling sim.c",
+    "created_at": "2025-04-02T21:49:57Z",
+    "closed_at": "2025-04-03T13:41:01Z",
+    "labels": [],
+    "url": "https://github.com/AncientJames/multivox/issues/3",
+    "body": "Hello James,\nthis is an amazing project you have made here.\nI have issues compiling the code on my raspberry pi 5 unsucessful with the following error:\n/home/rpi5/multivox/src/simulator/sim.c:14:10: fatal error: **GLES3/gl3.h**: No such file or directory.\nI will be grateful for any advice on how to install the open-gl libraries or skip compiling your simulator.",
+    "comments_url": "https://api.github.com/repos/AncientJames/multivox/issues/3/comments",
+    "author": "IljaRukin",
+    "comments": [
+      {
+        "user": "AncientJames",
+        "created_at": "2025-04-02T23:01:55Z",
+        "body": "From  memory, the gl libraries can be installed via `sudo apt install libgles-dev libegl-dev`\n\nFailing that, the simulator is the last section in the `CMakeLists.txt` - comment out everything from `set(SIMULATOR_SRC_DIR ${SRC_DIR}/simulator)`\n\n"
+      },
+      {
+        "user": "IljaRukin",
+        "created_at": "2025-04-03T13:41:01Z",
+        "body": "Thank you for your fast response !\nInstalling the librarier you mentioned solved the issue."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Instructions for installing the missing OpenGL libraries on Raspberry Pi",
+      "A workaround to bypass simulator compilation if library installation isn't possible",
+      "A prompt response that addresses the specific compilation error"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:07"
+    }
+  }
+]

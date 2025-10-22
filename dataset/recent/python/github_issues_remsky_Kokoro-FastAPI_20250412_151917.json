@@ -1,0 +1,35 @@
+[
+  {
+    "number": 43,
+    "title": "GPU image does not use GPU",
+    "created_at": "2025-01-13T12:12:31Z",
+    "closed_at": "2025-01-13T12:53:46Z",
+    "labels": [],
+    "url": "https://github.com/remsky/Kokoro-FastAPI/issues/43",
+    "body": "I am using following image: ghcr.io/remsky/kokoro-fastapi-gpu:v0.0.5post1 with unmodified `docker-compose.yml` from repo.\r\n```\r\nkokoro-tts-1     | INFO:     Started server process [1]\r\nkokoro-tts-1     | INFO:     Waiting for application startup.\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | Loading TTS model and voice packs...\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | CUDA available: False\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | Initializing model on cpu\r\n```\r\n\r\nImage runs as `appuser` instead of root and on linux you need to be in proper group to use NVIDIA driver (even when using nvidia-container-toolkit).\r\n```\r\ndevilan@darkstar:~/git/Kokoro-FastAPI (master) $ docker exec -it b5ed10b82d7f /bin/bash\r\nappuser@b5ed10b82d7f:/app$ nvidia-smi \r\nFailed to initialize NVML: Insufficient Permissions\r\n```\r\n\r\nYou should at least point this out clearly in README if this app should not work as root user.\r\nThere are some methods to resolve this problem, but each of them compromises system a bit.\r\nYou can chmod 666 /dev/nvidia* so no access restriction for this device (but not everyone would like to do so).",
+    "comments_url": "https://api.github.com/repos/remsky/Kokoro-FastAPI/issues/43/comments",
+    "author": "DevilaN",
+    "comments": [
+      {
+        "user": "remsky",
+        "created_at": "2025-01-13T12:53:46Z",
+        "body": "Hey @DevilaN. Thanks for the info. I'm not seeing that issue, though as mentioned in the readme, it's only been tested on Windows 11 w/WSL2 and the HuggingFace A100's for CUDA support + a Mac M3 for CPU (also may require a build from source for arm compatibility, though looking to add the multiplatform image shortly)\r\n\r\nAdded a note in the readme for linux users with this issue, feel free to modify it with a PR with any brief specifics I miss, so they can build from source with the config they'd want. \r\n\r\nbfe2dd522f5eef196973c2c95a0416bc314f17e4"
+      },
+      {
+        "user": "DevilaN",
+        "created_at": "2025-01-13T13:21:06Z",
+        "body": "Nice!\r\nThere might be a little catch with `add_group:` for users.\r\nIf numerical group id exists in container it is not added, so for me `video` group is the proper one on Gentoo. But it has id: 27 which is also id of `sudo` group inside image `/etc/groups`. Only when I specify id of group instead of it's name it is working great.\r\n\r\nOf course different systems / distros have different permissions / id's so there is no one proper way of doing this.\r\n\r\nIt might be worth mentioning that instead of tinkering with `docker-compose.yml` file it might be better to create `docker-compose.override.yml` and place changes there, so it will not conflict with further repo pulling.\r\n\r\nThank you for your support!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Documentation about Linux permission requirements for GPU access",
+      "Information about group permission configuration for GPU access",
+      "Guidance on maintaining custom configurations across repository updates",
+      "Acknowledgment of platform-specific differences in GPU access configuration"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:19:03"
+    }
+  }
+]

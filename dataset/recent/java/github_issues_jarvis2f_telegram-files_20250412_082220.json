@@ -1,0 +1,33 @@
+[
+  {
+    "number": 23,
+    "title": "Archived Chats cannot be found",
+    "created_at": "2025-01-21T09:20:34Z",
+    "closed_at": "2025-01-21T19:49:26Z",
+    "labels": [],
+    "url": "https://github.com/jarvis2f/telegram-files/issues/23",
+    "body": "When searching for an archived chat it cannot be found. After unarchiving, it gets found instantly. It would be nice to get a setting to enable this feature.",
+    "comments_url": "https://api.github.com/repos/jarvis2f/telegram-files/issues/23/comments",
+    "author": "nudelmaker",
+    "comments": [
+      {
+        "user": "jarvis2f",
+        "created_at": "2025-01-21T13:31:26Z",
+        "body": "@nudelmaker \nIn the latest version (0.1.11), we have added support for searching archived chats. You can try it out. \nThanks for the feedback."
+      },
+      {
+        "user": "nudelmaker",
+        "created_at": "2025-01-21T19:49:26Z",
+        "body": "Wow. Thanks for the fast implementation. Working great!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Ability to search for and find archived chats",
+      "Timely implementation of the requested feature"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:33"
+    }
+  }
+]

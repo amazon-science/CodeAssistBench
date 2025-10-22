@@ -1,0 +1,29 @@
+[
+  {
+    "number": 5,
+    "title": "Fixed example code in README.md",
+    "created_at": "2024-11-24T12:44:22Z",
+    "closed_at": "2024-11-24T12:52:47Z",
+    "labels": [],
+    "url": "https://github.com/lvntky/fbgl/pull/5",
+    "body": "Example code now correctly declares a fbgl_t buffer and passes it to relevant functions, also, fbgl_get_{width,height} are renamed to the kernel functions fb_get_{width,height} as a library-provided wrapper is non-existent (and probably unnecessary).",
+    "comments_url": "https://api.github.com/repos/lvntky/fbgl/issues/5/comments",
+    "author": "dario-loi",
+    "comments": [
+      {
+        "user": "lvntky",
+        "created_at": "2024-11-24T12:52:25Z",
+        "body": "Thanks @dario-loi im merging the commits and also will add you in contributors list in .h file when i log in to my computer, much appreciated \ud83d\ude4f "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Acknowledgment of the code corrections in the README.md file",
+      "Acceptance of the pull request containing the fixes",
+      "Recognition of the contributor's effort"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:50"
+    }
+  }
+]

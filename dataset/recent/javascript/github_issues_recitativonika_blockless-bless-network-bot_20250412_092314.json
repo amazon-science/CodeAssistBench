@@ -1,0 +1,154 @@
+[
+  {
+    "number": 27,
+    "title": "Dear, so now it is not possible to use five devices under the same account?",
+    "created_at": "2025-01-06T11:52:50Z",
+    "closed_at": "2025-01-06T14:51:34Z",
+    "labels": [],
+    "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/27",
+    "body": "Dear, so now it is not possible to use five devices under the same account?",
+    "comments_url": "https://api.github.com/repos/recitativonika/blockless-bless-network-bot/issues/27/comments",
+    "author": "youngyeh310",
+    "comments": [
+      {
+        "user": "recitativonika",
+        "created_at": "2025-01-06T11:57:40Z",
+        "body": "Install extension - login - copy your nodeid - delete extension, repeat till 5 node in your account."
+      },
+      {
+        "user": "youngyeh310",
+        "created_at": "2025-01-06T13:31:51Z",
+        "body": "THX"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A method to use the same account across five devices",
+      "A step-by-step process that works within the current system constraints"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:40"
+    }
+  },
+  {
+    "number": 12,
+    "title": "Can multiple proxies run on 1 usertoken?",
+    "created_at": "2024-11-25T07:46:33Z",
+    "closed_at": "2024-11-25T07:49:36Z",
+    "labels": [],
+    "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/12",
+    "body": "I have a question: if a userToken has one nodeId and one hardwareId, can it run multiple proxies? Will it receive multiple rewards?\r\nOr can each userToken, nodeId, and hardwareId only run on one proxy?\r\n\r\nThanks for reading. I look forward to your reply.",
+    "comments_url": "https://api.github.com/repos/recitativonika/blockless-bless-network-bot/issues/12/comments",
+    "author": "lenhu96",
+    "comments": [
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-25T07:49:36Z",
+        "body": "1 nodeid is only can run 1 process, so you can't run 1 nodeid with multiple proxies. But usertoken can run multiple different nodeid (5 max)"
+      },
+      {
+        "user": "lenhu96",
+        "created_at": "2024-11-25T08:08:39Z",
+        "body": "Thank you for sharing.\r\nBut I noticed in the config.js file, there is a format like the one below:\r\n\r\njavascript\r\nCopy code\r\nusertoken: 'usertoken1',\r\nnodes: [\r\n    { nodeId: 'nodeid1', hardwareId: 'hardwareid1', proxy: 'proxy1' },\r\n    { nodeId: 'nodeid2', hardwareId: 'hardwareid2', proxy: 'proxy2' },\r\n    { nodeId: 'nodeid3', hardwareId: 'hardwareid3', proxy: 'proxy3' },\r\n    { nodeId: 'nodeid4', hardwareId: 'hardwareid4', proxy: 'proxy4' },\r\n    { nodeId: 'nodeid5', hardwareId: 'hardwareid5', proxy: 'proxy5' }\r\n]\r\nFrom this, I see that on the same PC, if there are 2 browsers, there will be 2 userTokens and 2 nodeIds but the same hardwareId.\r\nSo, in what situation would there be a case like the format you shared, where one userToken has multiple nodeIds?\r\n\r\nI hope you understand as I still don\u2019t fully grasp it.\r\nLooking forward to your response.\r\n\r\nThank you very much."
+      },
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-25T08:13:57Z",
+        "body": "You only need one usertoken for one account, each time you login the account in the different browser or device you will have a different usertoken, just copy one. For nodeid, each extension installation will have a different nodeid and hardwareid comes from the hardware identification of your device, you will need to install extension in different device to have different hardwareid."
+      },
+      {
+        "user": "lenhu96",
+        "created_at": "2024-11-25T08:18:09Z",
+        "body": "I got it\r\nAwesome\r\nThanks for sharing\r\nLove you <3 "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of the relationship between usertoken, nodeId, and hardwareId",
+      "Clarification on the maximum number of proxies that can be run with a single configuration",
+      "Explanation of how the config.js file structure relates to real-world usage",
+      "Information about how hardware identification works across different devices"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:46"
+    }
+  },
+  {
+    "number": 5,
+    "title": "Position B7S_AUTH_TOKEN ",
+    "created_at": "2024-11-17T01:18:24Z",
+    "closed_at": "2024-11-17T01:23:59Z",
+    "labels": [],
+    "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/5",
+    "body": "bang posisi B7S_AUTH_TOKEN dimana ya barusan pake console tab dan check distorage application,,, kosong..",
+    "comments_url": "https://api.github.com/repos/recitativonika/blockless-bless-network-bot/issues/5/comments",
+    "author": "rezzachuky2",
+    "comments": [
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-17T01:23:59Z",
+        "body": "you must already logged in and in the dashboard to get the token, please read it again slowly"
+      },
+      {
+        "user": "rezzachuky2",
+        "created_at": "2024-11-17T01:56:07Z",
+        "body": "> you must already logged in and in the dashboard to get the token, please read it again slowly\r\n\r\nthanks\r\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear instructions on where to find the B7S_AUTH_TOKEN",
+      "Explanation of prerequisites needed to access the token"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:52"
+    }
+  },
+  {
+    "number": 1,
+    "title": "Can i run more than one nodeid?",
+    "created_at": "2024-11-14T20:58:41Z",
+    "closed_at": "2024-11-15T11:48:13Z",
+    "labels": [],
+    "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/1",
+    "body": "Can i run more than one node id at the same time? Coz when i put second nodeid in the new line it doean't react",
+    "comments_url": "https://api.github.com/repos/recitativonika/blockless-bless-network-bot/issues/1/comments",
+    "author": "mizaty",
+    "comments": [
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-14T22:26:31Z",
+        "body": "no, I only test using one node id. maybe I will make it to support multi nodeid/hardwareid later when I have time"
+      },
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-15T11:48:14Z",
+        "body": "Now support multi nodeid,  please pull the repo again."
+      },
+      {
+        "user": "mizaty",
+        "created_at": "2024-11-15T11:50:35Z",
+        "body": "Bro you're legend,do you have any telegram contact or whatever i can catch up"
+      },
+      {
+        "user": "recitativonika",
+        "created_at": "2024-11-15T11:58:22Z",
+        "body": "Please pull the repo again,  I forgot to add ipfetch.\r\n\r\nFor my contact,  sorry I can't give to anyone for my privacy sake."
+      },
+      {
+        "user": "mizaty",
+        "created_at": "2024-11-15T12:04:41Z",
+        "body": "It works now thanksyou, its oke mate i respect that"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Support for running multiple node IDs simultaneously",
+      "Clear instructions on how to obtain the updated functionality",
+      "Complete implementation with all necessary components"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:59"
+    }
+  }
+]

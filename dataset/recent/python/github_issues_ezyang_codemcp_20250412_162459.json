@@ -1,0 +1,116 @@
+[
+  {
+    "number": 144,
+    "title": "Prevent Timeout",
+    "created_at": "2025-03-20T20:04:09Z",
+    "closed_at": "2025-03-22T18:23:31Z",
+    "labels": [],
+    "url": "https://github.com/ezyang/codemcp/issues/144",
+    "body": "Hello, quick question, how do you manage the Timeout errors that you encounter when dealing with long answers ?",
+    "comments_url": "https://api.github.com/repos/ezyang/codemcp/issues/144/comments",
+    "author": "Pekno",
+    "comments": [
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-20T22:30:59Z",
+        "body": "Each of the builtin tool actions is quick so you never get close to the 60s timeout. This is more of a problem for custom commands which could take a long time to run. I think probably the right way to handle this when we come to it is to run the command asynchronously, block the tool call 55sec or so, and if the async command is not done yet we return and ask the LLM to do another tool call to wait some more."
+      },
+      {
+        "user": "Pekno",
+        "created_at": "2025-03-20T22:37:06Z",
+        "body": "Maybe my actions are too broad, but I encounter a lot of timeout when juste asking things like \"Implement X feature\", wich it seems to understand and try to implement, but then after a while just timeout and the conversation closes."
+      },
+      {
+        "user": "borrelan",
+        "created_at": "2025-03-21T05:21:04Z",
+        "body": "I've experienced random cannot connect to Claude and occasionally cannot connect to codemcp.  I either reload the mcp or restart Claude Desktop, which resolves the issue for a while."
+      },
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-21T06:45:43Z",
+        "body": "Oh so there is an infinite loop bug on main I need to push a fix for lol. If the logs say \"advanced patch apply\" before it hangs it's that"
+      },
+      {
+        "user": "notschema",
+        "created_at": "2025-03-21T07:43:02Z",
+        "body": "I'm also having a similar issue where when codemcp makes a file change, it hangs at doing the write task, even if it completes it."
+      },
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-21T23:32:48Z",
+        "body": "I just cut a new release with the infinite loop fix. Please give it a try. I'll close this issue in a week or so if no one reports that it's still happening on the newest version."
+      },
+      {
+        "user": "Pekno",
+        "created_at": "2025-03-21T23:41:34Z",
+        "body": "Everything seems back in order, didn't encounter any timeout for the time being. Will try with more tests tomorow and will close if no issues. Thanks for the quick fix ! And great work for this MCP !"
+      },
+      {
+        "user": "notschema",
+        "created_at": "2025-03-22T02:30:57Z",
+        "body": "I'm not sure if should open a different issue or not; just because it's sort of related to timeout issues; but even when creating a file for example a simple txt document. the file is created, then it will hang for another ~30 seconds until saying **\"I've created a test file named test_file.txt in the %name% directory. The file contains a simple test function that adds two numbers together\"**\n\nIs this normal behavior? "
+      },
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-22T02:52:49Z",
+        "body": "If the MCP finished running then further delay is an Anthropic problem. I have noticed this happens sometimes.\n\nAnother cause for hang is if something bad happens to codemcp server. Then Claude Desktop is just wedged and you need to restart it.\n\nIf you have evidence (eg logs) that it is specifically a codemcp problem I will look more. But a lot of slowness I have noticed in practice is Anthropic"
+      },
+      {
+        "user": "Pekno",
+        "created_at": "2025-03-22T18:23:32Z",
+        "body": "Everything is working as intended, no more Timeout ! Thanks again for the fix !"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for timeout errors when dealing with long answers",
+      "Ability to complete complex tasks without the conversation closing prematurely",
+      "Stable performance without requiring manual restarts or reloads"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:07:48"
+    }
+  },
+  {
+    "number": 139,
+    "title": "Unable to make any changes",
+    "created_at": "2025-03-19T22:19:15Z",
+    "closed_at": "2025-03-20T20:18:09Z",
+    "labels": [],
+    "url": "https://github.com/ezyang/codemcp/issues/139",
+    "body": "Hi, \nThis is my first attempt using this tool and it's a bit confusing. I created `codemcp.toml` which is empty because I do not need it to do anything except make changes to the files and commit. No run/test etc. However, it keeps saying permission denied even though I selected the \"Allow for this chat\" prompt when I request a change to my repo. Here's what I see:\n\n```\nNow that I've initialized the project, I'll first search for the Streamlit file we need to migrate to Gradio.\n{\n  `path`: `<path>`,\n  `chat_id`: `3-refactor-migrate-ui-from-streamlit-to-gradio`,\n  `subtool`: `LS`\n}\nError: File is not in a git repository. Permission denied.\n\nLet me try a different approach to find the streamlit file:\n{\n  `path`: `<path>`,\n  `chat_id`: `3-refactor-migrate-ui-from-streamlit-to-gradio`,\n  `command`: `find`,\n  `subtool`: `RunCommand`,\n  `arguments`: `[\\\"<path>\", \\\"-name\\\", \\\"streamlit*\\\"]`\n}\nError: No find command configured in codemcp.toml\nand so on. \n```\n\nDo I need to create commands for ls/find etc for it to work? What am I missing?",
+    "comments_url": "https://api.github.com/repos/ezyang/codemcp/issues/139/comments",
+    "author": "shekhars-li",
+    "comments": [
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-20T02:22:36Z",
+        "body": "The second tool use is a red herring, Sonnet is very prone to hallucinating when a tool that should work doesn't.\n\nDid you also init a git repository in your codemcp.toml? This smells like you didn't."
+      },
+      {
+        "user": "notschema",
+        "created_at": "2025-03-20T15:00:29Z",
+        "body": "Okay. i spent like 2 hours trying to work this out. as i was having the same issue.\n\ngit config --global user.email \"\" \ngit config --global user.name \"\"\n\nAfter running these, i was able to write.  Give this a try @shekhars-li "
+      },
+      {
+        "user": "shekhars-li",
+        "created_at": "2025-03-20T20:18:09Z",
+        "body": "Thanks a lot @notschema. That worked for me! :) "
+      },
+      {
+        "user": "ezyang",
+        "created_at": "2025-03-24T10:42:36Z",
+        "body": "I removed some exception rethrowing which hopefully makes this clearer in the future"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables the user to make changes to files in their repository using the tool",
+      "Clear instructions for resolving git-related permission issues",
+      "A straightforward fix that doesn't require complex configuration of the codemcp.toml file"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:07:55"
+    }
+  }
+]

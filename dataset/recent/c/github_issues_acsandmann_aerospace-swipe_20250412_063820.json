@@ -1,0 +1,39 @@
+[
+  {
+    "number": 2,
+    "title": "detect aerospace path",
+    "created_at": "2025-02-04T17:48:20Z",
+    "closed_at": "2025-02-04T21:50:04Z",
+    "labels": [],
+    "url": "https://github.com/acsandmann/aerospace-swipe/pull/2",
+    "body": "closes #1 ",
+    "comments_url": "https://api.github.com/repos/acsandmann/aerospace-swipe/issues/2/comments",
+    "author": "acsandmann",
+    "comments": [
+      {
+        "user": "acsandmann",
+        "created_at": "2025-02-04T17:48:48Z",
+        "body": "@FormalSnake can you try this?"
+      },
+      {
+        "user": "FormalSnake",
+        "created_at": "2025-02-04T21:46:37Z",
+        "body": "That works beautifully but for some reason not when I have it installed using \"make install\", idk if it is because it isnt running afterwards or smth."
+      },
+      {
+        "user": "acsandmann",
+        "created_at": "2025-02-05T01:00:14Z",
+        "body": "@FormalSnake I think the latest commit fixed the issue with make install. When installing from the makefile it automatically adds it into launchctl and I think in that context it doesn't have access to where/which so I switched it to `command -v aerospace` and that seems to be working. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that works when installed via 'make install'",
+      "A method to properly detect the aerospace path in different execution contexts",
+      "Compatibility with the system's launch control mechanism"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:53"
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "number": 118,
+    "title": "Japanese language not working properly",
+    "created_at": "2025-02-28T12:57:41Z",
+    "closed_at": "2025-03-01T10:16:40Z",
+    "labels": [],
+    "url": "https://github.com/hexgrad/kokoro/issues/118",
+    "body": "When selecting \"j\" as language code and a Japanese voice, it only creates a very short audio with unrecognizable utterance. The produced phonemes are correct though, and other languages such as English work fine.",
+    "comments_url": "https://api.github.com/repos/hexgrad/kokoro/issues/118/comments",
+    "author": "kaieberl",
+    "comments": [
+      {
+        "user": "hexgrad",
+        "created_at": "2025-02-28T19:08:40Z",
+        "body": "Do you have the latest versions of `kokoro` and `misaki` both at 0.8.2? You can `pip show kokoro misaki` to check.\n\nI just ran this code in Google Colab and got audio:\n```py\n!pip install -q kokoro>=0.8.2 soundfile\n!apt-get -qq -y install espeak-ng > /dev/null 2>&1\n!pip install \"misaki[ja]>=0.8.2\"\n\nfrom kokoro import KPipeline\nfrom IPython.display import display, Audio\nimport soundfile as sf\nimport torch\npipeline = KPipeline(lang_code='j')\ntext = '\u300c\u3082\u3057\u304a\u308c\u304c\u305f\u3060\u5076\u7136\u3001\u305d\u3057\u3066\u3053\u3046\u3057\u3088\u3046\u3068\u3044\u3046\u3064\u3082\u308a\u3067\u306a\u304f\u3053\u3053\u306b\u7acb\u3063\u3066\u3044\u308b\u306e\u306a\u3089\u3001\u3061\u3087\u3063\u3068\u3070\u304b\u308a\u7d76\u671b\u3059\u308b\u3068\u3053\u308d\u3060\u306a\u300d\u3068\u3001\u305d\u3093\u306a\u3053\u3068\u304c\u5f7c\u306e\u982d\u306b\u601d\u3044\u6d6e\u304b\u3093\u3060\u3002'\n\ngenerator = pipeline(\n    text, voice='jf_alpha',\n    speed=1, split_pattern=r'\\n+'\n)\n\nfor i, (gs, ps, audio) in enumerate(generator):\n    print(i)  # i => index\n    print(gs) # gs => graphemes/text\n    print(ps) # ps => phonemes\n    display(Audio(data=audio, rate=24000, autoplay=i==0))\n    sf.write(f'{i}.wav', audio, 24000) # save each audio file\n```"
+      },
+      {
+        "user": "kaieberl",
+        "created_at": "2025-03-01T10:15:13Z",
+        "body": "Thank you for the quick reply!\nI just tried again with Python 3.11 and it worked, so probably there is no pip version for 3.9"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working solution for Japanese language audio generation",
+      "Information about compatibility requirements or dependencies",
+      "A way to verify correct installation and configuration"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:03:06"
+    }
+  }
+]

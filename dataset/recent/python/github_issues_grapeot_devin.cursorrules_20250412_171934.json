@@ -1,0 +1,50 @@
+[
+  {
+    "number": 43,
+    "title": "Global Rules instead of .windsurfrules",
+    "created_at": "2025-02-04T14:38:01Z",
+    "closed_at": "2025-02-09T18:23:06Z",
+    "labels": [],
+    "url": "https://github.com/grapeot/devin.cursorrules/issues/43",
+    "body": "Can we use Global Rules within windsurf (instead of .windsurfrules) for referencing the scratchpad.md file? I have a project specific .windsurfrules instructions, and given the character limitation for this file, I am unable to update this.",
+    "comments_url": "https://api.github.com/repos/grapeot/devin.cursorrules/issues/43/comments",
+    "author": "TinkererInChief",
+    "comments": [
+      {
+        "user": "grapeot",
+        "created_at": "2025-02-04T17:08:15Z",
+        "body": "I think it should work for Windsurf (to put parts of the file into the .windsurfrules). Because it's using the scratchpad to do the planning anyway."
+      },
+      {
+        "user": "grapeot",
+        "created_at": "2025-02-09T18:23:06Z",
+        "body": "Closing due to lack of activity. But feel free to reopen it."
+      },
+      {
+        "user": "TinkererInChief",
+        "created_at": "2025-02-10T04:35:11Z",
+        "body": "Thanks for your cment but that didn't answer the question raised. I already have a boilerplate repo which has it's own set of instructions. Given that .windsurfrules has character limitations, I was exploring if we can shift your rules to \"Global Rules\" section in windsurf without creating any negative impact. Hope it's clearer now.\n\n"
+      },
+      {
+        "user": "grapeot",
+        "created_at": "2025-02-10T04:43:35Z",
+        "body": "Yeah the info is helpful! I think the answer is, it depends. I think moving the rules to the \"Global Rules\" section is a good idea that would work for your project. I don't see any issues for your specific project for now. The issue is that these instructions will impact all your projects since anything in the global rules section affects the entire Windsurf. If your intention is to have these Windsurf rules apply to every project, that's perfectly fine. However, if you only want these additional Windsurf rules from my repo to affect certain projects, it could cause side effects.\n\nOne alternative is to rename the Windsurf rules in my repository to another name and manually include it (using mention) when launching new cascade requests. You likely won't need to do this often because, once you include the file in the initial cascade conversation, Windsurf keeps it in the context. This could be a useful workaround."
+      },
+      {
+        "user": "TinkererInChief",
+        "created_at": "2025-02-10T05:23:15Z",
+        "body": "Thanks, this is helpful!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear explanation of whether Global Rules can be used instead of .windsurfrules for referencing scratchpad.md",
+      "Information about potential impacts or side effects of using Global Rules",
+      "Alternative solutions to overcome the character limitations in .windsurfrules",
+      "Addressing the specific context of having a project with its own set of instructions"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:07:11"
+    }
+  }
+]

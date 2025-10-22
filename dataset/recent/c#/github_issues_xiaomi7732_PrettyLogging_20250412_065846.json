@@ -1,0 +1,36 @@
+[
+  {
+    "number": 34,
+    "title": "\u80fd\u5b9e\u73b0\u5bf9docker \u91cc\u9762\u7684\u65e5\u5fd7\u8d77\u4f5c\u7528\u5417\uff1f(Can it work on the logs in docker?)",
+    "created_at": "2025-03-17T11:04:45Z",
+    "closed_at": "2025-03-20T01:59:19Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/xiaomi7732/PrettyLogging/issues/34",
+    "body": null,
+    "comments_url": "https://api.github.com/repos/xiaomi7732/PrettyLogging/issues/34/comments",
+    "author": "maikebing",
+    "comments": [
+      {
+        "user": "xiaomi7732",
+        "created_at": "2025-03-17T17:59:54Z",
+        "body": "Thanks for the question.\n\nIn docker, it depends on which console logging provider that you are using.\n\nFor example, if you are using the systemD logger provider, which is recommended inside systemd environment, `PrettyLogging` is **not** going to interfere with it:\n\n```csharp\nloggingBuilder.AddSystemdConsole().PrettyIt(); // Pretty it won't interfere with SystemdConsole logger.\n```\n\nBut if you are using the SimpleConsole logging provider, then, **yes**, it will work\n\n```csharp\nloggingBuilder.AddSimpleConsole().PrettyIt(); // Pretty will work inside a container.\n```\n\nNotes: because of the ANSI color code, you will see those \"strange text\" when using the simple console logging provider inside the container.\n\nTo mitigate that side effect, yuou might want to disable the color behavior like this:\n\n```csharp\nloggingBuilder.AddSimpleConsole().PrettyIt(opt=> opt.ColorBehavior = \n    Microsoft.Extensions.Logging.Console.LoggerColorBehavior.Disabled\n);\n```"
+      },
+      {
+        "user": "maikebing",
+        "created_at": "2025-03-20T01:59:19Z",
+        "body": "\u611f\u8c22\u3002\u3002\u975e\u5e38\u611f\u8c22\u3002 "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear guidance on Docker compatibility with the logging library",
+      "Specific configuration examples for different Docker logging scenarios",
+      "Information about potential issues and their workarounds in Docker environments"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:48"
+    }
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "number": 13,
+    "title": "Readme is confusing",
+    "created_at": "2024-12-19T11:39:45Z",
+    "closed_at": "2024-12-19T11:45:16Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/yegor256/together/issues/13",
+    "body": "This is the code in readme:\r\n```java\r\nnew Together(\r\n  () -> {\r\n    // do the job\r\n    return true;\r\n  }\r\n)\r\n```\r\n\r\nIt's not valid because `Together` accepts `Actions` which is generic function that returns `T` and accepts `int`.\r\n\r\nSo it should be:\r\n```java\r\nnew Together(\r\n  thread -> {\r\n    // do the job\r\n    return true;\r\n  }\r\n)\r\n```",
+    "comments_url": "https://api.github.com/repos/yegor256/together/issues/13/comments",
+    "author": "maxonfjvipon",
+    "comments": [
+      {
+        "user": "yegor256",
+        "created_at": "2024-12-19T11:44:07Z",
+        "body": "@maxonfjvipon fixed in cde9dc6 better now?"
+      },
+      {
+        "user": "maxonfjvipon",
+        "created_at": "2024-12-19T11:45:17Z",
+        "body": "@yegor256 yes, thanks"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correction of the code example in the README to properly demonstrate the usage of the Together class",
+      "Proper representation of the required function signature in code examples"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:52"
+    }
+  }
+]

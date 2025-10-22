@@ -1,0 +1,66 @@
+[
+  {
+    "number": 1046,
+    "title": "[BUG] Can't get the MCP tools to work: RuntimeError: Event loop is closed",
+    "created_at": "2025-03-21T16:08:17Z",
+    "closed_at": "2025-03-23T09:56:34Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/huggingface/smolagents/issues/1046",
+    "body": "**Describe the bug**\nI am trying to replace the normal tools by tools coming from a MCP server. My code is runnning inside a poetry venv.\n\n```\nserver_parameters = StdioServerParameters(\n    command=\"uvx\",\n    args=[\"mcp-server-time\"],\n    env={\"UV_PYTHON\": \"3.12\", **os.environ},\n)\nwith ToolCollection.from_mcp(server_parameters) as tool_collection:\n    agent = CodeAgent(\n        tools=[*tool_collection.tools],\n        model=model,\n        prompt_templates=code_prompt_templates,\n        additional_authorized_imports=[\"time\", \"numpy\", \"pandas\", \"json\"],\n    )\nresponse = agent.run(\n    task=\"Answer the user request with the tools you have. User input is: What is the time in Berlin?\"\n)\n```\ngives me\n```\n\n  berlin_time = get_current_time(timezone=\"Europe/Berlin\")                                                                                                                                                                                                      \n  print(berlin_time)                                                                                                                                                                                                                                            \n \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \nCode execution failed at line 'berlin_time = get_current_time(timezone=\"Europe/Berlin\")' due to: RuntimeError: Event loop is closed\n[Step 1: Duration 2.95 seconds| Input tokens: 2,330 | Output tokens: 58]\n```\n\nIn another mcp server, I can see that a log message coming from the server \n\n`Processing request of type ListToolsRequest`\n\nSo the server is spawned, but once it tries to access the tool, I get the same error as above\n\n**Code to reproduce the error**\nSee above. Running `npx @modelcontextprotocol/inspector uvx mcp-server-time` I can access the mpc server just fine.\n\n**Error logs (if any)**\nSee above\n\n**Expected behavior**\nThe agent calls the tool\n\n**Packages version:**\nsmolagents==1.12.0\n\n**Additional context**\nAdd any other context about the problem here.\n",
+    "comments_url": "https://api.github.com/repos/huggingface/smolagents/issues/1046/comments",
+    "author": "wirtsi",
+    "comments": [
+      {
+        "user": "albertvillanova",
+        "created_at": "2025-03-21T17:34:50Z",
+        "body": "Thanks for reporting.\n\nCould you please provide your versions of:\n- mcp\n- mcpadapt\n\nCC: @grll "
+      },
+      {
+        "user": "wirtsi",
+        "created_at": "2025-03-22T09:10:39Z",
+        "body": "Hey @albertvillanova, thanks for looking into this \ud83d\ude0d\n\n```\nmcp==1.4.1\nmcpadapt==0.0.15\n```"
+      },
+      {
+        "user": "grll",
+        "created_at": "2025-03-22T18:35:50Z",
+        "body": "Hi @wirtsi, thanks for reporting the issue. I will try to reproduce, any chance you are running this in a Jupyter Notebook? Or as a regular python script?"
+      },
+      {
+        "user": "wirtsi",
+        "created_at": "2025-03-23T08:52:30Z",
+        "body": "No, my code runs in a poetry pyenv (so `poetry run python main.py`)"
+      },
+      {
+        "user": "grll",
+        "created_at": "2025-03-23T08:57:04Z",
+        "body": "Hmm actually after second thought you need to run your agent.run statement within the context manager otherwise the mcp server is not running. The mcp server / client only runs within the context manager "
+      },
+      {
+        "user": "grll",
+        "created_at": "2025-03-23T08:58:04Z",
+        "body": "TLDR; just indent your response = ... statement "
+      },
+      {
+        "user": "wirtsi",
+        "created_at": "2025-03-23T09:56:34Z",
+        "body": "Ah blimey \ud83e\udd26\u200d\u2642\ufe0f You are right, it totally makes sense. I thought the context is only needed when instantiating the tools. Thank you \ud83d\ude4f"
+      },
+      {
+        "user": "phpmac",
+        "created_at": "2025-04-05T07:10:55Z",
+        "body": "How to add multiple mcp services???\n\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that correctly explains how to use MCP tools with the CodeAgent",
+      "Clarification about the proper scope/lifetime of the MCP server connection",
+      "A simple, actionable fix to the RuntimeError about the closed event loop"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:11:03"
+    }
+  }
+]

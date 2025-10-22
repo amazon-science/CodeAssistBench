@@ -1,0 +1,66 @@
+[
+  {
+    "number": 63,
+    "title": "AttributeError: 'Tensor' object has no attribute 'full_tensor'",
+    "created_at": "2025-03-05T09:26:21Z",
+    "closed_at": "2025-03-06T01:01:18Z",
+    "labels": [],
+    "url": "https://github.com/hiyouga/EasyR1/issues/63",
+    "body": "\u6211\u7528docker file\u5236\u4f5c\u955c\u50cf\uff0c\u5c1d\u8bd5\u8fd0\u884c\uff0c\u9047\u5230\u8fd9\u4e2a\u62a5\u9519\uff1a\n/EasyR1/verl/workers/rollout/vllm_rollout/dtensor_weight_loaders.py\", line 284, in redistribute_dtensor\n    local_loaded_weights = loaded_weights.full_tensor()\nAttributeError: 'Tensor' object has no attribute 'full_tensor'\n\u8bf7\u95ee\u8fd9\u53ef\u80fd\u662f\u5565\u539f\u56e0\uff1f\u770b\u8d77\u6765\u662f\u67d0\u4e9b\u4f9d\u8d56\u7684\u7248\u672c\u4e0d\u5bf9\uff1f",
+    "comments_url": "https://api.github.com/repos/hiyouga/EasyR1/issues/63/comments",
+    "author": "h7878778h",
+    "comments": [
+      {
+        "user": "hiyouga",
+        "created_at": "2025-03-05T09:37:37Z",
+        "body": "At least 2 GPU is needed to run EasyR1"
+      },
+      {
+        "user": "h7878778h",
+        "created_at": "2025-03-06T01:01:14Z",
+        "body": "> At least 2 GPU is needed to run EasyR1\n\nthanks"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Information about the minimum hardware requirements to run EasyR1",
+      "Explanation of why the 'full_tensor' attribute error occurs",
+      "A concise, direct answer that identifies the root cause of the error"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:12"
+    }
+  },
+  {
+    "number": 28,
+    "title": "is_multimodal_model",
+    "created_at": "2025-02-25T09:30:38Z",
+    "closed_at": "2025-02-25T11:18:20Z",
+    "labels": [],
+    "url": "https://github.com/hiyouga/EasyR1/issues/28",
+    "body": "Did anybody faced this problem. when I tried to train Qwen2.5-3B-Instruct model, and i get  an error:\n\n **\"Your model does not support multi-modal inputs\".**\n\ntried on 4*A6000 40GB.\n\nMy trainning shell:\n\npython3 -m verl.trainer.main \\\n    config=examples/grpo_example.yaml \\\n    data.train_files=hiyouga/geometry3k@train \\\n    data.val_files=hiyouga/geometry3k@test \\\n    data.max_prompt_length=4096 \\\n    worker.actor.model.model_path=${MODEL_PATH} \\\n    worker.rollout.tensor_parallel_size=1 \\\n    worker.rollout.enable_chunked_prefill=false \\\n    trainer.experiment_name=qwen2_5_vl_3b_geo \\\n    trainer.n_gpus_per_node=4",
+    "comments_url": "https://api.github.com/repos/hiyouga/EasyR1/issues/28/comments",
+    "author": "RogersSteve",
+    "comments": [
+      {
+        "user": "hiyouga",
+        "created_at": "2025-02-25T10:46:27Z",
+        "body": "geometry3k is a multimodal dataset, you should use Qwen2.5 VL model to fit this dataset"
+      },
+      {
+        "user": "RogersSteve",
+        "created_at": "2025-02-25T11:18:17Z",
+        "body": "> geometry3k is a multimodal dataset, you should use Qwen2.5 VL model to fit this dataset\n\nThanks for your reply, it worked!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the correct model type needed for multimodal datasets",
+      "A solution that resolves the 'Your model does not support multi-modal inputs' error",
+      "Guidance on model selection appropriate for the geometry3k dataset"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:15:19"
+    }
+  }
+]

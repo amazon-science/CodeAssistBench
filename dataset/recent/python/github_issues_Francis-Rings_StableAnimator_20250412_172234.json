@@ -1,0 +1,66 @@
+[
+  {
+    "number": 92,
+    "title": "\u5fae\u8c03\u540e\u7684\u6a21\u578b\u63a8\u7406\u7ed3\u679c\u4e0e\u5fae\u8c03\u8bad\u7ec3\u65f6\u7684\u9a8c\u8bc1\u7ed3\u679c\u5dee\u5f02\u95ee\u9898",
+    "created_at": "2025-02-26T03:15:56Z",
+    "closed_at": "2025-02-27T02:26:47Z",
+    "labels": [],
+    "url": "https://github.com/Francis-Rings/StableAnimator/issues/92",
+    "body": "\u4f60\u597d\uff0c\u6211\u60f3\u77e5\u9053\u4fdd\u5b58\u4e0b\u6765\u7684\u5176\u4ed6\u6a21\u578b\u6bd4\u5982model.safetensors\u3001model_1\u3001model_2\u7b49\u600e\u4e48\u7528\u5462\uff1f\n\u8fd8\u662f\u8bf4\u8fd9\u4e9b\u90fd\u662f\u4e0d\u9700\u8981\u7684\uff0c\u91cd\u70b9\u53ea\u662fcheckpoint-{global_step}\u8fd9\u4e09\u4e2a\u6a21\u578b\uff1f\n\u6211\u5728\u7528\u5fae\u8c03\u540e\u7684\u4e09\u4e2a\u6a21\u578b\u8fdb\u884c\u63a8\u7406\u65f6\u53d1\u73b0\u751f\u6210\u7684\u52a8\u4f5c\u4e0e\u5fae\u8c03\u8bad\u7ec3\u65f6\u540c\u6b65\u6570\u751f\u6210\u7684\u9a8c\u8bc1gif\u6587\u4ef6\u7684\u52a8\u4f5c\u4e0d\u4e00\u81f4\u3002\n\u4e0b\u8ff0\u89c6\u9891\u662f\u8fd0\u884c\u63a8\u7406\u4ee3\u7801\u5f97\u5230\u7684\uff0c\u5927\u6982\u7531\u4e8egif\u6587\u4ef6\u592a\u5927\uff0c\u4e0a\u4f20\u5931\u8d25\uff0c\u6211\u60f3\u544a\u8bc9\u4f60\u7684\u662f\u5fae\u8c03\u8bad\u7ec3\u65f6\u540c\u6b65\u6570\u751f\u6210\u7684\u9a8c\u8bc1gif\u5f97\u5230\u7684\u624b\u90e8\u662f\u6b63\u5e38\u7684\uff0c\u4e0e\u4e0b\u8ff0\u89c6\u9891\u4e0d\u540c\u3002\n",
+    "comments_url": "https://api.github.com/repos/Francis-Rings/StableAnimator/issues/92/comments",
+    "author": "YxY-HK",
+    "comments": [
+      {
+        "user": "Francis-Rings",
+        "created_at": "2025-02-27T01:50:15Z",
+        "body": "Hi, you only need to load `checkpoint-{global_step}/pose_net-{global_step}.pth`, `checkpoint-{global_step}/face_encoder-{global_step}.pth`, `checkpoint-{global_step}/unet-{global_step}.pth` into the StableAnimator for conducting inference. For more details, please refer to the README file."
+      },
+      {
+        "user": "YxY-HK",
+        "created_at": "2025-02-27T02:26:47Z",
+        "body": "Ok\uff0cThx"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear guidance on which model files are necessary for inference",
+      "Instructions on how to properly load the fine-tuned models for inference",
+      "Reference to documentation for additional details"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:09:57"
+    }
+  },
+  {
+    "number": 85,
+    "title": "Error Loading Model State Dict: Missing Keys in UNetSpatioTemporalConditionModel",
+    "created_at": "2025-02-03T02:34:48Z",
+    "closed_at": "2025-02-05T08:59:50Z",
+    "labels": [],
+    "url": "https://github.com/Francis-Rings/StableAnimator/issues/85",
+    "body": "**Description:**  \nAfter training the model using the provided training script, I encountered an error when trying to load the model for inference. The error indicates that several keys are missing from the state dict of the `UNetSpatioTemporalConditionModel`. It appears that there might be a mismatch between the trained model and the expected state dict keys during loading.\n\n**Error Message:**  \n```python\nunet_state_dict = torch.load(args.unet_model_name_or_path, map_location=\"cpu\")\nTraceback (most recent call last):\n  File \"/workspace/StableAnimator/inference_basic.py\", line 319, in <module>\n    unet.load_state_dict(unet_state_dict, strict=True)\n  File \"/workspace/StableAnimator/venv/lib/python3.12/site-packages/torch/nn/modules/module.py\", line 2584, in load_state_dict\n    raise RuntimeError(\nRuntimeError: Error(s) in loading state_dict for UNetSpatioTemporalConditionModel:\n        Missing key(s) in state_dict: \"down_blocks.0.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.0.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"down_blocks.0.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.0.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"down_blocks.1.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.1.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"down_blocks.1.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.1.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"down_blocks.2.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.2.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"down_blocks.2.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"down_blocks.2.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.1.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.1.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.1.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.1.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.1.attentions.2.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.1.attentions.2.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.2.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.2.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.2.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.2.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.2.attentions.2.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.2.attentions.2.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.3.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.3.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.3.attentions.1.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.3.attentions.1.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"up_blocks.3.attentions.2.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"up_blocks.3.attentions.2.transformer_blocks.0.attn2.processor.id_to_v.weight\", \"mid_block.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\", \"mid_block.attentions.0.transformer_blocks.0.attn2.processor.id_to_v.weight\".\n```\n\n**Reproduction Steps:**  \n1. **Training:**  \n   The model was trained using the following bash command:\n   ```bash\n   CUDA_VISIBLE_DEVICES=3,7,6,5,4,2,1,0 accelerate launch train_single.py \\\n    --pretrained_model_name_or_path=\"path/checkpoints/stable-video-diffusion-img2vid-xt\" \\\n    --finetune_mode=True \\\n    --posenet_model_finetune_path=\"path/checkpoints/Animation/pose_net.pth\" \\\n    --face_encoder_finetune_path=\"path/checkpoints/Animation/face_encoder.pth\" \\\n    --unet_model_finetune_path=\"path/checkpoints/Animation/unet.pth\" \\\n    --output_dir=\"path/checkpoints/Animation2\" \\\n    --data_root_path=\"path/preprocess/\" \\\n    --data_path=\"path/preprocess/video_path.txt\" \\\n    --dataset_width=576 \\\n    --dataset_height=1024 \\\n    --validation_image_folder=\"path/validation/images\" \\\n    --validation_control_folder=\"path/validation/poses\" \\\n    --validation_image=\"path/validation/reference.png\" \\\n    --num_workers=8 \\\n    --lr_warmup_steps=500 \\\n    --sample_n_frames=8 \\\n    --learning_rate=5e-6 \\\n    --per_gpu_batch_size=1 \\\n    --num_train_epochs=600 \\\n    --mixed_precision=\"fp16\" \\\n    --gradient_accumulation_steps=1 \\\n    --checkpointing_steps=3000 \\\n    --validation_steps=9999999 \\\n    --gradient_checkpointing \\\n    --use_8bit_adam \\\n    --enable_xformers_memory_efficient_attention \\\n    --checkpoints_total_limit=90000 \\\n    --resume_from_checkpoint=\"latest\"\n   ```\n\n2. **Loading:**  \n   After training, I attempted to load the model with the following code:\n   ```python\n   unet_state_dict = torch.load(args.unet_model_name_or_path, map_location=\"cpu\")\n   unet.load_state_dict(unet_state_dict, strict=True)\n   ```\n   This resulted in the error shown above.\n\n**Environment:**  \n- **Python:** 3.12.3\n- **PyTorch:** 2.5.1+cu124 \n- **Diffusers:** 0.32.1\n\n**Additional Context:**  \n- The error lists several missing keys in the state dict (e.g., `\"down_blocks.0.attentions.0.transformer_blocks.0.attn2.processor.id_to_k.weight\"`, etc.).\n- This issue may indicate a mismatch between the model architecture used during training and the one expected during inference.  \n- Has there been any recent change in the model structure or naming conventions that could lead to this issue?\n\nAny help or guidance in resolving this issue would be greatly appreciated.",
+    "comments_url": "https://api.github.com/repos/Francis-Rings/StableAnimator/issues/85/comments",
+    "author": "cvecve147",
+    "comments": [
+      {
+        "user": "Francis-Rings",
+        "created_at": "2025-02-04T13:12:13Z",
+        "body": "Hi, please check whether AnimationIDAttnNormalizedProcessor is activated. It seems that the weights of AnimationIDAttnNormalizedProcessor were not saved during training."
+      },
+      {
+        "user": "cvecve147",
+        "created_at": "2025-02-05T08:59:51Z",
+        "body": "Thank you for your prompt response and valuable guidance. Upon further investigation, I discovered that the root cause of the issue was the use of the --enable_xformers_memory_efficient_attention parameter during training, which resulted in the AnimationIDAttnNormalizedProcessor weights not being saved correctly. After removing this parameter, the model weights are now saved and loaded properly. I greatly appreciate your support and insights in resolving this matter!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the root cause of the missing keys in the model state dict",
+      "A specific parameter or configuration causing the model loading issue",
+      "A practical solution to resolve the model loading error"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:10:10"
+    }
+  }
+]

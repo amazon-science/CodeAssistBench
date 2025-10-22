@@ -1,0 +1,34 @@
+[
+  {
+    "number": 61,
+    "title": "blocking_send_recv_example.py seems incorrect",
+    "created_at": "2025-03-19T05:27:33Z",
+    "closed_at": "2025-03-20T00:20:25Z",
+    "labels": [],
+    "url": "https://github.com/ai-dynamo/nixl/issues/61",
+    "body": "Hello! Firstly, this library looks extremely promising, would solve a very big issue I was dealing with!\n\nI had a look at the `blocking_send_recv_example.py` to see how I could potentially send over a tensor.\nThis test doesn't seem to work, it misuses `zmq`, as both procs are doing `connect`, while the correct usage is for the target proc to use `.bind` and the initiator proc to use `.connect`. The string literal for the addr in `.connect` is also wrong as there are a few extra spaces.\n\nAfter fixing a few of these issues myself, I am getting the following error from the initiator:\n```\nTraceback (most recent call last):\n  File \"/mnt/large_shared/libs/nixl/test/python/blocking_send_recv_example.py\", line 93, in <module>\n    xfer_handle = agent.initialize_xfer(\n                  ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/mnt/large_shared/users/federico/env_nightly/lib/python3.11/site-packages/nixl/_api.py\", line 299, in initialize_xfer\n    handle = self.agent.createXferReq(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: createXferReq(): incompatible function arguments. The following argument types are supported:\n    1. (self: nixl._bindings.nixlAgent, operation: nixl._bindings.nixl_xfer_op_t, local_descs: nixl._bindings.nixlXferDList, remote_descs: nixl._bindings.nixlXferDList, remote_agent: str, notif_msg: str = '', backend: int = 0) -> int\n\nInvoked with: <nixl._bindings.nixlAgent object at 0x7f17915f8370>, <nixl_xfer_op_t.NIXL_READ: 0>, <nixl._bindings.nixlRegDList object at 0x7f1793d44fb0>, <nixl._bindings.nixlRegDList object at 0x7f179173abf0>, b'b', 'UUID'\n[1742361716.638792] [g001:2525325:0]          rcache.c:643  UCX  WARN  mlx5_0: destroying inuse region 0x5566884a1010 [0x5566875a20c0..0x5566875a20f0] g- rw ref 1 lkey 0x1f2aea rkey 0x1f2aea atomic_rkey 0x21d268\n[g001:2525325:0:2525325]      rcache.c:383  Assertion `region->refcount == 0' failed: region 0x5566884a1010 0x5566875a20c0..0x5566875a20f0 of mlx5_0\n```\n\nWould be great if there was a functional example on how to send over a tensor \ud83d\ude4f ",
+    "comments_url": "https://api.github.com/repos/ai-dynamo/nixl/issues/61/comments",
+    "author": "cassanof",
+    "comments": [
+      {
+        "user": "mkhazraee",
+        "created_at": "2025-03-19T22:01:30Z",
+        "body": "Hello and thanks for pointing this out. We have fixed it in PR #65 and it's already merged. We further added data checks and some clean ups to the code.\n \nOne point to consider is that two sided and blocking is not our targeted mode of operation, this was an example to give an idea of how it's possible to replicate 2-sided with 1-sided. (Since it was an example to demonstrate the idea, it was supposed to be in our examples directory, and we plan to add CIs for examples directory very soon to avoid these issues). You can still pass tensors to 1-sided operations too, it's the same API."
+      },
+      {
+        "user": "cassanof",
+        "created_at": "2025-03-20T00:20:25Z",
+        "body": "thank you! \n\ni got it to work last night. been a big unblocker for me. thanks for releasing this library!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix for the issues in the blocking_send_recv_example.py example code",
+      "A working example of how to transfer tensors using the library",
+      "Clarification on the intended usage patterns of the library"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 00:59:52"
+    }
+  }
+]

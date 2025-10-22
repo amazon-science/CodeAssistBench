@@ -1,0 +1,34 @@
+[
+  {
+    "number": 157,
+    "title": "Garbage collection failed",
+    "created_at": "2025-03-20T11:37:11Z",
+    "closed_at": "2025-03-22T20:08:53Z",
+    "labels": [],
+    "url": "https://github.com/ai-christianson/RA.Aid/issues/157",
+    "body": "When responding to agent, the following error started appearing, any advice on how to fix?\n\nra_aid.ra_aid.database.repositories.human_input_repository - ERROR - Failed to garbage collect human input records: FOREIGN KEY constraint failed",
+    "comments_url": "https://api.github.com/repos/ai-christianson/RA.Aid/issues/157/comments",
+    "author": "myevolve",
+    "comments": [
+      {
+        "user": "ai-christianson",
+        "created_at": "2025-03-20T12:30:23Z",
+        "body": "> When responding to agent, the following error started appearing, any advice on how to fix?\n> \n> ra_aid.ra_aid.database.repositories.human_input_repository - ERROR - Failed to garbage collect human input records: FOREIGN KEY constraint failed\n\nYou might need to delete your `.ra-aid` dir and start with fresh state."
+      },
+      {
+        "user": "myevolve",
+        "created_at": "2025-03-22T20:08:53Z",
+        "body": "I removed the .ra-aid and this resolved the issue, however, it was not optimal."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the garbage collection error without requiring complete data loss",
+      "An explanation of why the foreign key constraint is failing during garbage collection",
+      "A targeted fix that addresses only the corrupted data rather than removing all data"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:38"
+    }
+  }
+]

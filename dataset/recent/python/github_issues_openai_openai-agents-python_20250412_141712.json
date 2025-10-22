@@ -1,0 +1,439 @@
+[
+  {
+    "number": 479,
+    "title": "Is there a way to force handoffs?",
+    "created_at": "2025-04-11T01:13:36Z",
+    "closed_at": "2025-04-11T02:49:10Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/479",
+    "body": "### Question\nIs there a way to force handoffs to other agents similar to how we can do it for tools by making model_setting `tool_choice` to `\"required\"`? Is the only current way to do this essentially to make the agent a tool and `tool_choice` to `\"required\"`?",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/479/comments",
+    "author": "dylee9",
+    "comments": [
+      {
+        "user": "rohan-mehta",
+        "created_at": "2025-04-11T02:47:09Z",
+        "body": "Set tool choice to the name of the handoff tool (which you can get from `Handoff.default_tool_name()` or `handoff.tool_name`)"
+      },
+      {
+        "user": "dylee9",
+        "created_at": "2025-04-11T02:49:10Z",
+        "body": "Perfect!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A specific method to force agent handoffs similar to how tool usage can be forced",
+      "A direct, concise approach that doesn't require converting agents to tools",
+      "Information about specific parameter settings or configuration options to control handoff behavior"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:37"
+    }
+  },
+  {
+    "number": 413,
+    "title": "ImportError: cannot import name 'MCPServerSse' from 'agents.mcp'",
+    "created_at": "2025-04-01T12:45:09Z",
+    "closed_at": "2025-04-07T04:40:23Z",
+    "labels": [
+      "bug",
+      "needs-more-info"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/413",
+    "body": "Traceback (most recent call last):\nFile \"C:\\Users\\Lenovo\\Desktop\\Strats AI\\open ai sdk\\main.py\", line 4, in\nfrom agents.mcp import MCPServerSse, MCPServerStdio\nImportError: cannot import name 'MCPServerSse' from 'agents.mcp' (C:\\Users\\Lenovo\\Desktop\\Strats AI\\open ai sdk\\venv\\Lib\\site-packages\\agents\\mcp_init_.py)\n\nThis is the error i am facing despite creating the venv and installing the latest version of the open ai sdk",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/413/comments",
+    "author": "oms0401",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-01T15:45:25Z",
+        "body": "Are you on Python 3.9? Can you post the full error/stack trace?"
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-02T08:50:01Z",
+        "body": "Same for Python 3.12.\n\n```\n---------------------------------------------------------------------------\nImportError                               Traceback (most recent call last)\nCell In[2], line 1\n----> 1 from agents.mcp import MCPServerStdio\n      2 samples_dir='.'\n      4 async with MCPServerStdio(\n      5     params={\n      6         \"command\": \"npx\",\n      7         \"args\": [\"-y\", \"@modelcontextprotocol/server-filesystem\", samples_dir],\n      8     }\n      9 ) as server:\n\nImportError: cannot import name 'MCPServerStdio' from 'agents.mcp' (.venv/lib/python3.12/site-packages/agents/mcp/__init__.py)\n```"
+      },
+      {
+        "user": "limingyang325",
+        "created_at": "2025-04-02T11:29:14Z",
+        "body": "\n> Are you on Python 3.9? Can you post the full error/stack trace?\nI am using Python 3.9, and I encountered the same issue.\n"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-02T15:13:06Z",
+        "body": "Can you try `from agents.mcp.server import MCPServerSse` and tell me what error you see?\n\nAlso this wont work on Python 3.9, as MCP support requires 3.10+"
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-02T15:34:07Z",
+        "body": "> Can you try `from agents.mcp.server import MCPServerSse` and tell me what error you see?\n\nNot working.\n\n```\n---------------------------------------------------------------------------\nImportError                               Traceback (most recent call last)\nCell In[1], line 1\n----> 1 from agents.mcp.server import MCPServerSse\n\nFile ~/.venv/lib/python3.12/site-packages/agents/mcp/server.py:10\n      7 from typing import Any, Literal\n      9 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream\n---> 10 from mcp import ClientSession, StdioServerParameters, Tool as MCPTool, stdio_client\n     11 from mcp.client.sse import sse_client\n     12 from mcp.types import CallToolResult, JSONRPCMessage\n\nFile ~/mcp.py:6\n      3 import shutil\n      5 from agents import Agent, Runner\n----> 6 from agents.mcp import MCPServer, MCPServerStdio\n      9 async def run(mcp_server: MCPServer):\n     10     agent = Agent(\n     11         name=\"Assistant\",\n     12         instructions=\"Use the tools to read the filesystem and answer questions based on those files.\",\n     13         mcp_servers=[mcp_server],\n     14     )\n\nImportError: cannot import name 'MCPServer' from 'agents.mcp' (.venv/lib/python3.12/site-packages/agents/mcp/__init__.py)\n```"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-02T15:36:54Z",
+        "body": "@smortezah thanks for bearing with me - can you try running this and telling me what you see?\n```\nimport importlib.metadata\nimport os\nimport sys\n\nprint(sys.version)\ntry:\n    print(importlib.metadata.version(\"agents\"))\nexcept Exception:\n    print(\"-1\")\n\ntry:\n    import mcp\n\n    print(dir(mcp))\nexcept Exception:\n    print(\"mcp not found\")\n\nagents_dir = importlib.import_module(\"agents\").__path__[0]\nprint(str(agents_dir))\n\n\nmcp_file = os.path.join(str(agents_dir), \"mcp\", \"__init__.py\")\nwith open(mcp_file) as f:\n    print(f.read())\n```"
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-02T15:45:18Z",
+        "body": "```\n3.12.9 (main, Feb  5 2025, 18:58:23) [Clang 19.1.6 ]\n-1\nmcp not found\n~/.venv/lib/python3.12/site-packages/agents\ntry:\n    from .server import (\n        MCPServer,\n        MCPServerSse,\n        MCPServerSseParams,\n        MCPServerStdio,\n        MCPServerStdioParams,\n    )\nexcept ImportError:\n    pass\n\nfrom .util import MCPUtil\n\n__all__ = [\n    \"MCPServer\",\n    \"MCPServerSse\",\n    \"MCPServerSseParams\",\n    \"MCPServerStdio\",\n    \"MCPServerStdioParams\",\n    \"MCPUtil\",\n]\n```"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-02T15:53:20Z",
+        "body": "@smortezah How did you install the `openai-agents` package? Seems like somehow the MCP dep didnt get pulled in.\n\nCan you also try\n```\nimport importlib.metadata\nprint(importlib.metadata.version(\"openai-agents\")\n```\n\nand reinstalling the package via\n```\npip uninstall openai-agents\npip install openai-agents\n```"
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-02T16:01:50Z",
+        "body": "@rm-openai I installed it with `uv add \"openai-agents[viz]\"`.\n\n```\nimport importlib.metadata\nprint(importlib.metadata.version(\"openai-agents\")\n```\n0.0.7\n\nAlso, none of the followings worked:\n```\nuv remove \"openai-agents[viz]\"\nuv add \"openai-agents[viz]\"\n```\nand\n```\nuv remove openai-agents\nuv add openai-agents\n```\n\nHOWEVER, it works when I use `pip` instead of `uv`:\n```\nbrew install python@3.12\npython3.12 -m venv venv3.12\nsource venv3.12/bin/activate\npip install openai-agents\n\npython -c \"from agents.mcp.server import MCPServerSse\"\n```"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-02T16:10:40Z",
+        "body": "@smortezah it sounds like you might not be using `uv run` when you install via uv. This worked fine for me:\n\n```\nmkdir test_mcp && cd test_mcp && uv init .\n\nuv add \"openai-agents[viz]\" && uv run python -c \"from agents.mcp.server import MCPServerSse\"\n```"
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-02T16:19:05Z",
+        "body": "@rm-openai I guess I found the source of issue. If I put a python file that only includes `from agents.mcp.server import MCPServerSse` in the root directory of my project, it works. However, if I put this file in a subdirectory, it stops working regardless of where I call this file from; that is, whether I run `python a.py` or `uv run a.py` from the root directory or from within the subdirectory, it throws the error."
+      },
+      {
+        "user": "smortezah",
+        "created_at": "2025-04-04T15:52:27Z",
+        "body": "@rm-openai @oms0401 Solved.\n\nI encountered an interesting situation where I had a file named `mcp.py` in my subdirectory. Attempting to import `from mcp` resulted in a circular import. Interestingly, I wasn\u2019t importing from `mcp` in my Jupyter notebook or the Python file I was trying to execute. However, the presence of `mcp.py` in the directory led to the following error:\n`ImportError: cannot import name \u2018MCPServer\u2019 from \u2018agents.mcp\u2019 (.venv/lib/python3.12/site-packages/agents/mcp/__init__.py)`\n\nTo resolve this issue, I simply renamed `mcp.py`."
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-04T19:17:51Z",
+        "body": "Wow that is kinda crazy. Makes sense though."
+      },
+      {
+        "user": "oms0401",
+        "created_at": "2025-04-07T04:40:23Z",
+        "body": "Yes the issue is solved right now but the sdk is not stable in the current python 3.12 versio"
+      },
+      {
+        "user": "ycjcl868",
+        "created_at": "2025-04-11T09:18:16Z",
+        "body": "Same for Python 3.12.\n\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Identification of the root cause of the import error",
+      "A practical solution to resolve the import error",
+      "Clarification on Python version compatibility",
+      "Understanding of package installation methods that work correctly"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:41"
+    }
+  },
+  {
+    "number": 394,
+    "title": "Wait to run the Agent first step until Input guardrails is complete",
+    "created_at": "2025-03-29T22:39:44Z",
+    "closed_at": "2025-04-01T15:47:57Z",
+    "labels": [],
+    "url": "https://github.com/openai/openai-agents-python/pull/394",
+    "body": "The guardrail may trigger a Tripewire but the agent still run\r\n\r\nIn v0.0.7, the code runs the input guardrail task and the agent's first step together asynchronously. \r\n\r\nIf the guardrail is in place to avoid a side effect from the Agent run, the agent may still do something unexpected.\r\n\r\n\r\nLet's say that you have a tripwire guardrail: \"Don't allow to delete a file\", and the agent is an MCP file system agent",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/394/comments",
+    "author": "rach",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-01T15:47:57Z",
+        "body": "the current behavior is the intended/documented behavior. If you want to run the guardrail _before_ the agent runs, you can just do that via python code:\r\n```\r\ntriggered = await do_something()\r\nif not triggered:\r\n  await Runner.run(...)\r\n```"
+      },
+      {
+        "user": "rach",
+        "created_at": "2025-04-05T16:44:14Z",
+        "body": "For my own understanding. What was the rational to have the agent start before the guardrail is done?\nI can work around it, now that I know the behavior. "
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-04-08T18:02:16Z",
+        "body": "@rach for latency. If the guardrail doesn't fail, then you will have made a bunch of progress on the actual agent. RUnning (guardrail, agent) in parallel is much faster than serially"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Explanation of the design rationale behind the current behavior",
+      "Clarification of the current system behavior regarding guardrails and agent execution",
+      "Practical workaround for implementing sequential guardrail-then-agent execution"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:45"
+    }
+  },
+  {
+    "number": 373,
+    "title": "Issue with incomplete pip installation - macOS",
+    "created_at": "2025-03-27T17:21:20Z",
+    "closed_at": "2025-03-27T17:42:44Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/373",
+    "body": "Description:\nI'm encountering an issue when trying to install the openai-agents package. After a successful installation via pip, the package seems to be incomplete \u2014 the openai_agents directory in site-packages only contains metadata files (INSTALLER, METADATA, RECORD, etc.), with no actual Python module files. As a result, I cannot import the module, and attempts to do so result in a ModuleNotFoundError.\n\nSteps to Reproduce:\nCreate a fresh Python environment:\n\nbash\nCopy\npython3 -m venv env\nActivate the environment:\n\nbash\nCopy\nsource env/bin/activate\nInstall openai-agents:\n\nbash\nCopy\npip install openai-agents\nAfter installation, run the following to verify the installation:\n\nbash\nCopy\npip show openai-agents\nThe output shows the installation is successful, but the site-packages/openai_agents directory contains only metadata files.\n\nAttempt to import the module in Python:\n\npython\nCopy\nfrom openai_agents import Agent\nThis results in a ModuleNotFoundError.\n\nExpected Behavior:\nThe openai-agents package should include the necessary Python modules under the site-packages/openai_agents directory. I should be able to import the module as follows:\n\npython\nCopy\nfrom openai_agents import Agent\nActual Behavior:\nAfter installation, the site-packages/openai_agents directory contains only metadata files (INSTALLER, METADATA, RECORD, etc.), and the Python modules (openai_agents/__init__.py, etc.) are missing. Consequently, I am unable to import the module.\n\nEnvironment:\nPython version: 3.9.6\n\nOperating System: macOS 11.0\n\nPackage version: openai-agents 0.0.7\n\nInstallation method: pip install openai-agents\n\nAdditional Information:\nI\u2019ve tried reinstalling the package multiple times using --no-cache-dir and have also used a fresh virtual environment.\n\nI have also checked the site-packages/openai_agents directory, and it is missing the necessary Python files.\n\nI\u2019ve checked the PyPI page, and there\u2019s no indication of a known issue with the package installation.\n\nThe issue persists after upgrading pip to the latest version.\n\n",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/373/comments",
+    "author": "william-e43",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-27T17:38:49Z",
+        "body": "I just tried this on a mac with python 3.9/3.11/3.12 and couldn't reproduce it. One note, your import is incorrect. The correct one is:\n```\nfrom agents import Agent\n```\n\ncan you try that?"
+      },
+      {
+        "user": "william-e43",
+        "created_at": "2025-03-27T17:42:44Z",
+        "body": "Yeah, working now with that import statement. Thanks"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correct import statement syntax for the openai-agents package",
+      "Guidance that allows successful module importing",
+      "Clarification about the package's expected usage pattern"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:53"
+    }
+  },
+  {
+    "number": 316,
+    "title": "How to provide object as input to agent",
+    "created_at": "2025-03-24T09:24:21Z",
+    "closed_at": "2025-03-25T15:12:05Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/316",
+    "body": "Hi Team,\n\nI am trying to create an agent which will use function tool approach to call my python method to extract the text from a excel file. So I have to provide the file as an input. How can I do it?\n\n```\n\nclass ExtractionItem(BaseModel):\n    extractedText: str\n    \"\"\"The extracted text from the document..\"\"\"\n\n===== Agent Instantiation====\ntext_extractor_agent = Agent(\n        name=\"Text Extraction Agent\",\n        instructions=PROMPT,\n        model=\"gpt-4o\",\n        tools=[text_extraction],\n        output_type=ExtractionItem\n    )\n\n====== Function call =======\n\n@function_tool\nasync def text_extraction(input_excel_file):\n    try:\n        logic to extract the text\n    except Exception as e:\n        issues = str(e)\n\n    result = ExtractionItem(\n        extractedText=extracted text\n    )\n    return result\n\n```\nNow while calling the agent how can i provide file as an input? Please help me \n\n\n",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/316/comments",
+    "author": "puneetsharma7445",
+    "comments": [
+      {
+        "user": "DanieleMorotti",
+        "created_at": "2025-03-24T10:52:41Z",
+        "body": "Hi, there are several methods. I don't know what you need to do on the excel file, therefore I provide you with some generic examples.\n\nThe first method is to make the model pass the input file name (you have to pay attention to the actual path of the file):\n```python\nfrom agents import (\n    Agent,\n    ModelSettings,\n    RunContextWrapper,\n    Runner,\n    function_tool,\n)\nimport pandas as pd\nfrom pydantic import BaseModel\n\n@function_tool\ndef text_extraction(file_path: str):\n    \"\"\"\n    It returns the excel file data.\n    \"\"\"\n    try:\n        df = pd.read_excel(file_path)\n        return df.to_csv()\n    except Exception as exc:\n        return f\"Failed to read excel file, due to exception: {exc}.\"\n\nclass ExtractionItem(BaseModel):\n    \"\"\"The extracted text from the document..\"\"\"\n    extractedText: str\n\nasync def main():\n    agent = Agent(\n        name=\"Text extraction agent\",\n        model=\"gpt-4o-mini\",\n        instructions=\"You are a helpful agent, your task is to extract info from an excel file.\",\n        tools=[text_extraction],\n        model_settings=ModelSettings(\n            max_tokens=1024\n        ),\n        output_type=ExtractionItem\n    )\n    # Example of user input\n    user_input = \"I want to extract all the user names from the file 'excel_test.xlsx'\"\n    result = await Runner.run(agent, input=user_input)\n    print(result.final_output)\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```\n\nWhile the second approach may be to read the file and put it in the context:\n```python\nfrom dataclasses import dataclass\nimport io\n\n@dataclass\nclass ContextInfo:\n    excel_file: io.BytesIO = None\n\n@function_tool\ndef text_extraction(context: RunContextWrapper[ContextInfo]):\n    \"\"\"\n    It returns the excel file data.\n    \"\"\"\n    try:\n        df = pd.read_excel(context.context.excel_file)\n        return df.to_csv()\n    except Exception as exc:\n        return f\"Failed to read excel file, due to exception: {exc}.\"\n\n\nasync def main():\n    agent = Agent(\n        name=\"Text extraction agent\",\n        model=\"gpt-4o-mini\",\n        instructions=\"You are a helpful agent, your task is to extract info from an excel file.\",\n        tools=[text_extraction],\n        model_settings=ModelSettings(\n            max_tokens=1024\n        ),\n        output_type=ExtractionItem\n    )\n\n    user_input = \"I want to extract all the user names from the excel file.\"\n    result = await Runner.run(\n        agent, input=user_input,\n        context=ContextInfo(excel_file=open(\"excel_test.xlsx\", \"rb\"))\n    )\n    print(result.final_output)\n```\n\nFor both methods, you need to install `pandas` and `openpyxl` to read the Excel file. I also suggest being cautious when passing an entire file, as it may contain a large number of tokens.\nHope this may be useful for your use case!"
+      },
+      {
+        "user": "yizhangliu",
+        "created_at": "2025-03-24T11:08:01Z",
+        "body": "Context is a good thing."
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-24T17:49:26Z",
+        "body": "Tool calling is via JSON inputs and string outputs. So the LLM is unable to pass a file directly in the tool call, but it can pass a reference to the file as @DanieleMorotti mentioned. For example, file name, path, etc."
+      },
+      {
+        "user": "puneetsharma7445",
+        "created_at": "2025-03-25T05:44:27Z",
+        "body": "Thanks for the help and support @DanieleMorotti .\n\nI was struggling with approach to pass input parameters to the Tool. I am able to proceed now."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A method to provide a file as input to an agent's function tool",
+      "Practical examples showing how to pass file data to function tools",
+      "Explanation of available options for file handling in agent tools"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:58"
+    }
+  },
+  {
+    "number": 298,
+    "title": "Guide on few-shot prompting",
+    "created_at": "2025-03-22T04:54:38Z",
+    "closed_at": "2025-03-22T05:39:14Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/298",
+    "body": "Few-shot prompting is one of the best techniques for controlling model output. I used to implement this with the `openai` client:\n\n```python\n\nfew_shot_1 = [\n    {\n        \"role\": \"user\",\n        \"content\": \"\"\"\nTeach me about patience.\n\"\"\".strip(),\n    },\n    {\n        \"role\": \"assistant\",\n        \"content\": \"\"\"\nThe river that carves the deepest valley flows from a modest spring; the grandest symphony originates from a single note; the most intricate tapestry begins with a solitary thread.\n\"\"\".strip(),\n    },\n]\n\n# ...\n\nstream = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\"role\": \"system\", \"content\": system_prompt},\n        *few_shot_1,\n        *few_shot_2,\n        {\"role\": \"user\", \"content\": user_input},\n    ],\n    stream=True,\n)\n```\n\nBut with the Agents SDK, there's no clear way to do this. Ideally, few-shot examples should be part of the prompt defined at agent declaration, but adding multiple messages appears to be impossible for an `Agent` right now.\n\nShould I include my few-shot examples in agent instructions or as runner input instead?",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/298/comments",
+    "author": "nicognaW",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-22T05:26:13Z",
+        "body": "1. including examples in the system prompt (ie agent instructions) works pretty well, so that could work.\n2. You can pass it to the runner, as you described. Would only really work well for the first agent though (ie handoffs wouldn't have the right examples)\n\nWould those work for you? "
+      },
+      {
+        "user": "nicognaW",
+        "created_at": "2025-03-22T05:39:15Z",
+        "body": "That is insightful, thanks for the reply."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Practical approaches for implementing few-shot prompting with the Agents SDK",
+      "Explanation of tradeoffs between different implementation approaches",
+      "Clear alternatives that address the technical constraints of the Agents SDK"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:04"
+    }
+  },
+  {
+    "number": 263,
+    "title": "Fix potential infinite tool call loop by resetting tool_choice after \u2026",
+    "created_at": "2025-03-20T13:29:21Z",
+    "closed_at": "2025-03-25T15:30:53Z",
+    "labels": [],
+    "url": "https://github.com/openai/openai-agents-python/pull/263",
+    "body": "# Fix potential infinite tool call loop by resetting tool_choice after tool execution\r\n\r\n## Summary\r\n\r\nThis PR fixes an issue where setting `tool_choice` to \"required\" or a specific function name could cause models to get stuck in an infinite tool call loop.\r\n\r\nWhen `tool_choice` is set to force tool usage, this setting persists across model invocations. This PR automatically resets `tool_choice` to \"auto\" after tool execution, allowing the model to decide whether to make additional tool calls in subsequent turns.\r\n\r\nUnlike using `tool_use_behavior=\"stop_on_first_tool\"`, this approach lets the model continue processing tool results while preventing forced repeated tool calls.\r\n\r\n## Test plan\r\n\r\n- Added tests to verify tool_choice reset behavior for both agent and run_config settings\r\n- Added integration test to verify the solution prevents infinite loops\r\n- All tests pass\r\n\r\n## Checks\r\n\r\n- [x] I've added new tests for the fix\r\n- [x] I've updated the relevant documentation (added comment in code)\r\n- [x] I've run `make lint` and `make format`\r\n- [x] I've made sure tests pass\r\n",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/263/comments",
+    "author": "mini-peanut",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-20T14:43:59Z",
+        "body": "This is a good idea! What do you think about making it a configurable param, default to `reset=True`?"
+      },
+      {
+        "user": "mini-peanut",
+        "created_at": "2025-03-20T14:51:40Z",
+        "body": "> This is a good idea! What do you think about making it a configurable param, default to `reset=True`?\r\n\r\n@rm-openai Thanks for the feedback! I considered adding a config parameter, but wonder if it might add complexity without clear use cases. Most users would want to prevent infinite loops by default, and those with specific needs could already implement custom behaviors through the existing API.\r\n\r\nUnless you have specific scenarios in mind where maintaining forced tool calls is beneficial, perhaps the simpler approach is better?"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-20T15:12:45Z",
+        "body": "@mini-peanut, yeah one use case I had in mind was this:\r\n\r\nSetup:\r\n```\r\nagent = Agent(\r\n  instructions=\"Use the find_company tool to find the company info. Then use the search_directory tool to get the CEO's email.\",\r\n  tools=[find_company, search_directory],\r\n  tool_choice=\"required\",\r\n  tool_use_behavior={\"stop_at_tool_names\": \"search_directory\"},\r\n```\r\n\r\nIf we reset `tool_choice`, then we can't trust the Agent to reliably call the second tool.\r\n\r\nThoughts?"
+      },
+      {
+        "user": "mini-peanut",
+        "created_at": "2025-03-20T16:16:50Z",
+        "body": "> @mini-peanut, yeah one use case I had in mind was this:\r\n> \r\n> Setup:\r\n> \r\n> ```\r\n> agent = Agent(\r\n>   instructions=\"Use the find_company tool to find the company info. Then use the search_directory tool to get the CEO's email.\",\r\n>   tools=[find_company, search_directory],\r\n>   tool_choice=\"required\",\r\n>   tool_use_behavior={\"stop_at_tool_names\": \"search_directory\"},\r\n> ```\r\n> \r\n> If we reset `tool_choice`, then we can't trust the Agent to reliably call the second tool.\r\n> \r\n> Thoughts?\r\n\r\n@rm-openai Thanks for sharing that use case. I'd like to refine my approach to focus on the specific problem we're solving.\r\n\r\n**The Problem:** Setting `tool_choice` to \"required\" or a specific function name can inadvertently cause infinite loops.\r\n\r\n**Core Hypothesis:** When a user forces a single specific function call, they rarely intend for that same function to be repeatedly called in an infinite loop. This differs from intentional sequential calling of different functions.\r\n\r\n**Problem Scenario:** This issue typically manifests in two specific cases:\r\n1. When `tool_choice` is set to a specific function name, causing the same function to be called repeatedly\r\n2. When `tool_choice=\"required\"` with only one available tool, which functionally behaves the same way\r\n\r\n**Concerns with Adding a Configuration Parameter:**\r\nUsers with legitimate sequential tool usage would need to explicitly set `reset_tool_choice_after_use` to `False`.\r\n\r\n**Targeted Solution:** We can address these specific scenarios without disrupting legitimate use cases:\r\n```python\r\n# Only reset in the problematic scenarios where loops are likely unintentional\r\nif (isinstance(tool_choice, str) and tool_choice not in [\"auto\", \"required\", \"none\"]) or \r\n   (tool_choice == \"required\" and len(tools) == 1):\r\n    # Reset to \"auto\"\r\n```\r\n\r\nThis approach precisely targets the infinite loop problem without affecting the multi-tool sequential calling pattern you described, and without requiring additional configuration.\r\n"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-21T14:29:41Z",
+        "body": "lgtm - but would you mind fixing lint/typechecking please? can't merge without that"
+      },
+      {
+        "user": "mini-peanut",
+        "created_at": "2025-03-22T06:19:43Z",
+        "body": "@rm-openai Fixed, and the code should pass the checks. Thanks for your patience\r\n"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-22T16:06:59Z",
+        "body": "Unfortunately looks like typechecking is still not passing"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-25T15:30:54Z",
+        "body": "I'm merging this because it's mostly great. I think it will need a couple of followups:\r\n1. Instead of copying the agent, we should do internal bookkeping of the resets\r\n2. I still think this should be configurable\r\n3. I'm not sure it makes sense to reset the RunConfig ModelSettings. \r\n\r\nI'll follow up with all of those!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that prevents infinite tool call loops when tool_choice is set to 'required' or a specific function name",
+      "A targeted approach that addresses problematic scenarios without disrupting legitimate sequential tool usage",
+      "A solution that doesn't require additional configuration parameters unless absolutely necessary",
+      "Code that passes all required checks (lint, typechecking, tests)",
+      "Proper test coverage to verify the solution works as intended"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:11"
+    }
+  },
+  {
+    "number": 123,
+    "title": "Handoff to multiple agents in parallel",
+    "created_at": "2025-03-13T07:22:42Z",
+    "closed_at": "2025-03-15T10:27:00Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/123",
+    "body": "Does the SDK support delegate to multiple sub-agents at once? \nIf the triage agent wants to delegate tasks to 3 best-capable agents as once and then gather and evaluate all of the results, how do I implement this logic? \nIn the examples, the parallelization seems to have to be hard coded rather than an intelligent hand-off.",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/123/comments",
+    "author": "WSQsGithub",
+    "comments": [
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-13T22:43:23Z",
+        "body": "No, it doesn't. Handoffs are meant for scenarios where you transfer control of the entire conversation to a new agent - so it's not possible to hand off to multiple agents.\n\nDepending on your scenario, it might make sense to either:\n1. Have mutliple agents and expose them as tools e.g.:\n```\nagent1, agent_2, agent_3, agent_4, ... = ...;\n\nmain_agent = Agent(\n  name=\"Triage\",\n  instructions=\"Call all the relevant agent tools in parallel, then synthesize a good response\",\n  model_settings=ModelSettings(parallel_tool_calls=True), # Enable parallel tool calling\n  tools=[agent_1.as_tool(...), agent_2.as_tool(...), agent_3.as_tool(...), ...]\n)\n```\n\nor \n\n2. If it's deterministic, do it in code:\n```\nagent1, agent_2, agent_3 = ...;\n\nresult_1, result_2, result_3 = await asyncio.gather(\n  Runner.run(agent_1, ...),\n  Runner.run(agent_2, ...),\n  Runner.run(agent_3, ...),\n)\n\nnew_input = f\"Synthesize a good response: {result_1.final_output} \\n {result_2.final_output} ...\"\n\nmain_agent = Agent(...)\nfinal_result = await Runner.run(main_agent, new_input)\n```\n\nWould these options work?\n"
+      },
+      {
+        "user": "huangbhan",
+        "created_at": "2025-03-14T07:55:46Z",
+        "body": "Same issue,Solution 1 is a good design concept, it works for me.\nBut I have a question.\n\nOption 1:\nagent -> multiple tools\n\nOption 2:\nagent -> multiple agents as tools (each agent has a tool that it can call)\n\nWhich of these two options is better? What are the differences?\n\n\n> No, it doesn't. Handoffs are meant for scenarios where you transfer control of the entire conversation to a new agent - so it's not possible to hand off to multiple agents.\u4e0d\uff0c\u5b83\u4e0d\u662f\u3002\u4ea4\u63a5\u662f\u4e3a\u4e86\u5c06\u6574\u4e2a\u5bf9\u8bdd\u7684\u63a7\u5236\u6743\u8f6c\u79fb\u7ed9\u4e00\u4e2a\u65b0\u7684\u4ee3\u7406\uff0c\u56e0\u6b64\u4e0d\u53ef\u80fd\u4ea4\u63a5\u7ed9\u591a\u4e2a\u4ee3\u7406\u3002\n> \n> Depending on your scenario, it might make sense to either:\u6839\u636e\u60a8\u7684\u60c5\u51b5\uff0c\u60a8\u53ef\u80fd\u4f1a\u89c9\u5f97\u4ee5\u4e0b\u4e24\u79cd\u9009\u62e9\u4e2d\u7684\u4e00\u79cd\u66f4\u5408\u9002\uff1a\n> \n> 1. Have mutliple agents and expose them as tools e.g.:\u62e5\u6709\u591a\u4e2a\u4ee3\u7406\u5e76\u5c06\u5176\u4f5c\u4e3a\u5de5\u5177\u516c\u5f00\uff0c\u4f8b\u5982\uff1a\n> \n> ```\n> agent1, agent_2, agent_3, agent_4, ... = ...;\n> \n> main_agent = Agent(\n>   name=\"Triage\",\n>   instructions=\"Call all the relevant agent tools in parallel, then synthesize a good response\",\n>   model_settings=ModelSettings(parallel_tool_calls=True), # Enable parallel tool calling\n>   tools=[agent_1.as_tool(...), agent_2.as_tool(...), agent_3.as_tool(...), ...]\n> )\n> ```\n> \n> or\u00a0\u00a0\u6216\n> \n> 2. If it's deterministic, do it in code:\u5982\u679c\u662f\u786e\u5b9a\u6027\u7684\uff0c\u5c31\u7528\u4ee3\u7801\u5b9e\u73b0\uff1a\n> \n> ```\n> agent1, agent_2, agent_3 = ...;\n> \n> result_1, result_2, result_3 = await asyncio.gather(\n>   Runner.run(agent_1, ...),\n>   Runner.run(agent_2, ...),\n>   Runner.run(agent_3, ...),\n> )\n> \n> new_input = f\"Synthesize a good response: {result_1.final_output} \\n {result_2.final_output} ...\"\n> \n> main_agent = Agent(...)\n> final_result = await Runner.run(main_agent, new_input)\n> ```\n> \n> Would these options work?\u8fd9\u4e9b\u9009\u9879\u53ef\u884c\u5417\uff1f\n\n"
+      },
+      {
+        "user": "WSQsGithub",
+        "created_at": "2025-03-14T10:24:23Z",
+        "body": "Thank you for making things clear with handoffs. But it would be neat if agent can dynamically call multiple tools concurrently. "
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-14T19:00:53Z",
+        "body": "> But it would be neat if agent can dynamically call multiple tools concurrently.\n\nIn the first example I gave, that's indeed what is happening. Is there some use case that doesn't work there?"
+      },
+      {
+        "user": "WSQsGithub",
+        "created_at": "2025-03-15T10:27:00Z",
+        "body": "> > But it would be neat if agent can dynamically call multiple tools concurrently.\n> \n> In the first example I gave, that's indeed what is happening. Is there some use case that doesn't work there?\n\nMy bad. I didn't notice this modification of `parallel_tool_calls=True`. Thank you for your clarification!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A way to delegate tasks to multiple agents in parallel",
+      "Clarification on whether handoffs support multiple parallel agents",
+      "A solution that allows dynamic concurrent tool calling",
+      "A programmatic approach rather than hard-coded parallelization"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:28"
+    }
+  },
+  {
+    "number": 71,
+    "title": "max_tokens is not an accepted parameter",
+    "created_at": "2025-03-12T09:22:15Z",
+    "closed_at": "2025-03-12T23:29:36Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/openai/openai-agents-python/issues/71",
+    "body": "Out of the Documentation, there is no reference of max_tokens. the ModelSettings does not accept the max_tokens parameter..\n\nThis becomes a problem especially when using anthropic models as they dont assume a max tokens value and need one to get passed.\n",
+    "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/71/comments",
+    "author": "s44002",
+    "comments": [
+      {
+        "user": "s44002",
+        "created_at": "2025-03-12T09:22:56Z",
+        "body": "I am fixing the issue"
+      },
+      {
+        "user": "rm-openai",
+        "created_at": "2025-03-12T23:29:36Z",
+        "body": "Apologies, I didn't see this issue/PR in time and implemented it myself via #105"
+      },
+      {
+        "user": "s44002",
+        "created_at": "2025-03-13T03:42:26Z",
+        "body": "No worries, getting that fixed was the whole point. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Support for the max_tokens parameter in ModelSettings",
+      "Compatibility with anthropic models that require max_tokens specification",
+      "Alignment between documentation and actual functionality"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:33"
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "number": 99,
+    "title": "Avoid including internal libintelmath header.",
+    "created_at": "2025-03-07T16:20:32Z",
+    "closed_at": "2025-03-12T19:02:01Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/documentdb/pull/99",
+    "body": "This removed the include of <bid_internal.h> and adds the three MASK64 definitions that are used in the code.\r\n\r\nFixes: #97",
+    "comments_url": "https://api.github.com/repos/microsoft/documentdb/issues/99/comments",
+    "author": "mbanck-cd",
+    "comments": [
+      {
+        "user": "lichoil",
+        "created_at": "2025-03-07T17:55:19Z",
+        "body": "hi @mbanck-ntap ,may I know the reason why removing this header file out and put MASK64 definitions in stead?"
+      },
+      {
+        "user": "safern",
+        "created_at": "2025-03-07T19:56:07Z",
+        "body": "@lichoil I think it is to be able to compile in debian. \r\n\r\n@diipak-bisht thoughts on this change? "
+      },
+      {
+        "user": "mbanck",
+        "created_at": "2025-03-08T08:09:31Z",
+        "body": "> @lichoil I think it is to be able to compile in debian.\r\n\r\nExactly.\r\n\r\n"
+      },
+      {
+        "user": "diipak-bisht",
+        "created_at": "2025-03-10T05:14:47Z",
+        "body": "I think this is fine change if internal headers are not available in debian unstable @safern. Thanks for contributing this @mbanck "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables compilation in Debian without requiring internal headers",
+      "A way to maintain the necessary functionality while removing dependency on bid_internal.h",
+      "An approach that addresses the issue (#97) related to internal header dependencies"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:16"
+    }
+  }
+]

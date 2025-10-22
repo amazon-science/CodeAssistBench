@@ -1,0 +1,96 @@
+[
+  {
+    "number": 111,
+    "title": "having trouble running CSP version",
+    "created_at": "2025-03-25T19:53:50Z",
+    "closed_at": "2025-03-27T09:28:03Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/mattergen/issues/111",
+    "body": "Hi! We retrained the model with the CSP settings, using MP-20 to start. It seems to have finished training successfully. But we can't figure out how to run the generate commands, though. We tried this:\n`mattergen-generate $RESULTS_PATH --model_path=$MODEL_PATH --sampling-config-name=csp --target_compositions=[{\"Na\": 1, \"Cl\": 1}] --batch_size=16 --num_batches ` \nwith `$MODEL_PATH` set to `outputs/singlerun/2025-03-19/12-11-18`\n\nthe checkpoint files are in there, but what I get is:\n```\n(errors)\n...\nFile \"/home/fas/MATTERGEN/mattergen/mattergen/scripts/generate.py\", line 55, in main\n    pretrained_name is None or model_path is None\n```\nI tried using the path to the checkpoint file itself, which didn't help. Any tips?",
+    "comments_url": "https://api.github.com/repos/microsoft/mattergen/issues/111/comments",
+    "author": "asedova",
+    "comments": [
+      {
+        "user": "danielzuegner",
+        "created_at": "2025-03-26T08:45:38Z",
+        "body": "Hi @asedova,\n\nIt appears that for some reason both `pretrained_name` and `model_path` are non-`None` in your run. Can you add a print statement right before the assertion error so we can see what's going wrong? It also looks like you're not providing a number for `--num_batches` in your CLI command."
+      },
+      {
+        "user": "asedova",
+        "created_at": "2025-03-26T13:32:20Z",
+        "body": "Sorry,`num_batches` was set to 1, it just got cut off above in the copy-paste.\n\nHere is the full error:\n```\nmattergen-generate $RESULTS_PATH --model_path=$MODEL_PATH --target_compositions=[{\"Na\": 1, \"Cl\": 1}] --batch_size=16 --num_batches 1\nMODELS_PROJECT_ROOT: /home/fas/MATTERGEN/mattergen/mattergen\nTraceback (most recent call last):\n  File \"/home/fas/MATTERGEN/.venv/bin/mattergen-generate\", line 10, in <module>\n    sys.exit(_main())\n  File \"/home/fas/MATTERGEN/mattergen/mattergen/scripts/generate.py\", line 102, in _main\n    fire.Fire(main)\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 135, in Fire\n    component_trace = _Fire(component, args, parsed_flag_args, context, name)\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 468, in _Fire\n    component, remaining_args = _CallAndUpdateTrace(\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 684, in _CallAndUpdateTrace\n    component = fn(*varargs, **kwargs)\n  File \"/home/fas/MATTERGEN/mattergen/mattergen/scripts/generate.py\", line 55, in main\n    pretrained_name is None or model_path is None\nAssertionError: Only one of pretrained_name or model_path can be provided.\n(.venv) 1 fas@milan2:~/MATTERGEN/mattergen$ export MODEL_PATH=../Mark-mattergen/mattergen/outputs/singlerun/2025-03-19/12-11-18/checkpoints/epoch=899-step=48600.ckpt\n(.venv) fas@milan2:~/MATTERGEN/mattergen$ mattergen-generate $RESULTS_PATH --model_path=$MODEL_PATH --target_compositions=[{\"Na\": 1, \"Cl\": 1}] --batch_size=16 --num_batches 1\nMODELS_PROJECT_ROOT: /home/fas/MATTERGEN/mattergen/mattergen\nTraceback (most recent call last):\n  File \"/home/fas/MATTERGEN/.venv/bin/mattergen-generate\", line 10, in <module>\n    sys.exit(_main())\n  File \"/home/fas/MATTERGEN/mattergen/mattergen/scripts/generate.py\", line 102, in _main\n    fire.Fire(main)\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 135, in Fire\n    component_trace = _Fire(component, args, parsed_flag_args, context, name)\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 468, in _Fire\n    component, remaining_args = _CallAndUpdateTrace(\n  File \"/home/fas/MATTERGEN/.venv/lib/python3.10/site-packages/fire/core.py\", line 684, in _CallAndUpdateTrace\n    component = fn(*varargs, **kwargs)\n  File \"/home/fas/MATTERGEN/mattergen/mattergen/scripts/generate.py\", line 55, in main\n    pretrained_name is None or model_path is None\nAssertionError: Only one of pretrained_name or model_path can be provided.\n```\n\nI'll work on that print statement in a bit and report back."
+      },
+      {
+        "user": "asedova",
+        "created_at": "2025-03-26T15:04:01Z",
+        "body": "Hey, here is the result after the print statement. The `model_path` variable is nonempty and correct:\n```\n(.venv) fas@milan2:~/MATTERGEN/mattergen$ mattergen-generate $RESULTS_PATH --model_path=$MODEL_PATH --target_compositions=[{\"Na\": 1, \"Cl\": 1}] --batch_size=16 --num_batches 1\nMODELS_PROJECT_ROOT: /home/fas/MATTERGEN/mattergen/mattergen\npretrained_name: (1,), model_path: ../Mark-mattergen/mattergen/outputs/singlerun/2025-03-19/12-11-18/\n...\n```\nI get the same final error. What is strange, is that `pretrained_name` is also NOT EMPTY! Also, in the assert, should it be an XOR?\n\n"
+      },
+      {
+        "user": "danielzuegner",
+        "created_at": "2025-03-26T16:32:47Z",
+        "body": "Hi @asedova, can you also show the result of printing `target_compositions` in the code?"
+      },
+      {
+        "user": "danielzuegner",
+        "created_at": "2025-03-26T16:54:44Z",
+        "body": "Ok, I think I figured it out. Can you try adding single quotes around the dictionary in the condition? I.e., `--target_compositions=['{\"Na\": 1, \"Cl\": 1}']`. Also, you have to pass `--sampling-config-name=csp` in order to use CSP sampling. Once you confirm this works I'll update the instructions in the README."
+      },
+      {
+        "user": "asedova",
+        "created_at": "2025-03-26T19:03:49Z",
+        "body": "Ok, that seems to have helped the previous error! By the way I did try adding the `--sampling-config-name=csp` flag yesterday also, and got that same error above. \n\nI now get an error about the model not being trained for csp... looks like after all our debugging of the training we left off the csp flag, so I will have to retrain it again and get back to you about next steps!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correct command syntax for running the CSP version of the model",
+      "Clear explanation of parameter conflicts in the command",
+      "Proper formatting of JSON-like parameters in command line arguments",
+      "Guidance on required flags for CSP model execution"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:00:41"
+    }
+  },
+  {
+    "number": 41,
+    "title": "RuntimeError: Unknown layout",
+    "created_at": "2025-01-31T22:40:03Z",
+    "closed_at": "2025-02-04T09:13:05Z",
+    "labels": [],
+    "url": "https://github.com/microsoft/mattergen/issues/41",
+    "body": "Hello and congratulations on the Nature publication!\n\nI am attempting to follow the README for getting started with mattergen and keep receiving a Runtime Error. \n\nMy steps to reproduce:\n\n`export MODEL_NAME=checkpoints/mattergen_base`\n`export RESULTS_PATH=results/`\n`python generate.py $RESULTS_PATH $MODEL_NAME --batch_size=4 --num_batches 1`\n\nAs an aside the 'mattergen-generate' command was not recognized, which is why I called python and generate.py\n\nThe error traceback:\n\n`INFO:mattergen.common.utils.eval_utils:Loading model from checkpoint: /home/krkaufma/PycharmProjects/mattergen_proj/checkpoints/mattergen_base/checkpoints/last.ckpt\n/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/utils/data_classes.py:95: UserWarning: \nThe version_base parameter is not specified.\nPlease specify a compatability version level, or None.\nWill assume defaults for version 1.1\n  with initialize_config_dir(str(self.model_path)):\n  0%|                                                                                                                                                                                     | 0/1000 [00:00<?, ?it/s]\nGenerating samples:   0%|                                                                                                                                                                    | 0/2 [00:00<?, ?it/s]\nTraceback (most recent call last):\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/generate.py\", line 84, in <module>\n    fire.Fire(main)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/fire/core.py\", line 135, in Fire\n    component_trace = _Fire(component, args, parsed_flag_args, context, name)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/fire/core.py\", line 468, in _Fire\n    component, remaining_args = _CallAndUpdateTrace(\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/fire/core.py\", line 684, in _CallAndUpdateTrace\n    component = fn(*varargs, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/generate.py\", line 79, in main\n    generator.generate(output_dir=Path(output_path))\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/generator.py\", line 370, in generate\n    generated_structures = draw_samples_from_sampler(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/generator.py\", line 58, in draw_samples_from_sampler\n    sample, mean, intermediate_samples = sampler.sample_with_record(conditioning_data, mask)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/utils/_contextlib.py\", line 115, in decorate_context\n    return func(*args, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/pc_sampler.py\", line 130, in sample_with_record\n    return self._sample_maybe_record(conditioning_data, mask=mask, record=True)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/utils/_contextlib.py\", line 115, in decorate_context\n    return func(*args, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/pc_sampler.py\", line 157, in _sample_maybe_record\n    return self._denoise(batch=batch, mask=mask, record=record)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/utils/_contextlib.py\", line 115, in decorate_context\n    return func(*args, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/pc_sampler.py\", line 187, in _denoise\n    score = self._score_fn(batch, t)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/classifier_free_guidance.py\", line 71, in _score_fn\n    return get_unconditional_score()\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/classifier_free_guidance.py\", line 59, in get_unconditional_score\n    return super(GuidedPredictorCorrector, self)._score_fn(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/sampling/pc_sampler.py\", line 94, in _score_fn\n    return self._diffusion_module.score_fn(x, t)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/diffusion/diffusion_module.py\", line 129, in score_fn\n    model_out: T = self.model(x, t)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1511, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1520, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/denoiser.py\", line 248, in forward\n    output = self.gemnet(\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1511, in _wrapped_call_impl\n    return self._call_impl(*args, **kwargs)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1520, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/gemnet/gemnet.py\", line 665, in forward\n    ) = self.generate_interaction_graph(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/gemnet/gemnet.py\", line 535, in generate_interaction_graph\n    edge_index, to_jimages, num_bonds = radius_graph_pbc(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/utils/data_utils.py\", line 263, in radius_graph_pbc\n    edge_index, unit_cell, num_neighbors_image, _, _ = radius_graph_pbc_ocp(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/utils/ocp_graph_utils.py\", line 229, in radius_graph_pbc\n    mask_num_neighbors, num_neighbors_image = get_max_neighbors_mask(\n  File \"/home/krkaufma/PycharmProjects/mattergen_proj/mattergen/common/utils/ocp_graph_utils.py\", line 280, in get_max_neighbors_mask\n    num_neighbors = segment_coo(ones.to(pyg_device), index.to(pyg_device), dim_size=num_atoms).to(\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch_scatter/segment_coo.py\", line 124, in segment_coo\n    return segment_sum_coo(src, index, out, dim_size)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch_scatter/segment_coo.py\", line 9, in segment_sum_coo\n    return torch.ops.torch_scatter.segment_sum_coo(src, index, out, dim_size)\n  File \"/home/krkaufma/anaconda3/envs/mattergen25/lib/python3.10/site-packages/torch/_ops.py\", line 755, in __call__\n    return self._op(*args, **(kwargs or {}))\nRuntimeError: Unknown layout\n`\nI have already tried modifying gcc, nvcc, and $PATH to no avail.\n\nThank you in advance for your assistance.",
+    "comments_url": "https://api.github.com/repos/microsoft/mattergen/issues/41/comments",
+    "author": "krkaufma",
+    "comments": [
+      {
+        "user": "ClaudioZeni",
+        "created_at": "2025-02-03T13:08:00Z",
+        "body": "Hi and thanks for reaching out.\n\nCould you try pulling the latest commits, re-installing the environment and re-run the script?\nAlso, which architecture are you on?"
+      },
+      {
+        "user": "krkaufma",
+        "created_at": "2025-02-03T22:22:09Z",
+        "body": "Hi @ClaudioZeni and thanks for the reply. I pulled the latest version, re-installed the environment, and re-ran the script and everything worked. I am on Ubuntu 18.04 with x86_64 architecture. Let me know if you need further information about my architecture. \n\nIf you don't mind me asking this question here, do the mattersim relaxed structures and predicted propert(ies) get written anywhere in the file system? Is there an argument to have this done when calling the evaluation?"
+      },
+      {
+        "user": "ClaudioZeni",
+        "created_at": "2025-02-04T09:12:28Z",
+        "body": "Hi, glad everything works now.\n\nAs for the relaxation, currently `evaluate.py` does not store any information regarding the relaxed structures.\nIf you are interested in these info, you can simply run the relaxation script and then save the properties you are interested in:\n\n``` python\n\nfrom mattergen.evaluation.utils.relaxation import relax_structures\n\nrelaxed_structures, total_energies = relax_structures(structures)\n```"
+      },
+      {
+        "user": "ClaudioZeni",
+        "created_at": "2025-02-04T09:13:05Z",
+        "body": "Closing as issue appears to be resolved"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the 'Unknown layout' runtime error when running the mattergen generation script",
+      "Information about how to access or save relaxed structures and their properties"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:01:15"
+    }
+  }
+]

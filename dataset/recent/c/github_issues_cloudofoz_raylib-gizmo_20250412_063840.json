@@ -1,0 +1,35 @@
+[
+  {
+    "number": 2,
+    "title": "Unable to rotate the gizmo without the scaling flag",
+    "created_at": "2025-03-23T05:14:47Z",
+    "closed_at": "2025-03-23T09:48:55Z",
+    "labels": [],
+    "url": "https://github.com/cloudofoz/raylib-gizmo/issues/2",
+    "body": "If I draw the gizmo using the following flags, i am unable to rotate it (the visuals change when i click the circle but it does not rotate): \n```cpp\nDrawGizmo3D(GIZMO_ROTATE  , &transform);\nDrawGizmo3D(GIZMO_ROTATE | GIZMO_TRANSLATE , &transform);\n```\nWhile if we draw the gizmo with the following flags it does rotate:\n```cpp\nDrawGizmo3D(GIZMO_ROTATE | GIZMO_SCALE , &transform);\nDrawGizmo3D(GIZMO_ROTATE | GIZMO_SCALE | GIZMO_TRANSLATE , &transform);\n```\n\nFrom what I tried to understand from the source code is that the gizmo detects it has to do a rotation but (i.e. the action is correctly registered), but it does not apply any rotation from the mouse movement.",
+    "comments_url": "https://api.github.com/repos/cloudofoz/raylib-gizmo/issues/2/comments",
+    "author": "eduardo98m",
+    "comments": [
+      {
+        "user": "cloudofoz",
+        "created_at": "2025-03-23T05:37:32Z",
+        "body": "Hi @eduardo98m!\n\nLet me explain what's happening.\n\n**Short answer:** To make gizmo \"rotation\" work when scaling isn't enabled, just add the local orientation flag:  \n```cpp\nGIZMO_TRANSLATE | GIZMO_ROTATE | GIZMO_LOCAL\n```\n\n**Long answer:**  \n`raylib-gizmo` supports three orientation modes:  \n- **Global**: The gizmo doesn't align with the transform's orientation.  \n- **Local**: The gizmo aligns with the object's transform.  \n- **View**: The gizmo faces the camera/view.\n\nBy default, the gizmo uses **global** orientation. However, as mentioned in the README, when **scaling is enabled**, the gizmo *requires* local orientation, so it automatically switches to **local** mode in those cases.\n\nThat's why when you use:\n```cpp\nGIZMO_ROTATE | GIZMO_SCALE\n```\nit behaves as expected because local mode is active. But without the scale component, it stays in global mode by default, and rotation won\u2019t apply as you\u2019d expect. To fix that, just explicitly enable `GIZMO_LOCAL`.\n\nLet me know if that clears things up!"
+      },
+      {
+        "user": "eduardo98m",
+        "created_at": "2025-03-23T09:48:55Z",
+        "body": "Thanks for the explanation! (I was not really paying attention to the global and local mode flags ._.).\n\nI also happen to look for the specific line in the source code that forced the flag change for the scaling.\n\n`raygizmo.c` line : `494`\n```cpp\nstatic void ComputeAxisOrientation(GizmoData* gizmoData)\n{\n\tint flags = gizmoData->flags;\n\n\t// Scaling is currently supported only in local mode\n\tif (flags & GIZMO_SCALE)\n\t{\n\t\tflags &= ~GIZMO_VIEW;\n\t\tflags |= GIZMO_LOCAL;\n\t}\n...\n```\n\nNote: I wasn't noticing the change in the transform rotation because i was using the gizmo without any model attached.\n\nAgain thanks for your help, really like this project."
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation of why the rotation gizmo doesn't work without the scaling flag",
+      "A solution to make the rotation gizmo work without requiring the scaling flag",
+      "Information about the orientation modes of the gizmo system",
+      "Reference to relevant implementation details in the source code"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:00:12"
+    }
+  }
+]

@@ -1,0 +1,172 @@
+[
+  {
+    "number": 43,
+    "title": "Is there a bug in lines 428-431 of sa2va_4b.py where the three datasets of recfcoco are added four times?",
+    "created_at": "2025-02-25T09:24:06Z",
+    "closed_at": "2025-03-13T10:09:06Z",
+    "labels": [],
+    "url": "https://github.com/magic-research/Sa2VA/issues/43",
+    "body": null,
+    "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/43/comments",
+    "author": "bill-hx-liu",
+    "comments": [
+      {
+        "user": "zhang-tao-whu",
+        "created_at": "2025-03-13T10:08:56Z",
+        "body": "Everything is normal. Since each image in the RES dataset will randomly sample several objects to form the conversation, there will be a large number of objects that are not sampled. We mitigate this issue by manually repeating the dataset four times."
+      },
+      {
+        "user": "bill-hx-liu",
+        "created_at": "2025-03-17T12:21:34Z",
+        "body": "ok\uff0ci got it\uff0cthank you!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation of the purpose behind repeating the dataset multiple times",
+      "Clarification that the code behavior is intentional, not a bug",
+      "An explanation of the sampling methodology for objects in the dataset"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:00"
+    }
+  },
+  {
+    "number": 38,
+    "title": "SAM2 MASK Decoder freeze or not?",
+    "created_at": "2025-02-23T22:09:32Z",
+    "closed_at": "2025-02-25T07:44:01Z",
+    "labels": [],
+    "url": "https://github.com/magic-research/Sa2VA/issues/38",
+    "body": "Hi Authors,\n\nThanks for your amazing work! I would like to clarify a detail for Sa2VA model training: In you introduction section, there is a statement saying that \"Moreover, we adopt a decoupled design in which SAM-2\u2019s decoder and memory module are frozen, allowing us to retain the perception and tracking capabilities of SAM-2\", but in your architecture figure, there is a \"fire\" icon of SAM2 decoder, which is supposed to indicate that the module is trainable. I want to clarify that did you freeze the SAM2 decoder during training?\n\nThanks,\nRuining",
+    "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/38/comments",
+    "author": "Ruining0916",
+    "comments": [
+      {
+        "user": "HarborYuan",
+        "created_at": "2025-02-25T01:12:01Z",
+        "body": "Hi @Ruining0916 ,\n\nThank you very much for the interest in our work. Here want to I clarify that the SAM-2's decoder is trainable during instruction-tuning as in the figure and the code. \n\nIt is a typo in the manuscript. We wanted to emphasize that Sa2VA does not require memory module training in the paper."
+      },
+      {
+        "user": "Ruining0916",
+        "created_at": "2025-02-25T02:05:50Z",
+        "body": "Thanks for your clarification! So the only module you used from SAM-2 is mask decoder right?"
+      },
+      {
+        "user": "HarborYuan",
+        "created_at": "2025-02-25T07:43:58Z",
+        "body": "Exactly. The other parts are fixed."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear clarification about which SAM-2 components are trainable versus frozen during the Sa2VA model training",
+      "Identification of which specific SAM-2 modules are used in the Sa2VA architecture",
+      "Correction of inconsistencies between the paper text and the architecture figure"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:08"
+    }
+  },
+  {
+    "number": 23,
+    "title": "Sa2VA-4b model performance on image segmentation benchmark",
+    "created_at": "2025-02-14T20:35:32Z",
+    "closed_at": "2025-02-25T02:28:02Z",
+    "labels": [],
+    "url": "https://github.com/magic-research/Sa2VA/issues/23",
+    "body": "Hi authors,\n\nThanks to your excellent work! I have a question regarding your performance report with Sa2VA-4b model on refcoco/+/g datasets due to the inconsistency cIou scores from table 2,4,6 which supposed to use the same Sa2VA-4b model and perform the same image segmentation benchmark. More specially,  Sa2VA-4b on refcoco/+/g datasets are **77.4/69.9/72.3** from table 2, **80.4/74.3/76.7** from table 4; and **80.4/74.3/75.7** from table 6. I wonder are these inconsistent scores come from any of the below reasons:\n\n- Does the Sa2VA-4b in table 2 and table4/6 not the same model (the one from table 2 does not involve co-training and the the one from table 4/6 involves co-training)? but from my understanding, they should both be the finalized model?\n- If they are different Sa2VA-4b models, then does co-training image chat/segmentation even improve image segmentation performance?\n- If they are the same Sa2VA-4b model, do it perform different benchmarks for table2 and table 4/6?\n- Are these numbers are just fluctuations from different runs?\n\nThanks a lot for your help and clarification!\n",
+    "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/23/comments",
+    "author": "Ruining0916",
+    "comments": [
+      {
+        "user": "zhang-tao-whu",
+        "created_at": "2025-02-16T06:42:44Z",
+        "body": "In Table 2, Sa2VA employs InternVL2 as the base MLLM, while in Tables 4 and 6, Sa2VA utilizes InternVL 2.5 as the base MLLM. Table 6 showcases the outcomes of additional fine-tuning on the RES datasets using the co-trained model from Table 4. We did not witness an improvement in QA performance through the incorporation of segmentation data; nonetheless, we detected a modest enhancement in QA performance with the integration of visual prompt understanding data."
+      },
+      {
+        "user": "Ruining0916",
+        "created_at": "2025-02-17T20:56:01Z",
+        "body": "Thanks for your clarification. Th Sa2VA-4b from huggingface and in the training script utilize InternVL 2.5 right?"
+      },
+      {
+        "user": "zhang-tao-whu",
+        "created_at": "2025-02-18T11:30:58Z",
+        "body": "Yes."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification about which version of the base MLLM (InternVL) is used in different tables of the paper",
+      "Explanation for the performance differences in the reported benchmark scores across tables",
+      "Confirmation about which model version is available in the public repository",
+      "Information about the effects of co-training on model performance"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:14"
+    }
+  },
+  {
+    "number": 16,
+    "title": "[SEG] Hidden State usage",
+    "created_at": "2025-02-07T17:01:36Z",
+    "closed_at": "2025-02-10T07:08:58Z",
+    "labels": [],
+    "url": "https://github.com/magic-research/Sa2VA/issues/16",
+    "body": "Thank you for the great work. As I read the code, if I understand correctly, it seems that If the model predicts the next token is [SEG], it will take the final layer hidden state and feed through an MLP connector and feed it to SAM2 for decoding.\n\nHowever, if the language model predicts [SEG] as the next token, it means the embedding has the highest (or very high if sampling is used) similarity with [SEG] embedding. Doesn't that mean this embedding fed to SAM2 is always very close to [SEG] no matter what the rest of the sentence/context is? How does the model utilize the context with very similar embeddings for segmenting different objects?\n\nPlease let me know if I misunderstood. Thank you!",
+    "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/16/comments",
+    "author": "seermer",
+    "comments": [
+      {
+        "user": "HarborYuan",
+        "created_at": "2025-02-10T06:31:53Z",
+        "body": "Your understanding is correct. But I would like to point out that [SEG]'s embedding has two different MLP/projection layers, outputing to the classifier or visual prompt respectively. When considering an embedding, for text classifiers, they may be similar, but for prompt encoder, these differences are used to segment different objects."
+      },
+      {
+        "user": "seermer",
+        "created_at": "2025-02-10T07:08:58Z",
+        "body": "Thank you so much for your help! "
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification on how the model differentiates between different objects despite similar [SEG] token embeddings",
+      "Confirmation or correction of the user's understanding of the model architecture",
+      "Technical explanation of how context information is preserved in the segmentation process"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:21"
+    }
+  },
+  {
+    "number": 13,
+    "title": "SAV dataset inquiry",
+    "created_at": "2025-02-05T23:47:42Z",
+    "closed_at": "2025-02-06T19:31:17Z",
+    "labels": [],
+    "url": "https://github.com/magic-research/Sa2VA/issues/13",
+    "body": "Congrats on your excellent work! I would like to clarify the SAV dataset details:\n\nYou mentioned about sam_v_full should be downloaded from meta/SA-V dataset page, which provides the link of downloading sav_000.tar - sav_055.tar; should we unzip them and put these files under sam_v_full directory as sub directories?\n\nThanks for your clarification!",
+    "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/13/comments",
+    "author": "Ruining0916",
+    "comments": [
+      {
+        "user": "HarborYuan",
+        "created_at": "2025-02-05T23:48:58Z",
+        "body": "Hi @Ruining0916 ,\n\nExactly."
+      },
+      {
+        "user": "Ruining0916",
+        "created_at": "2025-02-05T23:49:44Z",
+        "body": "Thanks for your swift response!\n\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Confirmation of the correct directory structure for the SAV dataset",
+      "Clear and direct confirmation of their understanding"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:28"
+    }
+  }
+]

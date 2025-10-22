@@ -1,0 +1,51 @@
+[
+  {
+    "number": 24,
+    "title": "[BUG] WithArgumentParser not called",
+    "created_at": "2025-04-09T09:11:53Z",
+    "closed_at": "2025-04-09T13:51:10Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/peteraritchie/ConsoleApplicationBuilder/issues/24",
+    "body": "## Source area of bug\n\n- [ ] Console Application Builder\n- [X] System.CommandLine Extensions\n\n## Description of the bug\n\nI have a Command with two required options - each having a `WithArgumentParser` attached. But only one the last `WithArgumentParser` is called\n\n**To Reproduce**\nExample code that produces the issue:\n\n```csharp\n            var builder = ConsoleApplication.CreateBuilder(args);\n            builder.Services.AddCommand()\n                .WithDescription(\"Update a WxS file with contents from a folder\")\n                .WithRequiredOption<FileInfo>(\"--file\", \"The input WxS file to update\")\n                    .WithArgumentParser((result) =>\n                    {\n                        var fileInfo = new FileInfo(result.Tokens[0].Value);\n                        if (!fileInfo.Exists)\n                        {\n                            throw new FileNotFoundException($\"The file '{fileInfo.FullName}' does not exist.\");\n                        }\n                        return fileInfo;\n                    })\n                .WithRequiredOption<DirectoryInfo>(\"--source-folder\", \"The directory containing the files to include\")\n                    .WithArgumentParser((result) =>\n                    {\n                        var dirInfo = new DirectoryInfo(result.Tokens[0].Value);\n                        if (!dirInfo.Exists)\n                        {\n                            throw new DirectoryNotFoundException($\"The directory '{dirInfo.FullName}' does not exist.\");\n                        }\n                        return dirInfo;\n                    })\n                .WithHandler((wxsFile, sourceFolder) =>\n                {\n                    // Read the content of the input file\n                    string content = File.ReadAllText(wxsFile.FullName);\n                    // Replace the placeholder with the new value\n                    string updatedContent = content.Replace(\"PLACEHOLDER\", \"NEW_VALUE\");\n                    // Write the updated content to the output file\n                    File.WriteAllText(wxsFile.FullName, updatedContent);\n                });\n\n            builder.Build<RootCommand>().Invoke/*Async*/(args);\n```\n- Set a breakpoint in all three lambda expressions and run.\n- Supply an existing folder to the `--source-folder` parameter and a non-existing file to the `--file` parameter.\n- Run.\n- Notice that the `ParseArgument<DirectoryInfo>()` lambda is hit and returns the `DirectoryInfo` instance.\n- Notice that the `ParseArgument<FileInfo>()` lambda is **not** hit.\n- Notice that the handler is hit with the `wxsFile` pointing to a non-existing file.\n\n**Expected behavior**\nMy expectation is that **both** `ParseArgument<FileInfo>()` **and** `ParseArgument<DirectoryInfo>` lambdas are hit in order to parse and validate both options.\n\n**Success Criteria**\nHaving both `ParseArgument<T>()` lambdas hit (as long as the already called does not throw exceptions).\n\n**Desktop (please complete the following information):**\n\n- OS: [Windows 11 x64]\n- Version [23H2 (22631.5039)]\n\n",
+    "comments_url": "https://api.github.com/repos/peteraritchie/ConsoleApplicationBuilder/issues/24/comments",
+    "author": "bstordrup",
+    "comments": [
+      {
+        "user": "bstordrup",
+        "created_at": "2025-04-09T09:20:01Z",
+        "body": "I think the issue is that the `TwoParameterCommandBuilder.BuildCommand` does not add a value to `argumentParser` parameter to `AddParameter<TParam1>()` method when building the command."
+      },
+      {
+        "user": "peteraritchie",
+        "created_at": "2025-04-09T12:48:26Z",
+        "body": "Thanks, I'll have a look."
+      },
+      {
+        "user": "peteraritchie",
+        "created_at": "2025-04-09T14:51:07Z",
+        "body": "Thanks for noticing that. Fixed and the latest Nugget (1.0.4) fixes this "
+      },
+      {
+        "user": "bstordrup",
+        "created_at": "2025-04-09T19:47:11Z",
+        "body": "Nice \ud83d\udc4d\n\nWill get new version tomorrow (and update my fork).\n\nThank you! "
+      },
+      {
+        "user": "bstordrup",
+        "created_at": "2025-04-09T19:48:53Z",
+        "body": "And cool project btw. Makes a cleaner approach to System.CommandLine."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A fix that ensures both WithArgumentParser methods are called during command execution",
+      "A solution available through an official package update",
+      "Proper validation of both required command options"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:01:21"
+    }
+  }
+]

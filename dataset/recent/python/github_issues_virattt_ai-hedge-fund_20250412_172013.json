@@ -1,0 +1,37 @@
+[
+  {
+    "number": 68,
+    "title": "ValueError: No insider trades returned (when selecting Sentiment Agent)",
+    "created_at": "2025-01-16T14:33:29Z",
+    "closed_at": "2025-01-16T23:15:43Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/virattt/ai-hedge-fund/issues/68",
+    "body": "**Describe the bug**\nA ValueError is raised when sentiment agent is selected (my chosen ticker was 'ONON')\n\n**Copy of Output - my PII redacted**\n\n```\n$ poetry run python src/main.py --ticker ONON --show-reasoning\n\n...\n...\n\nFile \"/Users/.../.../ai-hedge-fund/src/agents/sentiment.py\", line 25, in sentiment_agent\n    insider_trades = get_insider_trades(\n                     ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/.../.../ai-hedge-fund/src/tools/api.py\", line 162, in get_insider_trades\n    raise ValueError(\"No insider trades returned\")\nValueError: No insider trades returned\nDuring task with name 'sentiment_agent' and id 'f03273d3-4704-b88b-9c55-e04c1c0721f1'\n```\n\n**Additional context**\nI would love to see the output of the sentiment agent for 'ONON' :) \n",
+    "comments_url": "https://api.github.com/repos/virattt/ai-hedge-fund/issues/68/comments",
+    "author": "lewisosborne",
+    "comments": [
+      {
+        "user": "virattt",
+        "created_at": "2025-01-16T23:15:37Z",
+        "body": "Thank you for reporting @lewisosborne - I have made some changes to make this more graceful.\n\nInstead of erroring out when data is missing, the agent will simply print an error message and continue (without crashing)."
+      },
+      {
+        "user": "lewisosborne",
+        "created_at": "2025-01-17T08:58:30Z",
+        "body": "Fabulous! Thank you for adjusting @virattt \n\nI have updated branch and re-run cmds. Also, the 'backtester' output now works for me too (it was also failing on the same error).\n\nThis is a wonderful app :)\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Graceful handling of missing insider trade data",
+      "Continued operation of the application when data is unavailable",
+      "Functional backtester component",
+      "Ability to see sentiment agent output for specific tickers"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:53"
+    }
+  }
+]

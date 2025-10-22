@@ -1,0 +1,33 @@
+[
+  {
+    "number": 11,
+    "title": "docs(README.md): fix spelling",
+    "created_at": "2025-03-29T18:24:35Z",
+    "closed_at": "2025-03-29T18:28:51Z",
+    "labels": [],
+    "url": "https://github.com/EmberEmu/Hexi/pull/11",
+    "body": "- accomodate => accommodate\r\n- determing => determining\r\n- read => reads",
+    "comments_url": "https://api.github.com/repos/EmberEmu/Hexi/issues/11/comments",
+    "author": "vladdoster",
+    "comments": [
+      {
+        "user": "vladdoster",
+        "created_at": "2025-03-29T18:25:39Z",
+        "body": "Congratulations on reaching the front-page of HN!"
+      },
+      {
+        "user": "Chaosvex",
+        "created_at": "2025-03-29T18:26:31Z",
+        "body": "Well spotted, thanks! :)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Acknowledgment of the spelling corrections identified in the README.md file",
+      "Recognition of the contribution, however small"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:53"
+    }
+  }
+]

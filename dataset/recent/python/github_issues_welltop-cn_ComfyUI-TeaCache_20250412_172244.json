@@ -1,0 +1,150 @@
+[
+  {
+    "number": 91,
+    "title": "cannot import name 'apply_mod' from 'comfy.ldm.flux.layers'",
+    "created_at": "2025-03-22T06:30:48Z",
+    "closed_at": "2025-03-24T03:30:56Z",
+    "labels": [],
+    "url": "https://github.com/welltop-cn/ComfyUI-TeaCache/issues/91",
+    "body": "Hello author, teacache has encountered an error on my other computer. The error message is as follows\n\nD:\\ComfyUI_windows_portable_xiaosan>.\\python_embeded\\python.exe -s ComfyUI\\main.py --windows-standalone-build --disable-cuda-malloc  --listen 10.0.0.2 --cuda-device 1 --port 8198\n[START] Security scan\n[DONE] Security scan\nComfyUI-Manager: installing dependencies done.\n** ComfyUI startup time: 2025-03-22 14:22:47.944\n** Platform: Windows\n** Python version: 3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]\n** Python executable: D:\\ComfyUI_windows_portable_xiaosan\\python_embeded\\python.exe\n** ComfyUI Path: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\n** User directory: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\user\n** ComfyUI-Manager config path: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\user\\default\\ComfyUI-Manager\\config.ini\n** Log path: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\user\\comfyui.log\n\nPrestartup times for custom nodes:\n   0.0 seconds: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\rgthree-comfy\n   0.0 seconds: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\comfyui-easy-use\n   4.9 seconds: D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\ComfyUI-Manager\n\nSet cuda device to: 1\nCheckpoint files will always be loaded safely.\nTotal VRAM 32626 MB, total RAM 131071 MB\npytorch version: 2.4.1+cu124\nSet vram state to: NORMAL_VRAM\nDevice: cuda:0 Tesla V100S-PCIE-32GB : native\nUsing pytorch attention\n\n[0;33m[ReActor]\u001b[0m - \u001b[38;5;173mSTATUS\u001b[0m - \u001b[0;32mRunning v0.5.1-b2 in ComfyUI\u001b[0m\nTorch version: 2.4.1+cu124\n**Traceback (most recent call last):\n  File \"D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\nodes.py\", line 2106, in load_custom_node\n    module_spec.loader.exec_module(module)\n  File \"<frozen importlib._bootstrap_external>\", line 940, in exec_module\n  File \"<frozen importlib._bootstrap>\", line 241, in _call_with_frames_removed\n  File \"D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\ComfyUI-TeaCache\\__init__.py\", line 1, in <module>\n    from .nodes import NODE_CLASS_MAPPINGS as NODES_CLASS, NODE_DISPLAY_NAME_MAPPINGS as NODES_DISPLAY\n  File \"D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\ComfyUI-TeaCache\\nodes.py\", line 10, in <module>\n    from comfy.ldm.flux.layers import timestep_embedding, apply_mod\nImportError: cannot import name 'apply_mod' from 'comfy.ldm.flux.layers' (D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\comfy\\ldm\\flux\\layers.py)**\n\n**Cannot import D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\custom_nodes\\ComfyUI-TeaCache module for custom nodes: cannot import name 'apply_mod' from 'comfy.ldm.flux.layers' (D:\\ComfyUI_windows_portable_xiaosan\\ComfyUI\\comfy\\ldm\\flux\\layers.py)**",
+    "comments_url": "https://api.github.com/repos/welltop-cn/ComfyUI-TeaCache/issues/91/comments",
+    "author": "xs315431",
+    "comments": [
+      {
+        "user": "YunjieYu",
+        "created_at": "2025-03-22T15:10:44Z",
+        "body": "Your ComfyUI version is too old. Please update ComfyUI to the latest."
+      },
+      {
+        "user": "xs315431",
+        "created_at": "2025-03-24T03:30:48Z",
+        "body": "> Your ComfyUI version is too old. Please update ComfyUI to the latest.\n\nThank you, this is very useful to me."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clear identification of the root cause of the import error",
+      "A straightforward solution to resolve the compatibility issue",
+      "Brief, concise guidance without unnecessary technical complexity"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:05:33"
+    }
+  },
+  {
+    "number": 79,
+    "title": "mac mini 2 pro 16g",
+    "created_at": "2025-03-15T10:51:22Z",
+    "closed_at": "2025-03-17T03:28:25Z",
+    "labels": [],
+    "url": "https://github.com/welltop-cn/ComfyUI-TeaCache/issues/79",
+    "body": "There is no effect at all. I tested it with flux parameters of 0.12 and 0.4 and it had basically no effect.",
+    "comments_url": "https://api.github.com/repos/welltop-cn/ComfyUI-TeaCache/issues/79/comments",
+    "author": "cjkcr",
+    "comments": [
+      {
+        "user": "cjkcr",
+        "created_at": "2025-03-15T10:55:14Z",
+        "body": "The gguf model I used has 4 steps to produce the graph. Maybe the number of steps is too small. I will test it with 20 steps."
+      },
+      {
+        "user": "YunjieYu",
+        "created_at": "2025-03-15T12:04:05Z",
+        "body": "hi @cjkcr, TeaCache will have no effect on low-step models. I think the speedup can be felt at least at 10 or more steps."
+      },
+      {
+        "user": "cjkcr",
+        "created_at": "2025-03-15T12:26:29Z",
+        "body": "ok thank you..."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Explanation of when TeaCache is effective based on model step count",
+      "Guidance on minimum step count threshold for observable TeaCache benefits"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:05:39"
+    }
+  },
+  {
+    "number": 67,
+    "title": "update forward for image2video model support",
+    "created_at": "2025-03-10T13:12:56Z",
+    "closed_at": "2025-03-27T07:55:32Z",
+    "labels": [],
+    "url": "https://github.com/welltop-cn/ComfyUI-TeaCache/pull/67",
+    "body": "Updated a code for image2video hunyuan model support",
+    "comments_url": "https://api.github.com/repos/welltop-cn/ComfyUI-TeaCache/issues/67/comments",
+    "author": "attashe",
+    "comments": [
+      {
+        "user": "attashe",
+        "created_at": "2025-03-10T13:16:00Z",
+        "body": "Oh, I late)\r\n\r\nBut I think in current version one thing still need to be fixed:\r\n\r\n```python\r\nfrom comfy.ldm.flux.layers import timestep_embedding, apply_mod\r\n...\r\nmodulated_inp = apply_mod(modulated_inp, (1 + img_mod1.scale), img_mod1.shift, modulation_dims)\r\n```\r\n\r\nIt will fix this error:\r\n```\r\nnodes.py\", line 254, in teacache_hunyuanvideo_forward\r\n    modulated_inp = (1 + img_mod1.scale) * modulated_inp + img_mod1.shift\r\n                    ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~\r\nRuntimeError: The size of tensor a (2) must match the size of tensor b (34560) at non-singleton dimension 1\r\n```"
+      },
+      {
+        "user": "YunjieYu",
+        "created_at": "2025-03-25T11:29:35Z",
+        "body": "Hi @attashe, first of all, thank you for the contribution. I'm sorry to reply you so late, because I've been a bit busy recently. Indeed, you are right, `apply_mod` need be applied in `teacache_hunyuanvideo_forward` function, which has been fixed in my previous version.\r\n\r\nOf course, I still welcome any PRs for supporting TeaCache in other models if you can implement it.\r\n\r\nThank you again for your contribution to the TeaCache project!"
+      },
+      {
+        "user": "attashe",
+        "created_at": "2025-03-25T19:33:20Z",
+        "body": "Thanks for you work! If I could optimize some memory consumption then will create another pull request)"
+      },
+      {
+        "user": "YunjieYu",
+        "created_at": "2025-03-27T07:55:18Z",
+        "body": "Of course, welcome pull request!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Acknowledgment of the bug report regarding the dimension mismatch in the apply_mod function",
+      "Confirmation that the issue has been addressed in a previous version",
+      "Openness to future contributions from the user",
+      "Recognition of the user's contribution to the project"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:05:45"
+    }
+  },
+  {
+    "number": 16,
+    "title": " No module named 'comfy.ldm.hunyuan_video'",
+    "created_at": "2025-01-11T17:18:34Z",
+    "closed_at": "2025-01-14T12:27:10Z",
+    "labels": [],
+    "url": "https://github.com/welltop-cn/ComfyUI-TeaCache/issues/16",
+    "body": "I'm trying to run the flux example, installed via node manager, but when loading the example it fails to recognize the node and stays red.\r\n\r\nchecking the output in comfy I see: \r\n  \r\nFile \"C:\\Comfy\\ComfyUI\\custom_nodes\\ComfyUI-TeaCache\\nodes.py\", line 9, in <module>\r\n    from comfy.ldm.hunyuan_video.model import HunyuanVideo\r\nModuleNotFoundError: No module named 'comfy.ldm.hunyuan_video'\r\n\r\nCannot import C:\\Comfy\\ComfyUI\\custom_nodes\\ComfyUI-TeaCache module for custom nodes: No module named 'comfy.ldm.hunyuan_video'\r\n\r\nis there a dependency that I'm missing?",
+    "comments_url": "https://api.github.com/repos/welltop-cn/ComfyUI-TeaCache/issues/16/comments",
+    "author": "apeironn8",
+    "comments": [
+      {
+        "user": "maizhouzi",
+        "created_at": "2025-01-12T08:57:31Z",
+        "body": "Updating ComfyUI to the latest version should resolve the issue."
+      },
+      {
+        "user": "id-Colin",
+        "created_at": "2025-01-16T00:24:15Z",
+        "body": "Thanks, it's been solved"
+      },
+      {
+        "user": "id-Colin",
+        "created_at": "2025-01-16T00:24:45Z",
+        "body": "> Updating ComfyUI to the latest version should resolve the issue.\r\n\r\nThanks, it's been solved"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that resolves the module import error for 'comfy.ldm.hunyuan_video'",
+      "A straightforward fix that doesn't require complex troubleshooting",
+      "A solution that enables the flux example to run properly"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:05:58"
+    }
+  }
+]

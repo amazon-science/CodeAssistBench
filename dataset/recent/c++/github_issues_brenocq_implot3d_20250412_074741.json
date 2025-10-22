@@ -1,0 +1,39 @@
+[
+  {
+    "number": 42,
+    "title": "Fix compatability with IMGUI_DISABLE_OBSOLETE_FUNCTIONS",
+    "created_at": "2025-01-02T12:29:24Z",
+    "closed_at": "2025-01-03T03:25:03Z",
+    "labels": [
+      "type:chore",
+      "prio:medium",
+      "status:done"
+    ],
+    "url": "https://github.com/brenocq/implot3d/pull/42",
+    "body": "Hello!\r\nI noticed that ImPlot3D currently does not compile when configured with ```IMGUI_DISABLE_OBSOLETE_FUNCTIONS```. In particular, the ```IM_FLOOR``` and ```IM_OFFSETOF``` macros are no longer available in this case. This pull request changes those calls to ```ImFloor``` and C++11's ```offsetof``` respectively.\r\n",
+    "comments_url": "https://api.github.com/repos/brenocq/implot3d/issues/42/comments",
+    "author": "bratpilz",
+    "comments": [
+      {
+        "user": "bratpilz",
+        "created_at": "2025-01-03T10:42:34Z",
+        "body": "No problem, thanks for merging it so quickly! Where do you see these macros used in ImPlot exactly though? I can't seem to find any usage of IM_FLOOR or IM_OFFSETOF in the master branch. Are you talking about something else?"
+      },
+      {
+        "user": "brenocq",
+        "created_at": "2025-01-03T19:30:42Z",
+        "body": "> Where do you see these macros used in ImPlot exactly though? I can't seem to find any usage of IM_FLOOR or IM_OFFSETOF in the master branch. Are you talking about something else?\r\n\r\nOoooh I was testing with the latest release (`v0.16`), but I just checked the `master` branch and it is indeed already fixed there. I'll talk with @epezent about creating a new release!\r\n\r\nThank you again @bratpilz!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that allows ImPlot3D to compile when IMGUI_DISABLE_OBSOLETE_FUNCTIONS is defined",
+      "Replacement of deprecated ImGui macros with their modern equivalents",
+      "Clarification on where these macros are used in the codebase",
+      "Information about version differences between release and master branches"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:03:00"
+    }
+  }
+]

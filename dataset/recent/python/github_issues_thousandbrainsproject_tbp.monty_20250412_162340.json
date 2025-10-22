@@ -1,0 +1,37 @@
+[
+  {
+    "number": 95,
+    "title": "Issue installing on ARM 64 MacOS 151.1",
+    "created_at": "2024-12-07T01:06:13Z",
+    "closed_at": "2024-12-24T19:58:19Z",
+    "labels": [
+      "bug",
+      "triaged"
+    ],
+    "url": "https://github.com/thousandbrainsproject/tbp.monty/issues/95",
+    "body": "### Describe the bug\n\nFollowing the install instructions for Anaconda and Apple Silicon Mac mini M2 I see the following error with the \r\n```conda env create```\r\nstep. I am getting the following error dump\r\n\r\n```(base) john@john-macmini tbp.monty % conda env create -f environment_arm64.yml  \r\nChannels:\r\n - aihabitat\r\n - pytorch\r\n - pyg\r\n - defaults\r\n - conda-forge\r\nPlatform: osx-arm64\r\nCollecting package metadata (repodata.json): done\r\nSolving environment: failed\r\n\r\nLibMambaUnsatisfiableError: Encountered problems while solving:\r\n  - nothing provides requested aihabitat::habitat-sim =0.2.2*\r\n  - nothing provides requested mkl <2022\r\n  - nothing provides blas * mkl needed by pytorch-1.11.0.arm64-py3.8_0\r\n\r\nCould not solve for environment specs\r\nThe following packages are incompatible\r\n\u251c\u2500 habitat-sim 0.2.2*  does not exist (perhaps a typo or a missing channel);\r\n\u251c\u2500 mkl <2022  does not exist (perhaps a typo or a missing channel);\r\n\u2514\u2500 pytorch 1.11.0*  is not installable because it requires\r\n   \u2514\u2500 blas * mkl, which does not exist (perhaps a missing channel).\r\n```\r\n\r\nI am running the following Python version\r\n```(base) john@john-macmini tbp.monty % python --version\r\nPython 3.12.7\r\n```\r\n",
+    "comments_url": "https://api.github.com/repos/thousandbrainsproject/tbp.monty/issues/95/comments",
+    "author": "doonhammer",
+    "comments": [
+      {
+        "user": "tristanls",
+        "created_at": "2024-12-09T18:31:23Z",
+        "body": "Hi @doonhammer, I'm sorry that the install instructions are not working.\r\n\r\nOn Apple's ARM 64, the Anaconda instructions require to specify the environment file explicitly:\r\n```\r\nconda env create -f environment_arm64.yml\r\n```\r\nIs the above command the one that generated the error?\r\n\r\nIf you still get the same error even when specifying `-f environment_arm64.yml`, this may be a similar problem described in #81. There, the solution seemed to be to use the Miniconda setup instructions (if you're using `zsh` shell):\r\n```\r\nconda env create -f environment_arm64.yml --subdir=osx-64\r\nconda init zsh\r\nconda activate tbp.monty\r\nconda config --env --set subdir osx-64\r\n```\r\nOr if you're using `bash` or some other shell:\r\n```\r\nconda env create -f environment_arm64.yml --subdir=osx-64\r\nconda init\r\nconda activate tbp.monty\r\nconda config --env --set subdir osx-64\r\n```"
+      },
+      {
+        "user": "doonhammer",
+        "created_at": "2024-12-11T00:53:12Z",
+        "body": "Adding --subdir=osx-64 did the trick with Anaconda install. Install succeeded and all tests passed. Thanks for the help"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working installation method for ARM 64 MacOS that resolves package compatibility issues",
+      "A solution that works with the user's existing Anaconda setup",
+      "A complete installation process that allows tests to pass"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:12:05"
+    }
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "number": 39,
+    "title": "How to add static objects?",
+    "created_at": "2025-04-08T00:51:22Z",
+    "closed_at": "2025-04-08T05:59:15Z",
+    "labels": [],
+    "url": "https://github.com/RoboVerseOrg/RoboVerse/issues/39",
+    "body": "How to add an object with fixed pose, but still participate in collision checking?",
+    "comments_url": "https://api.github.com/repos/RoboVerseOrg/RoboVerse/issues/39/comments",
+    "author": "dementrock",
+    "comments": [
+      {
+        "user": "Fisher-Wang",
+        "created_at": "2025-04-08T05:12:22Z",
+        "body": "Hi Rocky!\n\nYou can configurate the object with `fix_base_link=True` and `collision_enabled=True`. Alternatively, you can use `physics=PhysicStateType.GEOM` which is an alias the configuration above, following IsaacSim's convension."
+      },
+      {
+        "user": "dementrock",
+        "created_at": "2025-04-08T05:59:15Z",
+        "body": "Thx! fix_base_link=True worked. Just setting physics=PhysicStateType.GEOM did not work (using mujoco)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A method to create static objects that still participate in collision detection",
+      "A solution compatible with the Mujoco physics engine",
+      "Configuration parameters that can be applied to objects to achieve the desired behavior"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:16:58"
+    }
+  }
+]

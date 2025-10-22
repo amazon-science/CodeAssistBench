@@ -1,0 +1,47 @@
+[
+  {
+    "number": 67,
+    "title": "Is it possible to use a LangGraph Agent w/ tools as a MCP server tool itself for a ReAct Agent?",
+    "created_at": "2025-04-03T20:08:40Z",
+    "closed_at": "2025-04-03T22:15:17Z",
+    "labels": [
+      "question"
+    ],
+    "url": "https://github.com/langchain-ai/langchain-mcp-adapters/issues/67",
+    "body": "I wanted to see if it was possible to have some sort of MCP server-client architecture for supervisor agents and their atomic agents. I ended up figuring out a way to make a MCP tool a chained llm that acts as a singular \"agent\" which a LangGraph ReAct agent can then delegate to in the client file. \n\nHowever, when trying to make a new MCP tool that itself had a tool and was a LangGraph agent I came across an error. I then attempted to keep the tool in its chained llm format and add the tool as a chain and that constituted a response, but it seems like the llm chain doesn't detect, or use, the tool. \n\nI was wondering if there was any workaround for this or a way to input a ReAct agent as a tool into another ReAct agent?\n\nUnrelated, I believe that this would work with the create_supervisor() class, but for some reason whenever I upgrade LangGraph from version 0.2.76 to version 0.3.24 to use the supervisor class I can't seem to use langgraph.prebuilt for the create_react_agents. \n\nEx of code: \n\nin idlookup_server.py:\n\n`...\n@mcp.tool()\nasync def create_idlookup_agent(query:str):\n    prompt = ChatPromptTemplate.from_messages(\n        [\n            ('system', \"You are a helpful assistant that can look up IDs in a database.\"),\n            ('human', \"Search for the member and get their credentials using the idlookup tool based on this query: {query}\"),\n        ]\n    )\n    #idk if bind_tools() is deprecated or not but regardless it doesn't work + i've tried with just adding the tool to the chain and that doesn't work either\n    llm = model.bind_tools(tools) \n    chain = prompt | llm | StrOutputParser()\n    result = await chain.ainvoke({\"query\": query})\n    return result\n\nif __name__ == \"__main__\":\n    mcp.run(transport='stdio')`\n\nin client.py:\n\n`...\n# this is a multi server mcp client \nas client:\nagent = create_react_agnet(model, client.get_tools())\nmembersearch_response = await agent.ainvoke({'message': 'Find me a member with the name John Doe and id 284372.'})\nprint(membersearch_response.content)`\n\nLet me know if this issue makes sense.",
+    "comments_url": "https://api.github.com/repos/langchain-ai/langchain-mcp-adapters/issues/67/comments",
+    "author": "tmehrish",
+    "comments": [
+      {
+        "user": "vbarda",
+        "created_at": "2025-04-03T20:18:06Z",
+        "body": "What is the error? It's not clear from the code you provided\n\nIf you want to put another agent inside the tool, it should definitely be possible, it would simply be\n\n```python\nmy_agent = create_react_agent(...)\n\n@mcp.tool()\ndef my_agent_tool(query: str):\n    response = my_agent.invoke({\"messages\": query})\n    return response[\"messages\"][-1].content\n```\n\n> #idk if bind_tools() is deprecated or not but regardless it doesn't work + i've tried with just adding the tool to the chain and that doesn't work either\n\nyou might be using some outdated version of your libraries, `bind_tools` is supported and should work for all major model providers\n\n\n> Unrelated, I believe that this would work with the create_supervisor() class, but for some reason whenever I upgrade LangGraph from version 0.2.76 to version 0.3.24 to use the supervisor class I can't seem to use langgraph.prebuilt for the create_react_agents.\n\njust create a new virtualenv and reinstall langgraph"
+      },
+      {
+        "user": "tmehrish",
+        "created_at": "2025-04-03T20:40:56Z",
+        "body": "My error was that I was getting a ToolMessage with a ToolException saying that my 'Input should be a valid dictionary or instance of my function...'\n\nI tried implementing the agent similar to how you did and then got another ToolException saying 'Error executing tool: object is not subscriptable'\n\nFor both these errors my messages input to the supervisor agent was the same as shown above"
+      },
+      {
+        "user": "vbarda",
+        "created_at": "2025-04-03T22:15:17Z",
+        "body": "not sure about the first error, the second one seems to be just incorrectly unpacking the results from the agent?\n\neither way, this is not an issue with this library: i would recommend testing without MCP first -- creating a simple tool function that wraps the agent (how i suggested above), and then test both the tool and react agent with that tool to make sure it's working as expected\n\n```\nmy_agent = create_react_agent(...)\n\ndef my_agent_tool(query: str):\n    response = my_agent.invoke({\"messages\": query})\n    return response[\"messages\"][-1].content\n\nnew_agent = create_react_agent(model, [my_agent_tool])\n```"
+      },
+      {
+        "user": "tmehrish",
+        "created_at": "2025-04-04T13:55:32Z",
+        "body": "Yeah you're right, this works. I think my problem stemmed from the use of ChatPromptTemplate because the variable i specified in the prompt would have to be the same key when invoking the agent which would lead to an error. So to fix it I had to get rid of the prompt and change the key to \"messages\" like how you have it. "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A working approach to use a LangGraph agent as a tool within another agent",
+      "Proper input/output handling between nested agents",
+      "A solution that works without requiring MCP (Multi-Call Protocol) architecture",
+      "Guidance on correct parameter naming and prompt structure"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:08:45"
+    }
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "number": 51,
+    "title": "replacing github.com's \"hub\" by \"injest\" does not work",
+    "created_at": "2024-12-24T14:16:14Z",
+    "closed_at": "2024-12-24T17:05:10Z",
+    "labels": [],
+    "url": "https://github.com/cyclotruc/gitingest/issues/51",
+    "body": "All my browsers said \"Cann't find the Server\". ",
+    "comments_url": "https://api.github.com/repos/cyclotruc/gitingest/issues/51/comments",
+    "author": "kalufinnle",
+    "comments": [
+      {
+        "user": "DevloperAmanSingh",
+        "created_at": "2024-12-24T14:26:21Z",
+        "body": "its `ingest`\r\n@kalufinnle "
+      },
+      {
+        "user": "cyclotruc",
+        "created_at": "2024-12-24T17:05:10Z",
+        "body": "Yes it's ingest with a G\r\nthank you @DevloperAmanSingh \r\nclosing this\r\n"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Correction of the spelling error in the URL",
+      "Clear identification of why the server couldn't be found"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:08:07"
+    }
+  }
+]

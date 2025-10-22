@@ -1,0 +1,45 @@
+[
+  {
+    "number": 77,
+    "title": "ESM Module Error: @dmitryrechkin/json-schema-to-zod compatibility with agent-kit",
+    "created_at": "2025-02-27T00:13:03Z",
+    "closed_at": "2025-02-27T13:00:01Z",
+    "labels": [],
+    "url": "https://github.com/inngest/agent-kit/issues/77",
+    "body": "## Bug Description\nWhen using the latest version of @inngest/agent-kit (v0.3.0) with Next.js, I'm encountering an ESM/CommonJS compatibility issue. The agent-kit package tries to import @dmitryrechkin/json-schema-to-zod using CommonJS require(), but that package is an ESM module.\n\nWhen using @inngest/agent-kit v0.2.2:\n\n \u2a2f [Error: require() of ES Module /Users/ruby/code/nexus-workflow/node_modules/@dmitryrechkin/json-schema-to-zod/dist/index.js from /Users/ruby/code/nexus-workflow/node_modules/@inngest/agent-kit/dist/agent.js not supported.\nInstead change the require of index.js in /Users/ruby/code/nexus-workflow/node_modules/@inngest/agent-kit/dist/agent.js to a dynamic import() which is available in all CommonJS modules.] {\n  code: 'ERR_REQUIRE_ESM'\n}\n\n\n\n## Environment\n- Next.js: 15.1.3\n- @inngest/agent-kit: Tested v0.1.2 (works), v0.2.2 and v0.3.0 (both fail)\n- inngest: 3.31.11\n- React: 19.0.0\n- Node.js version: 20.15.1\n\n## Reproduction Steps\n1. Set up a Next.js project with dependencies as listed above\n2. Install @inngest/agent-kit v0.1.2 (works correctly)\n3. Upgrade to @inngest/agent-kit v0.2.2 or v0.3.0\n4. Run the development server (npm run dev)\n5. The server fails with ESM/CommonJS compatibility errors\n\n## Attempted Solutions\nI've tried various workarounds including:\n- Adding transpilePackages: ['@inngest/agent-kit', '@dmitryrechkin/json-schema-to-zod'] to next.config.js\n- Setting experimental.esmExternals to 'loose' in next.config.js\n- Creating a bridge module that avoids using agent-kit directly and falls back to inngest.step.ai.infer()\n- Modifying webpack configuration to handle ESM modules\n- Downgrading from v0.3.0 to v0.2.2 (but encountered similar errors with pkce-challenge)\n\nNone of these solutions have fully resolved the issue. The only version that works correctly is v0.1.2, but it lacks the newer features I need.\n\n## Suggested Fix\nThe agent-kit package should be updated to:\n1. Use dynamic import() instead of require() when importing ESM modules\n2. Provide a compatibility layer for both ESM and CommonJS environments\n3. Update dependencies to versions that support dual module systems\n\nThis issue affects the usability of agent-kit in Next.js projects, which is a common use case for Inngest functions.",
+    "comments_url": "https://api.github.com/repos/inngest/agent-kit/issues/77/comments",
+    "author": "eraykeskinmac",
+    "comments": [
+      {
+        "user": "eraykeskinmac",
+        "created_at": "2025-02-27T00:13:56Z",
+        "body": "now package.json \n\n```\n{\n  \"name\": \"nexus-workflow\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"next dev\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",\n    \"lint\": \"next lint\",\n    \"ingest\": \"inngest dev\"\n  },\n  \"dependencies\": {\n    \"@deepgram/sdk\": \"^3.9.0\",\n    \"@inngest/agent-kit\": \"^0.2.2\",\n    \"@types/dotenv\": \"^8.2.3\",\n    \"@vercel/blob\": \"^0.27.0\",\n    \"axios\": \"^1.7.9\",\n    \"date-fns\": \"^4.1.0\",\n    \"dotenv\": \"^16.4.7\",\n    \"inngest\": \"^3.31.11\",\n    \"inngest-cli\": \"^1.4.8\",\n    \"libphonenumber-js\": \"^1.11.17\",\n    \"next\": \"15.1.3\",\n    \"react\": \"^19.0.0\",\n    \"react-dom\": \"^19.0.0\"\n  },\n  \"devDependencies\": {\n    \"@eslint/eslintrc\": \"^3\",\n    \"@types/node\": \"^20\",\n    \"@types/react\": \"^19\",\n    \"@types/react-dom\": \"^19\",\n    \"eslint\": \"^9\",\n    \"eslint-config-next\": \"15.1.3\",\n    \"postcss\": \"^8\",\n    \"tailwindcss\": \"^3.4.1\",\n    \"typescript\": \"^5\"\n  }\n}\n```\n\nold package.json\n\n```\n{\n  \"name\": \"nexus-workflow\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"next dev\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",\n    \"lint\": \"next lint\",\n    \"ingest\": \"inngest dev\"\n  },\n  \"dependencies\": {\n    \"@deepgram/sdk\": \"^3.9.0\",\n    \"@inngest/agent-kit\": \"^0.1.2\",\n    \"@types/dotenv\": \"^8.2.3\",\n    \"@vercel/blob\": \"^0.27.0\",\n    \"axios\": \"^1.7.9\",\n    \"date-fns\": \"^4.1.0\",\n    \"dotenv\": \"^16.4.7\",\n    \"inngest\": \"^3.28.0\",\n    \"inngest-cli\": \"^1.3.3\",\n    \"libphonenumber-js\": \"^1.11.17\",\n    \"next\": \"15.1.3\",\n    \"react\": \"^19.0.0\",\n    \"react-dom\": \"^19.0.0\"\n  },\n  \"devDependencies\": {\n    \"@eslint/eslintrc\": \"^3\",\n    \"@types/node\": \"^20\",\n    \"@types/react\": \"^19\",\n    \"@types/react-dom\": \"^19\",\n    \"eslint\": \"^9\",\n    \"eslint-config-next\": \"15.1.3\",\n    \"postcss\": \"^8\",\n    \"tailwindcss\": \"^3.4.1\",\n    \"typescript\": \"^5\"\n  }\n}\n```\n"
+      },
+      {
+        "user": "jpwilliams",
+        "created_at": "2025-02-27T12:39:39Z",
+        "body": "Thanks for the detailed report, @eraykeskinmac!\n\nCould you try using `@inngest/agent-kit@0.3.1`? This offers dual CJS and ESM builds so may resolve the issue immediately.\n\nIf not, we can ship another change to handle this case."
+      },
+      {
+        "user": "eraykeskinmac",
+        "created_at": "2025-02-27T12:50:03Z",
+        "body": "Thanks! I tried the @inngest/agent-kit@0.3.1 version and it worked perfectly without any issues. This solution was exactly what I needed. I was looking to use Agent Kit and Inngest's new features, especially the AI inference capability, so this fix was really valuable for me. Thank you for your help!"
+      },
+      {
+        "user": "jpwilliams",
+        "created_at": "2025-02-27T13:00:01Z",
+        "body": "Awesome! Thanks for testing and glad it's looking good, @eraykeskinmac! \ud83d\ude4c \n\ncc @MonsterDeveloper - thanks for the PR \ud83d\ude42 "
+      }
+    ],
+    "satisfaction_conditions": [
+      "A version of @inngest/agent-kit that resolves the ESM/CommonJS compatibility issue",
+      "Access to newer features of the agent-kit package",
+      "Compatibility with Next.js projects",
+      "A solution that doesn't require complex workarounds"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:00:19"
+    }
+  }
+]

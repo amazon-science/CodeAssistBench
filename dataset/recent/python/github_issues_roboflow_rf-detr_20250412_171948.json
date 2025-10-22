@@ -1,0 +1,41 @@
+[
+  {
+    "number": 111,
+    "title": "No Wandb logging",
+    "created_at": "2025-04-03T16:25:54Z",
+    "closed_at": "2025-04-03T17:26:36Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/roboflow/rf-detr/issues/111",
+    "body": "### Search before asking\n\n- [x] I have searched the RF-DETR issues and found no similar bug report.\n\n\n### Bug\n\n- pip install \"rfdetr[metrics]\"\n- wandb login -> success\n- Ensure the PROJECT is created on wandb\n\n```python\nPROJECT = \"my_project\"\n\nmodel.train(\n    dataset_dir=dataset.location, \n    epochs=15, \n    batch_size=4, \n    grad_accum_steps=4, \n    lr=1e-4,\n    wandb=True,\n    output_dir=output_dir,\n    project=PROJECT,\n    run=\"some_name\",\n)\n```\nNo errors, but no logs on wandb\n\n### Environment\n\n- rfdetr==1.0.8\n- wandb==0.19.9\n\n### Minimal Reproducible Example\n\nsee above\n\n### Additional\n\n_No response_\n\n### Are you willing to submit a PR?\n\n- [ ] Yes, I'd like to help by submitting a PR!",
+    "comments_url": "https://api.github.com/repos/roboflow/rf-detr/issues/111/comments",
+    "author": "robmarkcole",
+    "comments": [
+      {
+        "user": "SkalskiP",
+        "created_at": "2025-04-03T16:45:22Z",
+        "body": "Your RF-DETR package is outdated. Please use 1.1.0. "
+      },
+      {
+        "user": "robmarkcole",
+        "created_at": "2025-04-03T17:26:36Z",
+        "body": "OK resolved with 1.1.0.\nStrange I got 1.0.8 as I pip installed yesterday\nThanks!"
+      },
+      {
+        "user": "SkalskiP",
+        "created_at": "2025-04-03T18:19:19Z",
+        "body": "We released it this morning."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables Wandb logging functionality to work properly",
+      "Information about using the correct version of the RF-DETR package",
+      "Clear guidance on how to resolve the issue without requiring code changes to their implementation"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:09:01"
+    }
+  }
+]

@@ -1,0 +1,100 @@
+[
+  {
+    "number": 94,
+    "title": "fix the missing Chinese voices",
+    "created_at": "2025-02-06T03:16:09Z",
+    "closed_at": "2025-02-09T09:03:41Z",
+    "labels": [],
+    "url": "https://github.com/thewh1teagle/kokoro-onnx/pull/94",
+    "body": "## Description\r\n\r\nThe voices page can not show all of the voices, so the fetch_voices.py can not fetch all voices.\r\nThe four Chinese male voices are missing.\r\nSo I change another page to fetch the voices.\r\n",
+    "comments_url": "https://api.github.com/repos/thewh1teagle/kokoro-onnx/issues/94/comments",
+    "author": "qt06",
+    "comments": [
+      {
+        "user": "thewh1teagle",
+        "created_at": "2025-02-07T14:38:23Z",
+        "body": "The regex looks too sensitive "
+      },
+      {
+        "user": "thewh1teagle",
+        "created_at": "2025-02-09T09:03:41Z",
+        "body": "Fixed by using huggingface API\r\nThanks!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that successfully retrieves all Chinese voices that were previously missing",
+      "A more reliable method for fetching voice data that doesn't depend on regex parsing of web pages",
+      "A complete solution that ensures all available voices can be fetched"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:34"
+    }
+  },
+  {
+    "number": 71,
+    "title": "Switch from json file to bin clarification ",
+    "created_at": "2025-01-24T08:36:09Z",
+    "closed_at": "2025-01-24T11:07:35Z",
+    "labels": [],
+    "url": "https://github.com/thewh1teagle/kokoro-onnx/issues/71",
+    "body": "Hi,\n\nwhat is the reason of switching to binary file? (voices.bin) you are loading it also without stating `allow_pickle=False`, this is a security concern. ",
+    "comments_url": "https://api.github.com/repos/thewh1teagle/kokoro-onnx/issues/71/comments",
+    "author": "stavsap",
+    "comments": [
+      {
+        "user": "thewh1teagle",
+        "created_at": "2025-01-24T09:56:23Z",
+        "body": "I changed it to numpy npz file which is key value pairs where the values are numpy arrays since the json file weighted ~30-50MB and the bin file weight just ~5MB.\nallow_pickle=False is set to False by default in np.load"
+      },
+      {
+        "user": "stavsap",
+        "created_at": "2025-01-24T11:07:35Z",
+        "body": "thanks for the explanation"
+      }
+    ],
+    "satisfaction_conditions": [
+      "An explanation of the technical rationale for switching from JSON to binary format",
+      "Clarification about security considerations related to the file format change",
+      "Information about the efficiency benefits of the new file format"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:41"
+    }
+  },
+  {
+    "number": 22,
+    "title": "Add create_stream_from_session please",
+    "created_at": "2025-01-12T01:19:03Z",
+    "closed_at": "2025-01-12T01:50:30Z",
+    "labels": [
+      "feature"
+    ],
+    "url": "https://github.com/thewh1teagle/kokoro-onnx/issues/22",
+    "body": "Since CPU is preferred over CUDA, a session is required to utilize GPU.\r\nBut then we can't create a stream with a session, as it's not a parameter for \"from_session\"\r\n\r\nStream support is a killer feature. It allows connecting Kokoro to the model output, streamlining the whole interaction.\r\n\r\nCan you please add \"session\" option to create_stream function?\r\nAlternatively, perhaps it is easier to implement an override to the session on 'self' or configure it on class instantiation.\r\n",
+    "comments_url": "https://api.github.com/repos/thewh1teagle/kokoro-onnx/issues/22/comments",
+    "author": "OriNachum",
+    "comments": [
+      {
+        "user": "thewh1teagle",
+        "created_at": "2025-01-12T01:24:35Z",
+        "body": "The from_session is just a constructor / class method same as init.\r\nYou should create the instance with it\r\nThen you can create the stream with the create_stream method from the instance \r\nAlso you should call the constructor only once in the code"
+      },
+      {
+        "user": "OriNachum",
+        "created_at": "2025-01-12T01:50:30Z",
+        "body": "Got it - already supported. Thank you!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Clarification on how to properly use stream functionality with a session",
+      "Confirmation that the existing API already supports their use case",
+      "Understanding the proper sequence of operations for creating and using streams"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 01:02:46"
+    }
+  }
+]

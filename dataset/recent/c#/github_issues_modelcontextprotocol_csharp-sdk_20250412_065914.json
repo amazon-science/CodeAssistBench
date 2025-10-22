@@ -1,0 +1,62 @@
+[
+  {
+    "number": 227,
+    "title": "Json serialization / initialization error when used with NativeAOT",
+    "created_at": "2025-04-07T10:24:59Z",
+    "closed_at": "2025-04-11T11:26:48Z",
+    "labels": [
+      "bug"
+    ],
+    "url": "https://github.com/modelcontextprotocol/csharp-sdk/issues/227",
+    "body": "**Describe the bug**\nWhen compiling with NativeAOT, I'm getting runtime errors due to some methods not being code-generated.\nIs there a way to configure the library so that it'll use source generators for System.Text.Json so that this will work properly?\n\n\n**To Reproduce**\nI'm creating a McpClient with stdio transport like so:\n```\nDictionary<string, string> options = new()\n        {\n            [\"command\"] = command,\n            [\"arguments\"] = arguments,\n        };\n\n        // Add environment variables, prefixed with \"env:\" to options\n        if (environmentVariables != null)\n        {\n            foreach (var kvp in environmentVariables)\n            {\n                options[$\"env:{kvp.Key}\"] = kvp.Value;\n            }\n        }\n\n        ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());\n\n        var client = await McpClientFactory.CreateAsync(new McpServerConfig()\n        {\n            Id = id,\n            Name = id,\n            TransportType = TransportTypes.StdIo,\n            TransportOptions = options,\n        }, loggerFactory: loggerFactory, cancellationToken: cancellationToken);\n```\n\n\n**Expected behavior**\nThis connects correctly when running with CoreCLR, but fails when compiled with NativeAOT due to code not being generated for a specific type.\nI'd expect the library to work on NativeAOT and not throw the exception.\n\n**Logs**\n```\n07.04.2025 12:12:51.27 <info> [Backend]: fail: ModelContextProtocol.Client.McpClient[403959396]\n      Client server Client (db6cee23-4a25-44e2-9cd7-3dc6d44625d2: db6cee23-4a25-44e2-9cd7-3dc6d44625d2) initialization error\n      ModelContextProtocol.Protocol.Transport.McpTransportException: Failed to send message\n       ---> System.MissingMethodException: Method not found: 'Void System.Text.Json.Serialization.Metadata.JsonObjectInfoValues`1<ModelContextProtocol.Protocol.Messages.JsonRpcRequest>.set_ConstructorAttributeProviderFactory(System.Func`1<System.Reflection.ICustomAttributeProvider>)'.\n         at Internal.Runtime.TypeLoaderExceptionHelper.CreateMissingMethodException(ExceptionStringID, String) + 0x4c\n         at Internal.Runtime.CompilerHelpers.ThrowHelpers.ThrowMissingMethodException(ExceptionStringID, String) + 0xc\n         at ModelContextProtocol.Utils.Json.McpJsonUtilities.JsonContext.Create_JsonRpcRequest(JsonSerializerOptions) + 0x18\n         at System.Text.Json.Serialization.Metadata.JsonTypeInfoResolverChain.GetTypeInfo(Type, JsonSerializerOptions) + 0x44\n         at System.Text.Json.JsonSerializerOptions.GetTypeInfoNoCaching(Type) + 0x58\n         at System.Text.Json.JsonSerializerOptions.CachingContext.CreateCacheEntry(Type type, JsonSerializerOptions.CachingContext context) + 0x20\n      --- End of stack trace from previous location ---\n         at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x24\n         at System.Text.Json.JsonSerializerOptions.CachingContext.CacheEntry.GetResult() + 0x24\n         at System.Text.Json.JsonSerializerOptions.GetTypeInfoInternal(Type, Boolean, Nullable`1, Boolean, Boolean) + 0x50\n         at System.Text.Json.JsonSerializerOptions.GetTypeInfo(Type) + 0x4c\n         at ModelContextProtocol.Utils.Json.McpJsonUtilities.GetTypeInfo[T](JsonSerializerOptions) + 0x30\n         at ModelContextProtocol.Utils.Json.JsonRpcMessageConverter.Write(Utf8JsonWriter, IJsonRpcMessage, JsonSerializerOptions) + 0xe4\n         at System.Text.Json.Serialization.JsonConverter`1.TryWrite(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state) + 0xb8\n         at System.Text.Json.Serialization.JsonConverter`1.WriteCore(Utf8JsonWriter writer, T& value, JsonSerializerOptions options, WriteStack& state) + 0x20\n         at System.Text.Json.Serialization.Metadata.JsonTypeInfo`1.Serialize(Utf8JsonWriter, T&, Object) + 0x120\n         at System.Text.Json.JsonSerializer.WriteString[TValue](TValue&, JsonTypeInfo`1) + 0x3c\n         at System.Text.Json.JsonSerializer.Serialize[TValue](TValue, JsonTypeInfo`1) + 0x40\n         at ModelContextProtocol.Protocol.Transport.StdioClientTransport.<SendMessageAsync>d__12.MoveNext() + 0x134\n         --- End of inner exception stack trace ---\n         at ModelContextProtocol.Protocol.Transport.StdioClientTransport.<SendMessageAsync>d__12.MoveNext() + 0x3dc\n      --- End of stack trace from previous location ---\n         at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x24\n         at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0x100\n         at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x68\n         at ModelContextProtocol.Shared.McpJsonRpcEndpoint.<SendRequestAsync>d__22`1.MoveNext() + 0x2a4\n      --- End of stack trace from previous location ---\n         at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x24\n         at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0x100\n         at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x68\n         at ModelContextProtocol.Client.McpClient.<InitializeAsync>d__20.MoveNext() + 0x1f4\n      --- End of stack trace from previous location ---\n         at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x24\n         at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0x100\n         at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x68\n         at ModelContextProtocol.Client.McpClient.<ConnectAsync>d__19.MoveNext() + 0x28c\n```\n\nILC-specific configuration properties in the csproj for this project:\n```\n    <RootAllApplicationAssemblies>true</RootAllApplicationAssemblies>\n    <IlcGenerateCompleteTypeMetadata>true</IlcGenerateCompleteTypeMetadata>\n    <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>\n```\n",
+    "comments_url": "https://api.github.com/repos/modelcontextprotocol/csharp-sdk/issues/227/comments",
+    "author": "christianscheuer",
+    "comments": [
+      {
+        "user": "stephentoub",
+        "created_at": "2025-04-07T11:09:36Z",
+        "body": "@christianscheuer, what version of the library are you using? Can you share a standalone repro please? "
+      },
+      {
+        "user": "christianscheuer",
+        "created_at": "2025-04-08T09:47:11Z",
+        "body": "@stephentoub thank you so much for the quick reply!\n\nEmbarrassingly, I was stuck on version 0.1.0-preview.2 and hadn't noticed the newer updates. My apologies! I can confirm the issue was fixed sometime in between preview 2 and 0.1.0-preview.6."
+      },
+      {
+        "user": "stephentoub",
+        "created_at": "2025-04-08T10:21:38Z",
+        "body": "Great! Glad it's addressed. "
+      },
+      {
+        "user": "christianscheuer",
+        "created_at": "2025-04-09T15:59:30Z",
+        "body": "Yes! Most normal queries now run fine - however, I just found that some tool calls have problems. The following error is reported:\n\n```\nJsonTypeInfo metadata for type 'System.Collections.Generic.List`1[System.Object]' was not provided by TypeInfoResolver of type '[ModelContextProtocol.Utils.Json.McpJsonUtilities+JsonContext,Microsoft.Extensions.AI.AIJsonUtilities+JsonContext]'.\nIf using source generation, ensure that all root types passed to the serializer have been annotated with 'JsonSerializableAttribute', along with any types that might be serialized polymorphically. Path: $.\n```\n\nThis appears to happen with tools that report back arrays of objects in their responses and/or receive it.\n\nIs there anything obvious here that stands out, or would you need a repro case for it? Since it depends on MCP servers and specific queries, I'm not sure how easy it'll be - but perhaps the error message illustrates the problem?"
+      },
+      {
+        "user": "eiriktsarpalis",
+        "created_at": "2025-04-09T16:04:04Z",
+        "body": "Could you share a repro? I suspect what is happening here is you're defining a tool that accepts or returns a `List<object>`. In AOT you would need to explicitly source generate that type and pass the relevant `JsonSerializerOptions` to the tool calling method."
+      },
+      {
+        "user": "christianscheuer",
+        "created_at": "2025-04-11T11:26:48Z",
+        "body": "Hi @eiriktsarpalis.\n\nYou were right. I wasn't defining a tool myself (this is a MCP client, so the definition is by the server), but I was passing a List<object> as one of the arguments in the Dictionary<string, object>. Made everything JsonElements now so it serializes correctly.\nThanks again for the quick responses.\n\nWe're generally more used to using JObject from Newtonsoft which always works in NativeAOT re. serialization, so I guess it's the Dictionary<string, object> that tricked me into believing I could pass anything in there.\n\nPerhaps an overload which only accepts System.Text.Json JsonElements would be interesting, to make it easier to catch potential NativeAOT errors ahead of time for consumers of the library? Or maybe that's overengineering it.\n\nAnyway, problem solved for us thanks to your quick answers - much appreciated."
+      },
+      {
+        "user": "eiriktsarpalis",
+        "created_at": "2025-04-11T12:57:06Z",
+        "body": "> We're generally more used to using JObject from Newtonsoft which always works in NativeAOT re. serialization\n\nAre you sure that's the case? I doubt this would work with this library unless you passed a custom STJ converter for the type then apply a source generator."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables the library to work with NativeAOT compilation",
+      "Guidance on proper serialization approaches for complex types in NativeAOT environments",
+      "Clear explanation of why certain serialization patterns fail in NativeAOT",
+      "Timely and responsive support"
+    ],
+    "_classification": {
+      "category": "Can be dockerized without any issue",
+      "timestamp": "2025-04-14 01:01:28"
+    }
+  }
+]

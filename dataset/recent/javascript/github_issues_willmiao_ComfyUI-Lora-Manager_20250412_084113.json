@@ -1,0 +1,188 @@
+[
+  {
+    "number": 51,
+    "title": "Python < 3.11 backward compatibility for timeout.",
+    "created_at": "2025-03-24T13:25:20Z",
+    "closed_at": "2025-03-26T02:47:23Z",
+    "labels": [],
+    "url": "https://github.com/willmiao/ComfyUI-Lora-Manager/pull/51",
+    "body": "Hi,\r\n\r\nasyncio.timeout is only available starting with python 3.11. I made this small change to make it work for earlier versions too.",
+    "comments_url": "https://api.github.com/repos/willmiao/ComfyUI-Lora-Manager/issues/51/comments",
+    "author": "AlUlkesh",
+    "comments": [
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-26T02:47:15Z",
+        "body": "Thanks for the fix! Merging now."
+      },
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-26T11:22:43Z",
+        "body": "@AlUlkesh Hi, just an update here. I tested the code and found that it caused an empty recipe cache when running on Python 3.12.7. After reviewing the implementation, it seems that the timeout is no longer necessary, so I\u2019ve removed the related code. Everything is working fine so far. Thanks again for your PR\u2014I really appreciate the effort to improve compatibility!"
+      },
+      {
+        "user": "AlUlkesh",
+        "created_at": "2025-03-26T14:30:20Z",
+        "body": "Oh, glad you caught that so soon.  Thanks."
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that maintains compatibility across different Python versions",
+      "A solution that ensures the code functions correctly without errors",
+      "Acknowledgment of their contribution effort"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:27"
+    }
+  },
+  {
+    "number": 37,
+    "title": "Illustrious, Sorting, and bits",
+    "created_at": "2025-03-12T15:34:25Z",
+    "closed_at": "2025-03-13T03:12:06Z",
+    "labels": [],
+    "url": "https://github.com/willmiao/ComfyUI-Lora-Manager/issues/37",
+    "body": "This is a fantastic node its really awesome, thank you! I love the improvements of the tags and sort by lora type. \nCouple of things through, the ILL (I think that Illustrious) are not bringing back any results (I have some Illustrious Loras) there any more sorting options which could be used, date and name are great but I added new loras and the have not appeared. \nHave you any plans to make something similar for checkpoints? that would be awesome!\nThanks",
+    "comments_url": "https://api.github.com/repos/willmiao/ComfyUI-Lora-Manager/issues/37/comments",
+    "author": "AllanKustom",
+    "comments": [
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-13T03:11:23Z",
+        "body": "Hi, thanks for the support! The issue with the Illustrious base model was due to an inconsistent naming bug, which I've now fixed.\n\nRegarding your feature requests: checkpoint management is already planned. However, for the upcoming week, I'll be fully focused on an exciting new feature. So while I'll add your suggestion to the list, its priority will be lower for now. Appreciate your patience!"
+      },
+      {
+        "user": "AllanKustom",
+        "created_at": "2025-03-13T10:07:26Z",
+        "body": "> Hi, thanks for the support! The issue with the Illustrious base model was due to an inconsistent naming bug, which I've now fixed.\n> \n> Regarding your feature requests: checkpoint management is already planned. However, for the upcoming week, I'll be fully focused on an exciting new feature. So while I'll add your suggestion to the list, its priority will be lower for now. Appreciate your patience!\n\nThank you :)"
+      }
+    ],
+    "satisfaction_conditions": [
+      "Fix for the Illustrious Lora model search functionality",
+      "Acknowledgment of the checkpoint management feature request",
+      "Transparency about development priorities and timeline"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:34"
+    }
+  },
+  {
+    "number": 36,
+    "title": "No more scrolling functionality",
+    "created_at": "2025-03-10T08:40:16Z",
+    "closed_at": "2025-03-11T18:58:12Z",
+    "labels": [],
+    "url": "https://github.com/willmiao/ComfyUI-Lora-Manager/issues/36",
+    "body": "### **LoRA Manager Version**\n- Version: latest\n\n### **Environment Information**\n- **Operating System**:Windows 11, running ComfyUI in Conda Environment\n- **Browser & Version**: Edge 134\n\n### **Issue Description**\n- The manager only shows 16 Loras, where as I used to be able to scroll and see all loras.\n- I can still search and the other loras will come up, but no more scroll function.\n",
+    "comments_url": "https://api.github.com/repos/willmiao/ComfyUI-Lora-Manager/issues/36/comments",
+    "author": "fredericklessing",
+    "comments": [
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-11T14:47:37Z",
+        "body": "Hi, this issue was likely introduced by a previous change that was meant to fix a layout issue reported by another user. However, since it didn\u2019t work as intended, I\u2019ve reverted the commit in the latest release (v0.7.36).\n\nPlease try updating to see if the problem is resolved. Let me know if it works!"
+      },
+      {
+        "user": "fredericklessing",
+        "created_at": "2025-03-11T18:58:12Z",
+        "body": "Thank you so much, it is working again. Much appreciated."
+      }
+    ],
+    "satisfaction_conditions": [
+      "Restoration of the scrolling functionality in the LoRA Manager",
+      "Access to the complete collection of LoRAs beyond the initial 16 displayed",
+      "A timely fix that doesn't require complex user intervention"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:40"
+    }
+  },
+  {
+    "number": 35,
+    "title": "Stale file_path metadata",
+    "created_at": "2025-03-09T05:12:33Z",
+    "closed_at": "2025-03-26T08:42:55Z",
+    "labels": [],
+    "url": "https://github.com/willmiao/ComfyUI-Lora-Manager/issues/35",
+    "body": "I moved some folders, and while the preview images refreshed, the file_path in the metadata.json files did not, so none of those loras can be loaded in the LoraManager Lora Loader anymore. Can you either deduce the file_path each time or update it on refresh? Thanks!\n\nps. Love the component! +1 to the lora_stack and /models endpt feature requests.",
+    "comments_url": "https://api.github.com/repos/willmiao/ComfyUI-Lora-Manager/issues/35/comments",
+    "author": "broken",
+    "comments": [
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-09T11:32:23Z",
+        "body": "Thanks for the feedback! When you say \"moved some folders,\" do you mean you manually moved them in the file explorer?"
+      },
+      {
+        "user": "broken",
+        "created_at": "2025-03-12T07:49:51Z",
+        "body": "Yes. That's what I mean."
+      },
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-12T09:43:37Z",
+        "body": "I wouldn't recommend manually moving folders at this time. The watchdog monitors additions and deletions within loras_root, but when files are moved manually, it only detects new additions\u2014not deletions. Plus due to the unpredictable order of multiple file moves (e.g., the LoRA file moving before its metadata file), cache inconsistencies or even metadata loss may occur.\n\nIf I have time, I\u2019ll look into a more sophisticated solution to handle this better. For now, I recommend using the bulk operation feature in LoRA Manager to move files within the interface safely.\n\nThat said, I've submitted a fix that will attempt to correct incorrect file paths when rebuilding the cache on startup. If you're experiencing issues where metadata errors prevent LoRAs from loading, please try restarting ComfyUI and see if that resolves the problem.\n\nAlso, LoRA Stack is already supported in v0.7.36, and checkpoint management is planned for a future update."
+      },
+      {
+        "user": "broken",
+        "created_at": "2025-03-12T16:34:06Z",
+        "body": "Yeah, I noticed that behavior with the monitor.\n\nI'm away atm, but will test this change and the lora stacks when I get back home in a few days. Thanks!"
+      },
+      {
+        "user": "broken",
+        "created_at": "2025-03-26T08:42:55Z",
+        "body": "Confirming this was fixed. Thanks!"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that addresses the mismatch between moved files and their metadata paths",
+      "A way to maintain consistency between actual file locations and their recorded paths in metadata",
+      "Support for LoRA stacks functionality",
+      "Clear guidance on proper file management practices within the system"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:48"
+    }
+  },
+  {
+    "number": 29,
+    "title": "Suggestion - Add Support for download through HTTPS Connections",
+    "created_at": "2025-03-07T20:09:24Z",
+    "closed_at": "2025-03-12T10:54:14Z",
+    "labels": [],
+    "url": "https://github.com/willmiao/ComfyUI-Lora-Manager/issues/29",
+    "body": "Thanks again for your work!\n\nI\u2019d be really grateful if you could look into another issue. When accessing the LoRA loader page via an HTTP Cloudflare address (e.g., when deploying on RunPod) instead of through TCP, attempting to download a LoRA results in the following error:\n\nFailed to construct 'WebSocket': An insecure WebSocket connection may not be initiated from a page loaded over HTTPS.\n\nI'm not sure how easily this can be fixed, but if you have time to address it, it could significantly enhance the usability of your plugin for cloud deployments.\n\nThanks!",
+    "comments_url": "https://api.github.com/repos/willmiao/ComfyUI-Lora-Manager/issues/29/comments",
+    "author": "jnxmx",
+    "comments": [
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-09T11:37:03Z",
+        "body": "Thank you! I'll look into this."
+      },
+      {
+        "user": "willmiao",
+        "created_at": "2025-03-11T14:51:13Z",
+        "body": "Hi, I\u2019ve added a fix for this issue in the latest release (v0.7.36). Please try updating and let me know if the problem is resolved.\n5a6c4128455a5b23e909a89fc3f201f183fe868b"
+      },
+      {
+        "user": "jnxmx",
+        "created_at": "2025-03-12T09:40:41Z",
+        "body": "Works like charm!\nThank you a lot"
+      }
+    ],
+    "satisfaction_conditions": [
+      "A solution that enables downloading LoRA files when accessing the loader page via HTTPS",
+      "Compatibility with cloud deployment environments",
+      "Resolution of the WebSocket security error"
+    ],
+    "_classification": {
+      "category": "Does not need build environment",
+      "timestamp": "2025-04-14 00:59:56"
+    }
+  }
+]
