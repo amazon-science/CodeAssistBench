@@ -4,6 +4,7 @@
     "title": "Does it support the GCC compiler with a custom instruction set?",
     "created_at": "2025-03-15T03:42:19Z",
     "closed_at": "2025-03-25T06:17:28Z",
+    "commit_id": "14f74db85eb3694f6617f569a2e0e4530fcb451b",
     "labels": [
       "question"
     ],
@@ -38,6 +39,7 @@
     "title": "How does TOS caching and GC roots interact?",
     "created_at": "2025-03-05T15:27:48Z",
     "closed_at": "2025-03-06T03:52:35Z",
+    "commit_id": "b1fd84b0ef125cd82595d9bcb4b0589f9b8f4e0a",
     "labels": [],
     "url": "https://github.com/lynx-family/primjs/issues/6",
     "body": "Hi PrimJS developers. First of all, great work on the runtime!\n\nGC docs say that one of the roots is the `Interpreter Execution Stack`. However, the interpreter docs also say primjs does TOS caching. Once values are TOS cached into register x0/x1, don't they become invisible to the GC? In that case, how are the objects kept alive?\n\nThis is just a curious question, as I work on CPython, and we're planning to do TOS caching too.\n",

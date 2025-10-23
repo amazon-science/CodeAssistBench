@@ -4,6 +4,7 @@
     "title": "[SOLVED/CLOSED] High scores not working",
     "created_at": "2025-02-21T19:48:03Z",
     "closed_at": "2025-02-23T20:07:22Z",
+    "commit_id": "36234251a3887e988199b8cfd98ba3a48b41b525",
     "labels": [],
     "url": "https://github.com/hathibelagal-dev/Eidetic-Memory-Trainer/issues/13",
     "body": "Specs\nMoto G9 Power\nLineageOS 22.1\nAndroid 15\n\nInfo:\nI take 2 or 3 seconds to complete the test but my highscore shows 82, 12 or 7 seconds. If needed i can upload a video playing with w/ a timer on screen.",

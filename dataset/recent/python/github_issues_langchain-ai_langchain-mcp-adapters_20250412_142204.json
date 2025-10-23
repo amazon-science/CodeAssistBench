@@ -4,6 +4,7 @@
     "title": "Is it possible to use a LangGraph Agent w/ tools as a MCP server tool itself for a ReAct Agent?",
     "created_at": "2025-04-03T20:08:40Z",
     "closed_at": "2025-04-03T22:15:17Z",
+    "commit_id": "2178e7e50f33b3e2dc5d96a1a9646bbaa1857745",
     "labels": [
       "question"
     ],

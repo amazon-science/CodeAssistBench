@@ -4,6 +4,7 @@
     "title": "Mode FM under Band CB not selectable",
     "created_at": "2025-04-09T06:29:21Z",
     "closed_at": "2025-04-09T07:14:15Z",
+    "commit_id": "392ce79c18f2cccdb2f9c24985557a47efe2bb5f",
     "labels": [],
     "url": "https://github.com/esp32-si4732/ats-mini/issues/43",
     "body": "Hello,\n\nI got another issue.\n\nUnder Band CB I'm not able to select Mode FM on my device.\n\nI'd installed V1.09 with rotated display.",

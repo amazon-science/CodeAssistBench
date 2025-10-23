@@ -4,6 +4,7 @@
     "title": "Panel",
     "created_at": "2025-03-28T20:14:43Z",
     "closed_at": "2025-03-29T01:59:01Z",
+    "commit_id": null,
     "labels": [],
     "url": "https://github.com/Quasar-Continuation/Pulsar/issues/87",
     "body": "So, I build my rat in builder, I run it to test it, I don't show up on my panel what can I do?\n",
@@ -18,12 +19,12 @@
       {
         "user": "Body-Alhoha",
         "created_at": "2025-03-28T22:47:37Z",
-        "body": "Please make sure the IP & Port you provided is valid and you are currently listening \ud83d\ude4f "
+        "body": "Please make sure the IP & Port you provided is valid and you are currently listening 🙏 "
       },
       {
         "user": "JCrobotss1234alt",
         "created_at": "2025-03-29T00:48:18Z",
-        "body": "> Please make sure the IP & Port you provided is valid and you are currently listening \ud83d\ude4f\n\nty it worked, also why does it disconnect at random times?"
+        "body": "> Please make sure the IP & Port you provided is valid and you are currently listening 🙏\n\nty it worked, also why does it disconnect at random times?"
       }
     ],
     "satisfaction_conditions": [

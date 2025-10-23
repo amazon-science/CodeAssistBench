@@ -4,6 +4,7 @@
     "title": "Problem running demo.py",
     "created_at": "2025-01-01T11:34:08Z",
     "closed_at": "2025-01-27T20:47:35Z",
+    "commit_id": "4160a3ecc59f31151297c5d90e18a66206723a26",
     "labels": [],
     "url": "https://github.com/yangchris11/samurai/issues/85",
     "body": "Enter your own video and .txt runtime   \r\nif __name__ == \"__main__\":\r\n    parser = argparse.ArgumentParser()\r\n    #print(\"1111\")\r\n    parser.add_argument(\"--video_path\",default=\"./assets/3.mp4\", help=\"Input video path or directory of frames.\")\r\n    parser.add_argument(\"--txt_path\",default=\"./assets/test.txt\", help=\"Path to ground truth text file.\")\r\n    parser.add_argument(\"--model_path\", default=\"sam2/checkpoints/sam2.1_hiera_base_plus.pt\", help=\"Path to the model checkpoint.\")\r\n    parser.add_argument(\"--video_output_path\", default=\"./assets/output.mp4\", help=\"Path to save the output video.\")\r\n    parser.add_argument(\"--save_to_video\", default=True, help=\"Save results to a video.\")\r\n    args = parser.parse_args()\r\n    main(args)     \r\nThe following questions will appear. Please help me answer the specific reasons. thank you\r\n/home/cyy/anaconda3/envs/samurai/bin/python /home/cyy/code/grp/samurai-master/demo.py \r\nSAMURAI mode: True\r\n\r\nProcess finished with exit code 137 (interrupted by signal 9: SIGKILL)",
@@ -18,7 +19,7 @@
       {
         "user": "Grpab",
         "created_at": "2025-01-02T00:47:22Z",
-        "body": "> \u770b\u6765\u60a8\u7684\u5185\u5b58\u4e0d\u8db3\u4e86\u3002\u60a8\u53ef\u80fd\u9700\u8981\u4f7f\u7528\u8f83\u77ed\u7684\u89c6\u9891\u3002\r\n\r\nThank you for your answer, I will try your suggestion"
+        "body": "> 看来您的内存不足了。您可能需要使用较短的视频。\r\n\r\nThank you for your answer, I will try your suggestion"
       }
     ],
     "satisfaction_conditions": [
@@ -28,6 +29,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:10:46"
-    }
+    },
+    "dockerfile": "FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04\n\n# Set environment variables\nENV DEBIAN_FRONTEND=noninteractive\nENV PYTHONUNBUFFERED=1\n\n# Install system dependencies\nRUN apt-get update && apt-get install -y \\\n    git \\\n    python3 \\\n    python3-pip \\\n    wget \\\n    ffmpeg \\\n    libsm6 \\\n    libxext6 \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Set working directory\nWORKDIR /app\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/yangchris11/samurai.git /app \\\n    && git checkout 4160a3ecc59f31151297c5d90e18a66206723a26\n\n# Install Python dependencies\nRUN pip3 install --no-cache-dir torch==2.0.1 torchvision==0.15.2 --index-url https://download.pytorch.org/whl/cu118\nRUN pip3 install --no-cache-dir \\\n    opencv-python \\\n    numpy \\\n    tqdm \\\n    matplotlib \\\n    scipy \\\n    scikit-image \\\n    timm \\\n    einops \\\n    av \\\n    imageio \\\n    imageio-ffmpeg \\\n    groundingdino-py \\\n    pycocotools\n\n# Download the model checkpoint\nRUN mkdir -p sam2/checkpoints \\\n    && wget -q -O sam2/checkpoints/sam2.1_hiera_base_plus.pt https://dl.fbaipublicfiles.com/segment_anything_2/sam2_hiera_base_plus.pt\n\n# Create assets directory if it doesn't exist\nRUN mkdir -p assets\n\n# Create a sample test.txt file in assets (as mentioned in the issue)\nRUN echo \"Sample text for testing\" > assets/test.txt\n\n# Set the working directory\nWORKDIR /app\n\n# The container is now ready for use\n# Users can run the demo.py script with their own video and text file\n# Example: docker run --gpus all -v /path/to/your/video:/app/assets/3.mp4 -v /path/to/your/text:/app/assets/test.txt image_name python3 demo.py"
   }
 ]

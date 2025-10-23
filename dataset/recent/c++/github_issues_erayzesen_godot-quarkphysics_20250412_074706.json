@@ -4,6 +4,7 @@
     "title": "Change QMeshPolygonNode polygon radius in code",
     "created_at": "2025-02-02T18:27:52Z",
     "closed_at": "2025-02-19T14:23:40Z",
+    "commit_id": "7afa037049f660257df8e9e9399ad74740596663",
     "labels": [],
     "url": "https://github.com/erayzesen/godot-quarkphysics/issues/34",
     "body": "I am trying to change the polygon radius in code for a softbody. Is seems that the function: set_polygon_radius(value) does not work. I tested it like this:\n```\nextends QSoftBodyNode\n\nvar expanded_size = 100\nvar normal_size= 40\n\nfunc _physics_process(delta: float) -> void:            \n\tif Input.is_action_pressed(\"expand\"):\n\t\t$Mesh.set_polygon_radius(expanded_size)  #$Mesh is a QMeshPolygonNode\n\telse:\n\t\t$Mesh.set_polygon_radius(normal_size)\n\n```\nThis does not work too\n```\nextends QSoftBodyNode\n\nvar expanded_size = 100\nvar normal_size = 40\n\nfunc _physics_process(delta: float) -> void:            \n\tif Input.is_action_pressed(\"expand\"):\n\t\t$Mesh.polygon_radius = expanded_size\n\telse:\n\t\t$Mesh.polygon_radius = normal_size\n\n```\n\nI know the code isnt efficent, its just for demonstration",

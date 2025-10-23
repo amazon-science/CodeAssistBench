@@ -4,6 +4,7 @@
     "title": "Fix the folder distribution!",
     "created_at": "2025-01-17T21:49:03Z",
     "closed_at": "2025-01-17T22:17:09Z",
+    "commit_id": "39541a4bbc4ab1251f2020d6c438a312ddbcbcca",
     "labels": [],
     "url": "https://github.com/iiMidknightii/PathMesh3D/issues/2",
     "body": "i tried downloading this addon since its description is exactly what i need, when i was downloading it, i noticed it have a lot of folders outside of the addons folder, this messes with anyone working directory, where should be only the users folders.\ni'm going to test it in a separated project.",

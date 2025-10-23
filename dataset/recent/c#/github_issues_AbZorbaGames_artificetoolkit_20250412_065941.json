@@ -1,19 +1,20 @@
 [
   {
     "number": 24,
-    "title": "Add SortAttribute, .gitignore and update documentation \ud83d\udd28",
+    "title": "Add SortAttribute, .gitignore and update documentation 🔨",
     "created_at": "2025-03-20T02:09:52Z",
     "closed_at": "2025-03-28T11:56:35Z",
+    "commit_id": "2de3e83635f89f4da2f486114a4622feef6121ba",
     "labels": [],
     "url": "https://github.com/AbZorbaGames/artificetoolkit/pull/24",
-    "body": "Hey @ZackPer,  \r\n\r\n**What's new:**  \r\n- Added `SortAttribute` to order Inspector fields   \r\n- Updated docs with sword example \u2694\ufe0f  \r\n- Added `.gitignore` for IDE folders \ud83d\udeab  \r\n\r\n**Quick question:**  \r\n\r\nIn `ArtificeInspector`, this line (12), gets uncommented by Unity when I clone the repo \ud83d\ude05. \r\n```csharp  \r\n// [CustomEditor(typeof(Object), true), CanEditMultipleObjects]  \r\n```\r\n\r\nMeant to be a `///` comment?\r\n",
+    "body": "Hey @ZackPer,  \r\n\r\n**What's new:**  \r\n- Added `SortAttribute` to order Inspector fields   \r\n- Updated docs with sword example ⚔️  \r\n- Added `.gitignore` for IDE folders 🚫  \r\n\r\n**Quick question:**  \r\n\r\nIn `ArtificeInspector`, this line (12), gets uncommented by Unity when I clone the repo 😅. \r\n```csharp  \r\n// [CustomEditor(typeof(Object), true), CanEditMultipleObjects]  \r\n```\r\n\r\nMeant to be a `///` comment?\r\n",
     "comments_url": "https://api.github.com/repos/AbZorbaGames/artificetoolkit/issues/24/comments",
     "author": "exejutable",
     "comments": [
       {
         "user": "ZackPer",
         "created_at": "2025-03-20T14:10:23Z",
-        "body": "Regarding this line,\r\n\r\n```c#\r\n// [CustomEditor(typeof(Object), true), CanEditMultipleObjects]  \r\n```\r\n\r\nThe intended use for Artifice is to add it to your project through git. That means the source code is inside unity's the Library folder which is always under gitignore. \r\n\r\nSo we tried to utilize this to be able to turn on and off the ArtificeInspector completely, by removing the attribute which applies it to the inspector. If someone wants to download and add it manually, he should gitignore this file specifically to be able to turn on/off the inspector.\r\n\r\nSo when working on artifice, the developer should completely ignore this script \ud83d\udc35 \r\n\r\nThis is not documented, so I will put a task for it to update it."
+        "body": "Regarding this line,\r\n\r\n```c#\r\n// [CustomEditor(typeof(Object), true), CanEditMultipleObjects]  \r\n```\r\n\r\nThe intended use for Artifice is to add it to your project through git. That means the source code is inside unity's the Library folder which is always under gitignore. \r\n\r\nSo we tried to utilize this to be able to turn on and off the ArtificeInspector completely, by removing the attribute which applies it to the inspector. If someone wants to download and add it manually, he should gitignore this file specifically to be able to turn on/off the inspector.\r\n\r\nSo when working on artifice, the developer should completely ignore this script 🐵 \r\n\r\nThis is not documented, so I will put a task for it to update it."
       },
       {
         "user": "ZackPer",
@@ -23,7 +24,7 @@
       {
         "user": "exejutable",
         "created_at": "2025-03-20T21:18:07Z",
-        "body": "Hi @ZackPer ,\r\n\r\nThanks for the explanation! \r\n\r\n**About the `//` behavior:**\r\nWhen adding Artifice as a local package (from disk), Unity removes them automatically. Switching to `///` fixes this issue, as Unity preserves triple-slash comments.\r\n\r\n**About the \"minor comments\":**\r\nYou mentioned resolving \"truly minor comments,\" but I don\u2019t see them in the PR. Did you mean:\r\n\r\n1. You\u2019ll handle them?\r\n2. Or should I address them?\r\n\r\nLet me know so I can help out! "
+        "body": "Hi @ZackPer ,\r\n\r\nThanks for the explanation! \r\n\r\n**About the `//` behavior:**\r\nWhen adding Artifice as a local package (from disk), Unity removes them automatically. Switching to `///` fixes this issue, as Unity preserves triple-slash comments.\r\n\r\n**About the \"minor comments\":**\r\nYou mentioned resolving \"truly minor comments,\" but I don’t see them in the PR. Did you mean:\r\n\r\n1. You’ll handle them?\r\n2. Or should I address them?\r\n\r\nLet me know so I can help out! "
       },
       {
         "user": "ZackPer",
@@ -38,12 +39,12 @@
       {
         "user": "ZackPer",
         "created_at": "2025-03-28T11:39:19Z",
-        "body": "Hello @exejutable !\r\n\r\nSorry for the delay but I was on my day-offs \ud83e\udee3\r\n\r\nSo I made some changes after reviewing the branch.\r\n\r\nFirst of all, I reverted the '//' instead of the '///' because it does not have to do with Unity. Probably, the Artifice_Utilities class was simply removing the '//' because it detected that previously you had enabled the ArtificeToolkit. So long story sort, the Artifice_Utilities which also offers the MenuItem options, enforces the '//' based on whether you want to use Artifice or not. This way, your preference is kept even when you update the ArtificeToolkit version.\r\n\r\nSecondly, I made a small optimization to the sorting utility method. I added a boolean to skip the OrderBy call if no sorting is needed, so we keep the O(n) time complexity for all cases that we dont have any sorting. I know the OrderBy has the best case of O(n) eitherway, but it feels better to enforce it so we stay agnostic of the sorting algorithm.\r\n\r\nLastly, I changed the default sorting order value (if no sort attribute was used at a specific property, but we need sorting because of another attribute), to be 0. This way, if you want to make a property which appears first in your script, appear last in the inspector, you dont need to put [Sort] to every other property. This is also the way Odin does it!\r\n\r\nWith this changes, I will probably squash and merge soon. Let me know your thoughts when you see this.\r\n"
+        "body": "Hello @exejutable !\r\n\r\nSorry for the delay but I was on my day-offs 🫣\r\n\r\nSo I made some changes after reviewing the branch.\r\n\r\nFirst of all, I reverted the '//' instead of the '///' because it does not have to do with Unity. Probably, the Artifice_Utilities class was simply removing the '//' because it detected that previously you had enabled the ArtificeToolkit. So long story sort, the Artifice_Utilities which also offers the MenuItem options, enforces the '//' based on whether you want to use Artifice or not. This way, your preference is kept even when you update the ArtificeToolkit version.\r\n\r\nSecondly, I made a small optimization to the sorting utility method. I added a boolean to skip the OrderBy call if no sorting is needed, so we keep the O(n) time complexity for all cases that we dont have any sorting. I know the OrderBy has the best case of O(n) eitherway, but it feels better to enforce it so we stay agnostic of the sorting algorithm.\r\n\r\nLastly, I changed the default sorting order value (if no sort attribute was used at a specific property, but we need sorting because of another attribute), to be 0. This way, if you want to make a property which appears first in your script, appear last in the inspector, you dont need to put [Sort] to every other property. This is also the way Odin does it!\r\n\r\nWith this changes, I will probably squash and merge soon. Let me know your thoughts when you see this.\r\n"
       },
       {
         "user": "exejutable",
         "created_at": "2025-04-08T23:57:01Z",
-        "body": "Hi @ZackPer ,\r\n\r\nNo worries at all about the delay\u2014hope you had a great time on your day off!\r\n\r\nThanks for the detailed explanation and the changes. Everything looks good to me! The only thing that caught my eye was the shift from explicit typing to var, but that\u2019s just me being a typing psychopath lol."
+        "body": "Hi @ZackPer ,\r\n\r\nNo worries at all about the delay—hope you had a great time on your day off!\r\n\r\nThanks for the detailed explanation and the changes. Everything looks good to me! The only thing that caught my eye was the shift from explicit typing to var, but that’s just me being a typing psychopath lol."
       },
       {
         "user": "ZackPer",

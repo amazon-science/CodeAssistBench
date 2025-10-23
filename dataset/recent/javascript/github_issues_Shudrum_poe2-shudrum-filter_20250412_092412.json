@@ -4,6 +4,7 @@
     "title": "waystones with rarity are hidden",
     "created_at": "2024-12-29T01:58:04Z",
     "closed_at": "2025-01-01T19:53:04Z",
+    "commit_id": "8e6b052a5daec84a7a907a99b85bf16ebe719dc4",
     "labels": [],
     "url": "https://github.com/Shudrum/poe2-shudrum-filter/issues/13",
     "body": "Thanks for a great filter. I noticed that rare and magic waystones are hidden. I tweaked your filter locally to add a line to show all rarities\r\n\r\n```\r\nShow\r\n  Class \"Waystone\"\r\n  AreaLevel == 82\r\n  Rarity <= Normal\r\n  WaystoneTier >= 16\r\n  PlayAlertSound 4 300\r\n  PlayEffect White\r\n  SetTextColor 200 200 200\r\n  SetBorderColor 74 68 58\r\n  SetBackgroundColor 74 68 58\r\n  SetFontSize 35\r\n  MinimapIcon 1 White Square\r\n```\r\n\r\nI was about to submit a pull request but noticed these are generated! Sorry I can't contribute to javascript, but I still wanted to report the issue",

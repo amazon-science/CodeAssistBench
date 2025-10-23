@@ -4,6 +4,7 @@
     "title": "Unable to open database at first run",
     "created_at": "2025-02-18T10:17:47Z",
     "closed_at": "2025-02-23T22:13:08Z",
+    "commit_id": "326f7d44c52ae96e5199671fc06784acd052e674",
     "labels": [],
     "url": "https://github.com/dotnetfactory/fluid-calendar/issues/5",
     "body": "Hi,\n\nI try to install you software, but I have a problem at first start. I wanted to use it with docker.\nI followed the documentation, but at the step, where I have to migrate the database, I have an error:\n\nI run this command: \n\n```\ndocker run --rm \\\n  -v $(pwd)/data:/app/data \\\n  --env-file .env \\\n  eibrahim/fluid-calendar:latest \\\n  npx prisma migrate deploy\n\n```\n\nAnd get this error message: \n\n```\nid-calendar:latest   npx prisma migrate deploy\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"dev.db\" at \"file:/app/data/dev.db\"\n\nError: Schema engine error:\nSQLite database error\nunable to open database file: /app/data/dev.db\n```\n\nI also tried to run: \n\n```\nrm -rf data/* && docker run --rm \\\n  -v $(pwd)/data:/app/data \\\n  --env-file .env \\\n  eibrahim/fluid-calendar:latest \\\n  npx prisma migrate deploy\n```\n\nBut I got same error above. \n\n\nUpdate1: I created an empty file in the data folder (touch dev.db), and re-run the database migration command, but still dont work:\n\n```\nPrisma schema loaded from prisma/schema.prisma\nDatasource \"db\": SQLite database \"dev.db\" at \"file:/app/data/dev.db\"\n\n8 migrations found in prisma/migrations\n\nError: SQLite database error\nattempt to write a readonly database\n   0: sql_schema_connector::sql_migration_persistence::initialize\n           with namespaces=None\n             at schema-engine/connectors/sql-schema-connector/src/sql_migration_persistence.rs:14\n   1: schema_core::state::ApplyMigrations\n             at schema-engine/core/src/state.rs:226\n```\n\nI tried everything, run docker with sudo and root user, change the permission of dev.db with chmod to 777, change the owner of the dev.db from user to root, but still read only. ",
@@ -40,6 +41,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 00:59:19"
-    }
+    },
+    "dockerfile": "FROM node:20-alpine\n\n# Set working directory\nWORKDIR /app\n\n# Install git and other dependencies\nRUN apk add --no-cache git\n\n# Clone the repository at the specific commit\nRUN git clone https://github.com/dotnetfactory/fluid-calendar.git . && \\\n    git checkout 326f7d44c52ae96e5199671fc06784acd052e674\n\n# Install dependencies\nRUN npm ci\n\n# Generate Prisma Client\nRUN npx prisma generate\n\n# Create data directory with proper permissions\nRUN mkdir -p /app/data && \\\n    chmod -R 777 /app/data\n\n# Build the application\nRUN npm run build\n\n# Ensure SQLite database directory has correct permissions\nRUN touch /app/data/dev.db && \\\n    chmod 666 /app/data/dev.db && \\\n    chmod -R 777 /app/data\n\n# Expose port 3000\nEXPOSE 3000\n\n# Define the command to run the application\nCMD [\"npm\", \"start\"]"
   }
 ]

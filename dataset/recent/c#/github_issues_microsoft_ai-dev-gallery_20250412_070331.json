@@ -4,6 +4,7 @@
     "title": "#113: Semantic Kernel",
     "created_at": "2025-02-06T04:43:11Z",
     "closed_at": "2025-02-25T06:57:30Z",
+    "commit_id": "b581325fc3d0717d4284142330e0b08016c0dabf",
     "labels": [],
     "url": "https://github.com/microsoft/ai-dev-gallery/pull/155",
     "body": "fixes #113 \r\n\r\nNeeded to add a dependency and update another for this, so would appreciate a double check that nothing went awry.\r\n\r\nAlso, this sample takes *forever* to load. Not sure if there is any way around it.",
@@ -40,6 +41,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:00:41"
-    }
+    },
+    "dockerfile": "FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build\n\n# Install necessary tools and dependencies\nRUN apt-get update && apt-get install -y \\\n    git \\\n    wine64 \\\n    mono-complete \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Set working directory\nWORKDIR /source\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/microsoft/ai-dev-gallery.git . && \\\n    git checkout b581325fc3d0717d4284142330e0b08016c0dabf\n\n# Enable Windows targeting for cross-platform builds\nENV EnableWindowsTargeting=true\nENV DOTNET_CLI_TELEMETRY_OPTOUT=1\n\n# Configure Wine for Windows executables\nRUN mkdir -p /root/.wine && \\\n    winecfg\n\n# Build only specific projects that don't require Windows-specific components\nRUN dotnet build AIDevGallery.Utils/AIDevGallery.Utils.csproj --configuration Release\nRUN dotnet build AIDevGallery.SourceGenerator/AIDevGallery.SourceGenerator.csproj --configuration Release\n\n# Create a smaller final image\nFROM mcr.microsoft.com/dotnet/sdk:9.0-alpine\n\nWORKDIR /app\n\n# Copy built artifacts from the build stage\nCOPY --from=build /source/AIDevGallery.Utils/bin/Release /app/AIDevGallery.Utils/bin/Release\nCOPY --from=build /source/AIDevGallery.SourceGenerator/bin/Release /app/AIDevGallery.SourceGenerator/bin/Release\nCOPY --from=build /source/AIDevGallery /app/AIDevGallery\n\n# Set the entry point to a shell so the container stays running\nCMD [\"/bin/sh\"]"
   }
 ]

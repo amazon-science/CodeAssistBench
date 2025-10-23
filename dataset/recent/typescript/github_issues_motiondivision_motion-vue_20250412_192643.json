@@ -4,6 +4,7 @@
     "title": "Pug syntax in template",
     "created_at": "2025-03-20T07:02:56Z",
     "closed_at": "2025-03-20T08:33:45Z",
+    "commit_id": "4f2dcbaffaf2c3ea3961ee0ffc74a554d3b35855",
     "labels": [],
     "url": "https://github.com/motiondivision/motion-vue/issues/122",
     "body": "It seems impossible use motion.div in template with pug syntax. I have tried various combinations but without success.\nCan you show me the right way of doing this, or implement this feature in the future?\nThanks! \n",

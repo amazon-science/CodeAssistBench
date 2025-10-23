@@ -4,6 +4,7 @@
     "title": "Json serialization / initialization error when used with NativeAOT",
     "created_at": "2025-04-07T10:24:59Z",
     "closed_at": "2025-04-11T11:26:48Z",
+    "commit_id": "faf12b6a9496111f21fd474cd9173071673a8c8d",
     "labels": [
       "bug"
     ],
@@ -57,6 +58,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:01:28"
-    }
+    },
+    "dockerfile": "FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build\n\n# Install dependencies\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends \\\n    git \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Set working directory\nWORKDIR /app\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/modelcontextprotocol/csharp-sdk.git . && \\\n    git checkout faf12b6a9496111f21fd474cd9173071673a8c8d\n\n# Modify global.json to use SDK version 9.0.100-preview.5.24251.5 (compatible with our base image)\nRUN sed -i 's/\"version\": \"9.0.100\"/\"version\": \"9.0.100-preview.5.24251.5\"/g' global.json\n\n# Restore NuGet packages\nRUN dotnet restore\n\n# Build the project\nRUN dotnet build --configuration Release\n\n# Create a test project to verify the NativeAOT issue\nWORKDIR /app/NativeAotTest\nRUN dotnet new console\nRUN dotnet add reference /app/src/ModelContextProtocol/ModelContextProtocol.csproj\n\n# Update the project file for NativeAOT support\nRUN echo '<Project Sdk=\"Microsoft.NET.Sdk\"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><PublishAot>true</PublishAot><RootAllApplicationAssemblies>true</RootAllApplicationAssemblies><IlcGenerateCompleteTypeMetadata>true</IlcGenerateCompleteTypeMetadata><IlcGenerateStackTraceData>false</IlcGenerateStackTraceData></PropertyGroup></Project>' > NativeAotTest.csproj\n\n# Create a test program that reproduces the issue\nRUN echo 'using System; using System.Collections.Generic; using System.Threading; using System.Threading.Tasks; using Microsoft.Extensions.Logging; using ModelContextProtocol.Client; namespace NativeAotTest { class Program { static async Task Main() { var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole()); try { var client = await McpClientFactory.CreateAsync(new McpServerConfig { Id = \"test\", Name = \"test\", TransportType = TransportTypes.StdIo, TransportOptions = new Dictionary<string, string> { [\"command\"] = \"echo\", [\"arguments\"] = \"test\" } }, loggerFactory: loggerFactory); } catch (Exception ex) { Console.WriteLine($\"Error: {ex}\"); } } } }' > Program.cs\n\n# Add System.Text.Json source generator to help with NativeAOT\nRUN dotnet add package Microsoft.Extensions.Logging.Console\nRUN dotnet add package System.Text.Json\n\n# Return to the main directory\nWORKDIR /app"
   }
 ]

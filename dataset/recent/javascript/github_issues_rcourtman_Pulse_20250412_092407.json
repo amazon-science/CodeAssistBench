@@ -4,6 +4,7 @@
     "title": "[BUG] No valid Proxmox VE nodes configured. Please check your environment variables",
     "created_at": "2025-03-12T23:31:38Z",
     "closed_at": "2025-03-13T13:24:21Z",
+    "commit_id": null,
     "labels": [
       "bug"
     ],

@@ -4,6 +4,7 @@
     "title": "uni-meter does not work when at startup the mqtt input device was not available",
     "created_at": "2025-03-31T17:16:26Z",
     "closed_at": "2025-04-01T02:29:33Z",
+    "commit_id": "62e71362344f2b2ea29f6084d9e81634d0e9782c",
     "labels": [
       "bug"
     ],

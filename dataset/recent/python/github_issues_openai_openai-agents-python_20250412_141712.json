@@ -4,6 +4,7 @@
     "title": "Is there a way to force handoffs?",
     "created_at": "2025-04-11T01:13:36Z",
     "closed_at": "2025-04-11T02:49:10Z",
+    "commit_id": "68c725f9425ab371e8774e50319e18da61ef2e80",
     "labels": [
       "question"
     ],
@@ -38,6 +39,7 @@
     "title": "ImportError: cannot import name 'MCPServerSse' from 'agents.mcp'",
     "created_at": "2025-04-01T12:45:09Z",
     "closed_at": "2025-04-07T04:40:23Z",
+    "commit_id": "9c53abe8c15ab2cf1c5591c1db1f61b52a1b24dc",
     "labels": [
       "bug",
       "needs-more-info"
@@ -105,7 +107,7 @@
       {
         "user": "smortezah",
         "created_at": "2025-04-04T15:52:27Z",
-        "body": "@rm-openai @oms0401 Solved.\n\nI encountered an interesting situation where I had a file named `mcp.py` in my subdirectory. Attempting to import `from mcp` resulted in a circular import. Interestingly, I wasn\u2019t importing from `mcp` in my Jupyter notebook or the Python file I was trying to execute. However, the presence of `mcp.py` in the directory led to the following error:\n`ImportError: cannot import name \u2018MCPServer\u2019 from \u2018agents.mcp\u2019 (.venv/lib/python3.12/site-packages/agents/mcp/__init__.py)`\n\nTo resolve this issue, I simply renamed `mcp.py`."
+        "body": "@rm-openai @oms0401 Solved.\n\nI encountered an interesting situation where I had a file named `mcp.py` in my subdirectory. Attempting to import `from mcp` resulted in a circular import. Interestingly, I wasn’t importing from `mcp` in my Jupyter notebook or the Python file I was trying to execute. However, the presence of `mcp.py` in the directory led to the following error:\n`ImportError: cannot import name ‘MCPServer’ from ‘agents.mcp’ (.venv/lib/python3.12/site-packages/agents/mcp/__init__.py)`\n\nTo resolve this issue, I simply renamed `mcp.py`."
       },
       {
         "user": "rm-openai",
@@ -139,6 +141,7 @@
     "title": "Wait to run the Agent first step until Input guardrails is complete",
     "created_at": "2025-03-29T22:39:44Z",
     "closed_at": "2025-04-01T15:47:57Z",
+    "commit_id": "382500d841680e3ccd727001639394e6a6697a9a",
     "labels": [],
     "url": "https://github.com/openai/openai-agents-python/pull/394",
     "body": "The guardrail may trigger a Tripewire but the agent still run\r\n\r\nIn v0.0.7, the code runs the input guardrail task and the agent's first step together asynchronously. \r\n\r\nIf the guardrail is in place to avoid a side effect from the Agent run, the agent may still do something unexpected.\r\n\r\n\r\nLet's say that you have a tripwire guardrail: \"Don't allow to delete a file\", and the agent is an MCP file system agent",
@@ -176,11 +179,12 @@
     "title": "Issue with incomplete pip installation - macOS",
     "created_at": "2025-03-27T17:21:20Z",
     "closed_at": "2025-03-27T17:42:44Z",
+    "commit_id": "377ddbace60ea37f7651c16fc59667f717a44e03",
     "labels": [
       "question"
     ],
     "url": "https://github.com/openai/openai-agents-python/issues/373",
-    "body": "Description:\nI'm encountering an issue when trying to install the openai-agents package. After a successful installation via pip, the package seems to be incomplete \u2014 the openai_agents directory in site-packages only contains metadata files (INSTALLER, METADATA, RECORD, etc.), with no actual Python module files. As a result, I cannot import the module, and attempts to do so result in a ModuleNotFoundError.\n\nSteps to Reproduce:\nCreate a fresh Python environment:\n\nbash\nCopy\npython3 -m venv env\nActivate the environment:\n\nbash\nCopy\nsource env/bin/activate\nInstall openai-agents:\n\nbash\nCopy\npip install openai-agents\nAfter installation, run the following to verify the installation:\n\nbash\nCopy\npip show openai-agents\nThe output shows the installation is successful, but the site-packages/openai_agents directory contains only metadata files.\n\nAttempt to import the module in Python:\n\npython\nCopy\nfrom openai_agents import Agent\nThis results in a ModuleNotFoundError.\n\nExpected Behavior:\nThe openai-agents package should include the necessary Python modules under the site-packages/openai_agents directory. I should be able to import the module as follows:\n\npython\nCopy\nfrom openai_agents import Agent\nActual Behavior:\nAfter installation, the site-packages/openai_agents directory contains only metadata files (INSTALLER, METADATA, RECORD, etc.), and the Python modules (openai_agents/__init__.py, etc.) are missing. Consequently, I am unable to import the module.\n\nEnvironment:\nPython version: 3.9.6\n\nOperating System: macOS 11.0\n\nPackage version: openai-agents 0.0.7\n\nInstallation method: pip install openai-agents\n\nAdditional Information:\nI\u2019ve tried reinstalling the package multiple times using --no-cache-dir and have also used a fresh virtual environment.\n\nI have also checked the site-packages/openai_agents directory, and it is missing the necessary Python files.\n\nI\u2019ve checked the PyPI page, and there\u2019s no indication of a known issue with the package installation.\n\nThe issue persists after upgrading pip to the latest version.\n\n",
+    "body": "Description:\nI'm encountering an issue when trying to install the openai-agents package. After a successful installation via pip, the package seems to be incomplete — the openai_agents directory in site-packages only contains metadata files (INSTALLER, METADATA, RECORD, etc.), with no actual Python module files. As a result, I cannot import the module, and attempts to do so result in a ModuleNotFoundError.\n\nSteps to Reproduce:\nCreate a fresh Python environment:\n\nbash\nCopy\npython3 -m venv env\nActivate the environment:\n\nbash\nCopy\nsource env/bin/activate\nInstall openai-agents:\n\nbash\nCopy\npip install openai-agents\nAfter installation, run the following to verify the installation:\n\nbash\nCopy\npip show openai-agents\nThe output shows the installation is successful, but the site-packages/openai_agents directory contains only metadata files.\n\nAttempt to import the module in Python:\n\npython\nCopy\nfrom openai_agents import Agent\nThis results in a ModuleNotFoundError.\n\nExpected Behavior:\nThe openai-agents package should include the necessary Python modules under the site-packages/openai_agents directory. I should be able to import the module as follows:\n\npython\nCopy\nfrom openai_agents import Agent\nActual Behavior:\nAfter installation, the site-packages/openai_agents directory contains only metadata files (INSTALLER, METADATA, RECORD, etc.), and the Python modules (openai_agents/__init__.py, etc.) are missing. Consequently, I am unable to import the module.\n\nEnvironment:\nPython version: 3.9.6\n\nOperating System: macOS 11.0\n\nPackage version: openai-agents 0.0.7\n\nInstallation method: pip install openai-agents\n\nAdditional Information:\nI’ve tried reinstalling the package multiple times using --no-cache-dir and have also used a fresh virtual environment.\n\nI have also checked the site-packages/openai_agents directory, and it is missing the necessary Python files.\n\nI’ve checked the PyPI page, and there’s no indication of a known issue with the package installation.\n\nThe issue persists after upgrading pip to the latest version.\n\n",
     "comments_url": "https://api.github.com/repos/openai/openai-agents-python/issues/373/comments",
     "author": "william-e43",
     "comments": [
@@ -210,6 +214,7 @@
     "title": "How to provide object as input to agent",
     "created_at": "2025-03-24T09:24:21Z",
     "closed_at": "2025-03-25T15:12:05Z",
+    "commit_id": "623063b633bb0f4ed4da1d31f341f3ecee3ba25f",
     "labels": [
       "question"
     ],
@@ -254,6 +259,7 @@
     "title": "Guide on few-shot prompting",
     "created_at": "2025-03-22T04:54:38Z",
     "closed_at": "2025-03-22T05:39:14Z",
+    "commit_id": "8d906f88f02d30b3cf6068e5de88a5f1e4bafd82",
     "labels": [
       "question"
     ],
@@ -285,9 +291,10 @@
   },
   {
     "number": 263,
-    "title": "Fix potential infinite tool call loop by resetting tool_choice after \u2026",
+    "title": "Fix potential infinite tool call loop by resetting tool_choice after …",
     "created_at": "2025-03-20T13:29:21Z",
     "closed_at": "2025-03-25T15:30:53Z",
+    "commit_id": "9384a0fb3fd13151c010d3f45c89bfcb05172784",
     "labels": [],
     "url": "https://github.com/openai/openai-agents-python/pull/263",
     "body": "# Fix potential infinite tool call loop by resetting tool_choice after tool execution\r\n\r\n## Summary\r\n\r\nThis PR fixes an issue where setting `tool_choice` to \"required\" or a specific function name could cause models to get stuck in an infinite tool call loop.\r\n\r\nWhen `tool_choice` is set to force tool usage, this setting persists across model invocations. This PR automatically resets `tool_choice` to \"auto\" after tool execution, allowing the model to decide whether to make additional tool calls in subsequent turns.\r\n\r\nUnlike using `tool_use_behavior=\"stop_on_first_tool\"`, this approach lets the model continue processing tool results while preventing forced repeated tool calls.\r\n\r\n## Test plan\r\n\r\n- Added tests to verify tool_choice reset behavior for both agent and run_config settings\r\n- Added integration test to verify the solution prevents infinite loops\r\n- All tests pass\r\n\r\n## Checks\r\n\r\n- [x] I've added new tests for the fix\r\n- [x] I've updated the relevant documentation (added comment in code)\r\n- [x] I've run `make lint` and `make format`\r\n- [x] I've made sure tests pass\r\n",
@@ -352,6 +359,7 @@
     "title": "Handoff to multiple agents in parallel",
     "created_at": "2025-03-13T07:22:42Z",
     "closed_at": "2025-03-15T10:27:00Z",
+    "commit_id": "3ef5f4712aa2c2dcd2cd04520fa2589faadf4eb3",
     "labels": [
       "question"
     ],
@@ -368,7 +376,7 @@
       {
         "user": "huangbhan",
         "created_at": "2025-03-14T07:55:46Z",
-        "body": "Same issue,Solution 1 is a good design concept, it works for me.\nBut I have a question.\n\nOption 1:\nagent -> multiple tools\n\nOption 2:\nagent -> multiple agents as tools (each agent has a tool that it can call)\n\nWhich of these two options is better? What are the differences?\n\n\n> No, it doesn't. Handoffs are meant for scenarios where you transfer control of the entire conversation to a new agent - so it's not possible to hand off to multiple agents.\u4e0d\uff0c\u5b83\u4e0d\u662f\u3002\u4ea4\u63a5\u662f\u4e3a\u4e86\u5c06\u6574\u4e2a\u5bf9\u8bdd\u7684\u63a7\u5236\u6743\u8f6c\u79fb\u7ed9\u4e00\u4e2a\u65b0\u7684\u4ee3\u7406\uff0c\u56e0\u6b64\u4e0d\u53ef\u80fd\u4ea4\u63a5\u7ed9\u591a\u4e2a\u4ee3\u7406\u3002\n> \n> Depending on your scenario, it might make sense to either:\u6839\u636e\u60a8\u7684\u60c5\u51b5\uff0c\u60a8\u53ef\u80fd\u4f1a\u89c9\u5f97\u4ee5\u4e0b\u4e24\u79cd\u9009\u62e9\u4e2d\u7684\u4e00\u79cd\u66f4\u5408\u9002\uff1a\n> \n> 1. Have mutliple agents and expose them as tools e.g.:\u62e5\u6709\u591a\u4e2a\u4ee3\u7406\u5e76\u5c06\u5176\u4f5c\u4e3a\u5de5\u5177\u516c\u5f00\uff0c\u4f8b\u5982\uff1a\n> \n> ```\n> agent1, agent_2, agent_3, agent_4, ... = ...;\n> \n> main_agent = Agent(\n>   name=\"Triage\",\n>   instructions=\"Call all the relevant agent tools in parallel, then synthesize a good response\",\n>   model_settings=ModelSettings(parallel_tool_calls=True), # Enable parallel tool calling\n>   tools=[agent_1.as_tool(...), agent_2.as_tool(...), agent_3.as_tool(...), ...]\n> )\n> ```\n> \n> or\u00a0\u00a0\u6216\n> \n> 2. If it's deterministic, do it in code:\u5982\u679c\u662f\u786e\u5b9a\u6027\u7684\uff0c\u5c31\u7528\u4ee3\u7801\u5b9e\u73b0\uff1a\n> \n> ```\n> agent1, agent_2, agent_3 = ...;\n> \n> result_1, result_2, result_3 = await asyncio.gather(\n>   Runner.run(agent_1, ...),\n>   Runner.run(agent_2, ...),\n>   Runner.run(agent_3, ...),\n> )\n> \n> new_input = f\"Synthesize a good response: {result_1.final_output} \\n {result_2.final_output} ...\"\n> \n> main_agent = Agent(...)\n> final_result = await Runner.run(main_agent, new_input)\n> ```\n> \n> Would these options work?\u8fd9\u4e9b\u9009\u9879\u53ef\u884c\u5417\uff1f\n\n"
+        "body": "Same issue,Solution 1 is a good design concept, it works for me.\nBut I have a question.\n\nOption 1:\nagent -> multiple tools\n\nOption 2:\nagent -> multiple agents as tools (each agent has a tool that it can call)\n\nWhich of these two options is better? What are the differences?\n\n\n> No, it doesn't. Handoffs are meant for scenarios where you transfer control of the entire conversation to a new agent - so it's not possible to hand off to multiple agents.不，它不是。交接是为了将整个对话的控制权转移给一个新的代理，因此不可能交接给多个代理。\n> \n> Depending on your scenario, it might make sense to either:根据您的情况，您可能会觉得以下两种选择中的一种更合适：\n> \n> 1. Have mutliple agents and expose them as tools e.g.:拥有多个代理并将其作为工具公开，例如：\n> \n> ```\n> agent1, agent_2, agent_3, agent_4, ... = ...;\n> \n> main_agent = Agent(\n>   name=\"Triage\",\n>   instructions=\"Call all the relevant agent tools in parallel, then synthesize a good response\",\n>   model_settings=ModelSettings(parallel_tool_calls=True), # Enable parallel tool calling\n>   tools=[agent_1.as_tool(...), agent_2.as_tool(...), agent_3.as_tool(...), ...]\n> )\n> ```\n> \n> or  或\n> \n> 2. If it's deterministic, do it in code:如果是确定性的，就用代码实现：\n> \n> ```\n> agent1, agent_2, agent_3 = ...;\n> \n> result_1, result_2, result_3 = await asyncio.gather(\n>   Runner.run(agent_1, ...),\n>   Runner.run(agent_2, ...),\n>   Runner.run(agent_3, ...),\n> )\n> \n> new_input = f\"Synthesize a good response: {result_1.final_output} \\n {result_2.final_output} ...\"\n> \n> main_agent = Agent(...)\n> final_result = await Runner.run(main_agent, new_input)\n> ```\n> \n> Would these options work?这些选项可行吗？\n\n"
       },
       {
         "user": "WSQsGithub",
@@ -402,6 +410,7 @@
     "title": "max_tokens is not an accepted parameter",
     "created_at": "2025-03-12T09:22:15Z",
     "closed_at": "2025-03-12T23:29:36Z",
+    "commit_id": "5aba0b5b19645d4f77dcc43a10e23ed4c8d6ff9e",
     "labels": [
       "bug"
     ],

@@ -4,6 +4,7 @@
     "title": "[Feature require] Allow another port, not just only 3000 port",
     "created_at": "2025-01-11T07:09:51Z",
     "closed_at": "2025-01-11T13:06:09Z",
+    "commit_id": "de618b55495e3ba16431079e18f7aa1a2a608b7c",
     "labels": [],
     "url": "https://github.com/elizaOS/eliza-starter/issues/67",
     "body": "I want to run multiple agent with one server. but when start single agent which occupy 3000 port, so other agent can not be launched.\r\n\r\nI checked this problem, this port occupation occurs on @ai16z/client-direct module.\r\n\r\nInside  @ai16z/client-direct module, 3000 port is hard coded. \r\n\r\n",

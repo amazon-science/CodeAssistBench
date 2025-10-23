@@ -1,44 +1,45 @@
 [
   {
     "number": 22,
-    "title": "\u4f60\u597d\uff0c\u5173\u4e8e\u53ea\u8f6c\u5b58\u5927\u4e8e\u591a\u5c11\u96c6\u7684\u5199\u6cd5\u4e0d\u592a\u61c2\u3002",
+    "title": "你好，关于只转存大于多少集的写法不太懂。",
     "created_at": "2025-04-08T03:57:15Z",
     "closed_at": "2025-04-08T05:28:50Z",
+    "commit_id": "8af1d2293e10041147420e5ffd00b06002e912c1",
     "labels": [],
     "url": "https://github.com/1307super/cloud189-auto-save/issues/22",
-    "body": "\u6211\u8f6c\u5b58\u7684\u7247\u540d\u662f\uff1aS01E25.2024.2160p.WEB-DL.H264.AAC.mp4\uff0c\u5982\u679c\u6211\u53ea\u60f3\u8f6c\u5b5824\u96c6\u4ee5\u4e0a\u7684\u662f\u4e0d\u662f\u524d\u9762\u586bS01E(\\d+).2024.2160p.WEB-DL.H264.AAC.mp4\u4e2d\u95f4\u9009\u5927\u4e8e\uff0c\u540e\u9762\u503c\u586b24\uff1f\u4f46\u662f\u5b9e\u6d4b\u6ca1\u7528\uff0c\u5e94\u8be5\u600e\u4e48\u586b\uff1f",
+    "body": "我转存的片名是：S01E25.2024.2160p.WEB-DL.H264.AAC.mp4，如果我只想转存24集以上的是不是前面填S01E(\\d+).2024.2160p.WEB-DL.H264.AAC.mp4中间选大于，后面值填24？但是实测没用，应该怎么填？",
     "comments_url": "https://api.github.com/repos/1307super/cloud189-auto-save/issues/22/comments",
     "author": "Tincichow",
     "comments": [
       {
         "user": "1307super",
         "created_at": "2025-04-08T03:59:14Z",
-        "body": "\u4f60\u7ffb\u4e00\u7ffb\u5df2\u5173\u95ed\u7684issue\u91cc \u6709\u4e00\u4e2a\u548c\u4f60\u7684\u95ee\u9898\u4e00\u6837\uff0c\u91cc\u9762\u6709\u4e2a\u6b63\u5219\u8868\u8fbe\u5f0f \u5bf9\u4f60\u8fd9\u4e2a\u4e5f\u6709\u6548\uff0c\u53ef\u4ee5\u76f4\u63a5\u7528"
+        "body": "你翻一翻已关闭的issue里 有一个和你的问题一样，里面有个正则表达式 对你这个也有效，可以直接用"
       },
       {
         "user": "Tincichow",
         "created_at": "2025-04-08T03:59:34Z",
-        "body": "> \u6211\u8f6c\u5b58\u7684\u7247\u540d\u662f:S01E25.2024.2160p.WEB-DL.H264.AAC.mp4\n\n\n\n> \u4f60\u7ffb\u4e00\u7ffb\u5df2\u5173\u95ed\u7684issue\u91cc \u6709\u4e00\u4e2a\u548c\u4f60\u7684\u95ee\u9898\u4e00\u6837\uff0c\u91cc\u9762\u6709\u4e2a\u6b63\u5219\u8868\u8fbe\u5f0f \u5bf9\u4f60\u8fd9\u4e2a\u4e5f\u6709\u6548\uff0c\u53ef\u4ee5\u76f4\u63a5\u7528\n\n\u6211\u770b\u770b"
+        "body": "> 我转存的片名是:S01E25.2024.2160p.WEB-DL.H264.AAC.mp4\n\n\n\n> 你翻一翻已关闭的issue里 有一个和你的问题一样，里面有个正则表达式 对你这个也有效，可以直接用\n\n我看看"
       },
       {
         "user": "Tincichow",
         "created_at": "2025-04-08T04:02:57Z",
-        "body": "> \u4f60\u7ffb\u4e00\u7ffb\u5df2\u5173\u95ed\u7684issue\u91cc \u6709\u4e00\u4e2a\u548c\u4f60\u7684\u95ee\u9898\u4e00\u6837\uff0c\u91cc\u9762\u6709\u4e2a\u6b63\u5219\u8868\u8fbe\u5f0f \u5bf9\u4f60\u8fd9\u4e2a\u4e5f\u6709\u6548\uff0c\u53ef\u4ee5\u76f4\u63a5\u7528\n\n\u4f60\u597d\uff0c\u6211\u524d\u9762\u586b\u4e86(?<=E)\\\\d+\u4e2d\u95f4\u9009\u5927\u4e8e\u540e\u9762\u519924\u7136\u540e\u70b9\u6267\u884c\u8fd8\u662f\u4e0d\u4f1a\u8f6c\u5b58\u7b2c25\u96c6- -\uff0c\u662f\u9519\u4e86\u5417\uff1f"
+        "body": "> 你翻一翻已关闭的issue里 有一个和你的问题一样，里面有个正则表达式 对你这个也有效，可以直接用\n\n你好，我前面填了(?<=E)\\\\d+中间选大于后面写24然后点执行还是不会转存第25集- -，是错了吗？"
       },
       {
         "user": "1307super",
         "created_at": "2025-04-08T04:04:50Z",
-        "body": "\u7528\u8fd9\u4e2a (?<=E)\\\\d+ \u52a8\u6001\u6267\u884c\u6b63\u5219\u9700\u8981\u7ed9\u53cd\u659c\u6760\u52a0\u8f6c\u4e49"
+        "body": "用这个 (?<=E)\\\\d+ 动态执行正则需要给反斜杠加转义"
       },
       {
         "user": "Tincichow",
         "created_at": "2025-04-08T04:07:09Z",
-        "body": "> \u7528\u8fd9\u4e2a (?<=E)\\d+ \u52a8\u6001\u6267\u884c\u6b63\u5219\u9700\u8981\u7ed9\u53cd\u659c\u6760\u52a0\u8f6c\u4e49\n\n\u7ec8\u4e8e\u53ef\u4ee5\u4e86\uff0c\u4e07\u5206\u611f\u8c22\u3002"
+        "body": "> 用这个 (?<=E)\\d+ 动态执行正则需要给反斜杠加转义\n\n终于可以了，万分感谢。"
       },
       {
         "user": "1307super",
         "created_at": "2025-04-08T04:08:03Z",
-        "body": "\u4e0d\u7528\u5ba2\u6c14"
+        "body": "不用客气"
       }
     ],
     "satisfaction_conditions": [

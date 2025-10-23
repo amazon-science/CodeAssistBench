@@ -4,6 +4,7 @@
     "title": "Non-desired tags when plugin is installled on several PC with synced database",
     "created_at": "2024-12-13T09:32:50Z",
     "closed_at": "2024-12-18T15:50:11Z",
+    "commit_id": "9fe22a6c8d701bee9a68a4389a655d075fb5bcb9",
     "labels": [
       "enhancement"
     ],
@@ -38,6 +39,7 @@
     "title": "Plugin can't be stopped",
     "created_at": "2024-12-06T18:05:02Z",
     "closed_at": "2024-12-11T03:57:44Z",
+    "commit_id": "df66fd0a25445cb989c5397fd03eb26f133359f7",
     "labels": [
       "enhancement"
     ],
@@ -49,7 +51,7 @@
       {
         "user": "SciImage",
         "created_at": "2024-12-11T03:57:44Z",
-        "body": "v 0.2.0, as you wished\r\n- A \"Cancel Attachment Scanning\" menu item is now available in the \u201cTools\u201d menu."
+        "body": "v 0.2.0, as you wished\r\n- A \"Cancel Attachment Scanning\" menu item is now available in the “Tools” menu."
       },
       {
         "user": "gvlx",

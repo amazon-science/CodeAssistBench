@@ -4,6 +4,7 @@
     "title": "Bug Report: The ArduPilot Guru needs around 2000 documents",
     "created_at": "2025-02-25T17:21:25Z",
     "closed_at": "2025-03-05T09:39:00Z",
+    "commit_id": null,
     "labels": [
       "bug"
     ],
@@ -15,7 +16,7 @@
       {
         "user": "kursataktas",
         "created_at": "2025-02-26T11:17:17Z",
-        "body": "Hey @amilcarlucas \n\nWe set a 1500-page limit on purpose. I took a look at how ArduPilot is being used and saw that the number of daily questions is pretty high. I don\u2019t want to block you because of this limit. I\u2019ll check into it and figure out what I can do. I\u2019ll update this thread soon."
+        "body": "Hey @amilcarlucas \n\nWe set a 1500-page limit on purpose. I took a look at how ArduPilot is being used and saw that the number of daily questions is pretty high. I don’t want to block you because of this limit. I’ll check into it and figure out what I can do. I’ll update this thread soon."
       },
       {
         "user": "kursataktas",

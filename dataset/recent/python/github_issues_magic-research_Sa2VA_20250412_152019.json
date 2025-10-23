@@ -4,6 +4,7 @@
     "title": "Is there a bug in lines 428-431 of sa2va_4b.py where the three datasets of recfcoco are added four times?",
     "created_at": "2025-02-25T09:24:06Z",
     "closed_at": "2025-03-13T10:09:06Z",
+    "commit_id": "c490564bde93d44d787a56267c61f103d493f8af",
     "labels": [],
     "url": "https://github.com/magic-research/Sa2VA/issues/43",
     "body": null,
@@ -18,7 +19,7 @@
       {
         "user": "bill-hx-liu",
         "created_at": "2025-03-17T12:21:34Z",
-        "body": "ok\uff0ci got it\uff0cthank you!"
+        "body": "ok，i got it，thank you!"
       }
     ],
     "satisfaction_conditions": [
@@ -36,9 +37,10 @@
     "title": "SAM2 MASK Decoder freeze or not?",
     "created_at": "2025-02-23T22:09:32Z",
     "closed_at": "2025-02-25T07:44:01Z",
+    "commit_id": "06c61e0270a9f5a8bd89e6fa3862cfdb1840649f",
     "labels": [],
     "url": "https://github.com/magic-research/Sa2VA/issues/38",
-    "body": "Hi Authors,\n\nThanks for your amazing work! I would like to clarify a detail for Sa2VA model training: In you introduction section, there is a statement saying that \"Moreover, we adopt a decoupled design in which SAM-2\u2019s decoder and memory module are frozen, allowing us to retain the perception and tracking capabilities of SAM-2\", but in your architecture figure, there is a \"fire\" icon of SAM2 decoder, which is supposed to indicate that the module is trainable. I want to clarify that did you freeze the SAM2 decoder during training?\n\nThanks,\nRuining",
+    "body": "Hi Authors,\n\nThanks for your amazing work! I would like to clarify a detail for Sa2VA model training: In you introduction section, there is a statement saying that \"Moreover, we adopt a decoupled design in which SAM-2’s decoder and memory module are frozen, allowing us to retain the perception and tracking capabilities of SAM-2\", but in your architecture figure, there is a \"fire\" icon of SAM2 decoder, which is supposed to indicate that the module is trainable. I want to clarify that did you freeze the SAM2 decoder during training?\n\nThanks,\nRuining",
     "comments_url": "https://api.github.com/repos/magic-research/Sa2VA/issues/38/comments",
     "author": "Ruining0916",
     "comments": [
@@ -73,6 +75,7 @@
     "title": "Sa2VA-4b model performance on image segmentation benchmark",
     "created_at": "2025-02-14T20:35:32Z",
     "closed_at": "2025-02-25T02:28:02Z",
+    "commit_id": "6f59e55da541fad1ffc370419265eab6f511569f",
     "labels": [],
     "url": "https://github.com/magic-research/Sa2VA/issues/23",
     "body": "Hi authors,\n\nThanks to your excellent work! I have a question regarding your performance report with Sa2VA-4b model on refcoco/+/g datasets due to the inconsistency cIou scores from table 2,4,6 which supposed to use the same Sa2VA-4b model and perform the same image segmentation benchmark. More specially,  Sa2VA-4b on refcoco/+/g datasets are **77.4/69.9/72.3** from table 2, **80.4/74.3/76.7** from table 4; and **80.4/74.3/75.7** from table 6. I wonder are these inconsistent scores come from any of the below reasons:\n\n- Does the Sa2VA-4b in table 2 and table4/6 not the same model (the one from table 2 does not involve co-training and the the one from table 4/6 involves co-training)? but from my understanding, they should both be the finalized model?\n- If they are different Sa2VA-4b models, then does co-training image chat/segmentation even improve image segmentation performance?\n- If they are the same Sa2VA-4b model, do it perform different benchmarks for table2 and table 4/6?\n- Are these numbers are just fluctuations from different runs?\n\nThanks a lot for your help and clarification!\n",
@@ -111,6 +114,7 @@
     "title": "[SEG] Hidden State usage",
     "created_at": "2025-02-07T17:01:36Z",
     "closed_at": "2025-02-10T07:08:58Z",
+    "commit_id": "62279033294f1c5b17be011a2d5aaecf2435761c",
     "labels": [],
     "url": "https://github.com/magic-research/Sa2VA/issues/16",
     "body": "Thank you for the great work. As I read the code, if I understand correctly, it seems that If the model predicts the next token is [SEG], it will take the final layer hidden state and feed through an MLP connector and feed it to SAM2 for decoding.\n\nHowever, if the language model predicts [SEG] as the next token, it means the embedding has the highest (or very high if sampling is used) similarity with [SEG] embedding. Doesn't that mean this embedding fed to SAM2 is always very close to [SEG] no matter what the rest of the sentence/context is? How does the model utilize the context with very similar embeddings for segmenting different objects?\n\nPlease let me know if I misunderstood. Thank you!",
@@ -143,6 +147,7 @@
     "title": "SAV dataset inquiry",
     "created_at": "2025-02-05T23:47:42Z",
     "closed_at": "2025-02-06T19:31:17Z",
+    "commit_id": "62279033294f1c5b17be011a2d5aaecf2435761c",
     "labels": [],
     "url": "https://github.com/magic-research/Sa2VA/issues/13",
     "body": "Congrats on your excellent work! I would like to clarify the SAV dataset details:\n\nYou mentioned about sam_v_full should be downloaded from meta/SA-V dataset page, which provides the link of downloading sav_000.tar - sav_055.tar; should we unzip them and put these files under sam_v_full directory as sub directories?\n\nThanks for your clarification!",

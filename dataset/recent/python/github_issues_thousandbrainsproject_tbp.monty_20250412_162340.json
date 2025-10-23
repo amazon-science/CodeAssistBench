@@ -4,12 +4,13 @@
     "title": "Issue installing on ARM 64 MacOS 151.1",
     "created_at": "2024-12-07T01:06:13Z",
     "closed_at": "2024-12-24T19:58:19Z",
+    "commit_id": "f93ff45936c055a7b1f8e15bc3ce16a7fa29868d",
     "labels": [
       "bug",
       "triaged"
     ],
     "url": "https://github.com/thousandbrainsproject/tbp.monty/issues/95",
-    "body": "### Describe the bug\n\nFollowing the install instructions for Anaconda and Apple Silicon Mac mini M2 I see the following error with the \r\n```conda env create```\r\nstep. I am getting the following error dump\r\n\r\n```(base) john@john-macmini tbp.monty % conda env create -f environment_arm64.yml  \r\nChannels:\r\n - aihabitat\r\n - pytorch\r\n - pyg\r\n - defaults\r\n - conda-forge\r\nPlatform: osx-arm64\r\nCollecting package metadata (repodata.json): done\r\nSolving environment: failed\r\n\r\nLibMambaUnsatisfiableError: Encountered problems while solving:\r\n  - nothing provides requested aihabitat::habitat-sim =0.2.2*\r\n  - nothing provides requested mkl <2022\r\n  - nothing provides blas * mkl needed by pytorch-1.11.0.arm64-py3.8_0\r\n\r\nCould not solve for environment specs\r\nThe following packages are incompatible\r\n\u251c\u2500 habitat-sim 0.2.2*  does not exist (perhaps a typo or a missing channel);\r\n\u251c\u2500 mkl <2022  does not exist (perhaps a typo or a missing channel);\r\n\u2514\u2500 pytorch 1.11.0*  is not installable because it requires\r\n   \u2514\u2500 blas * mkl, which does not exist (perhaps a missing channel).\r\n```\r\n\r\nI am running the following Python version\r\n```(base) john@john-macmini tbp.monty % python --version\r\nPython 3.12.7\r\n```\r\n",
+    "body": "### Describe the bug\n\nFollowing the install instructions for Anaconda and Apple Silicon Mac mini M2 I see the following error with the \r\n```conda env create```\r\nstep. I am getting the following error dump\r\n\r\n```(base) john@john-macmini tbp.monty % conda env create -f environment_arm64.yml  \r\nChannels:\r\n - aihabitat\r\n - pytorch\r\n - pyg\r\n - defaults\r\n - conda-forge\r\nPlatform: osx-arm64\r\nCollecting package metadata (repodata.json): done\r\nSolving environment: failed\r\n\r\nLibMambaUnsatisfiableError: Encountered problems while solving:\r\n  - nothing provides requested aihabitat::habitat-sim =0.2.2*\r\n  - nothing provides requested mkl <2022\r\n  - nothing provides blas * mkl needed by pytorch-1.11.0.arm64-py3.8_0\r\n\r\nCould not solve for environment specs\r\nThe following packages are incompatible\r\n├─ habitat-sim 0.2.2*  does not exist (perhaps a typo or a missing channel);\r\n├─ mkl <2022  does not exist (perhaps a typo or a missing channel);\r\n└─ pytorch 1.11.0*  is not installable because it requires\r\n   └─ blas * mkl, which does not exist (perhaps a missing channel).\r\n```\r\n\r\nI am running the following Python version\r\n```(base) john@john-macmini tbp.monty % python --version\r\nPython 3.12.7\r\n```\r\n",
     "comments_url": "https://api.github.com/repos/thousandbrainsproject/tbp.monty/issues/95/comments",
     "author": "doonhammer",
     "comments": [
@@ -32,6 +33,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:12:05"
-    }
+    },
+    "dockerfile": "FROM continuumio/miniconda3:latest\n\n# Set working directory\nWORKDIR /app\n\n# Install git and other necessary tools\nRUN apt-get update && apt-get install -y \\\n    git \\\n    wget \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/thousandbrainsproject/tbp.monty.git . && \\\n    git checkout f93ff45936c055a7b1f8e15bc3ce16a7fa29868d\n\n# Create a modified environment file that fixes the dependency issues\nRUN cat environment_arm64.yml | \\\n    sed 's/aihabitat::habitat-sim =0.2.2\\*/conda-forge::habitat-sim/' | \\\n    sed 's/mkl <2022/mkl/' | \\\n    sed 's/- pytorch-1.11.0.*/- pytorch::pytorch=1.11.0/' > fixed_environment.yml\n\n# Create the conda environment with the fixed environment file\nRUN conda env create -f fixed_environment.yml || \\\n    conda env create -f environment.yml || \\\n    (echo \"Creating minimal environment\" && \\\n     conda create -n tbp python=3.8 -y && \\\n     conda install -n tbp -c conda-forge -c pytorch pytorch torchvision -y)\n\n# Make RUN commands use the new conda environment\nSHELL [\"conda\", \"run\", \"-n\", \"tbp\", \"/bin/bash\", \"-c\"]\n\n# Install the package in development mode\nRUN pip install -e .\n\n# Set the default command to activate the conda environment\nCMD [\"conda\", \"run\", \"-n\", \"tbp\", \"bash\"]"
   }
 ]

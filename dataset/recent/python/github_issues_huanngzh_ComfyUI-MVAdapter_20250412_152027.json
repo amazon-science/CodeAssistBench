@@ -4,6 +4,7 @@
     "title": "Several models were automatically downloaded and all of them were stuffed into the cache space of the C drive",
     "created_at": "2024-12-05T10:39:25Z",
     "closed_at": "2024-12-05T15:24:57Z",
+    "commit_id": "decf0a85d8021cd108d20717679f76c86462650e",
     "labels": [],
     "url": "https://github.com/huanngzh/ComfyUI-MVAdapter/issues/3",
     "body": "C drive is limited, Can the author modify the code to change the model into Comfyui/models?",

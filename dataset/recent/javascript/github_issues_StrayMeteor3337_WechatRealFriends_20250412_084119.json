@@ -1,24 +1,25 @@
 [
   {
     "number": 76,
-    "title": "\u62c9\u9ed1\u5220\u9664",
+    "title": "拉黑删除",
     "created_at": "2025-03-27T11:04:40Z",
     "closed_at": "2025-03-30T10:35:37Z",
+    "commit_id": "757eb4c003deb455d47a95036960160f35f9b72c",
     "labels": [],
     "url": "https://github.com/StrayMeteor3337/WechatRealFriends/issues/76",
-    "body": "\u5982\u679c\u540c\u65f6\u88ab\u62c9\u9ed1\u5220\u9664\u4e86 \u4f1a\u663e\u793a\u5565\u5440",
+    "body": "如果同时被拉黑删除了 会显示啥呀",
     "comments_url": "https://api.github.com/repos/StrayMeteor3337/WechatRealFriends/issues/76/comments",
     "author": "gd123-ui",
     "comments": [
       {
         "user": "lonelywjx",
         "created_at": "2025-03-29T16:29:44Z",
-        "body": "\u6211\u770b\u6765\u5e94\u8be5\u53ea\u80fd\u68c0\u6d4b\u62c9\u9ed1\uff0c\u56e0\u4e3a\u540c\u65f6\u62c9\u9ed1\u5220\u9664\u53ea\u63d0\u793a\u62c9\u9ed1"
+        "body": "我看来应该只能检测拉黑，因为同时拉黑删除只提示拉黑"
       },
       {
         "user": "gd123-ui",
         "created_at": "2025-03-30T03:43:23Z",
-        "body": "\u597d\u7684 \u611f\u8c22\n\n\n\n\u5728 2025-03-30 00:30:07\uff0c\"YeZi\" ***@***.***> \u5199\u9053\uff1a\n\n\u6211\u770b\u6765\u5e94\u8be5\u53ea\u80fd\u68c0\u6d4b\u62c9\u9ed1\uff0c\u56e0\u4e3a\u540c\u65f6\u62c9\u9ed1\u5220\u9664\u53ea\u63d0\u793a\u62c9\u9ed1\n\n\u2014\nReply to this email directly, view it on GitHub, or unsubscribe.\nYou are receiving this because you authored the thread.Message ID: ***@***.***>\n\nlonelywjx left a comment (StrayMeteor3337/WechatRealFriends#76)\n\n\u6211\u770b\u6765\u5e94\u8be5\u53ea\u80fd\u68c0\u6d4b\u62c9\u9ed1\uff0c\u56e0\u4e3a\u540c\u65f6\u62c9\u9ed1\u5220\u9664\u53ea\u63d0\u793a\u62c9\u9ed1\n\n\u2014\nReply to this email directly, view it on GitHub, or unsubscribe.\nYou are receiving this because you authored the thread.Message ID: ***@***.***>"
+        "body": "好的 感谢\n\n\n\n在 2025-03-30 00:30:07，\"YeZi\" ***@***.***> 写道：\n\n我看来应该只能检测拉黑，因为同时拉黑删除只提示拉黑\n\n—\nReply to this email directly, view it on GitHub, or unsubscribe.\nYou are receiving this because you authored the thread.Message ID: ***@***.***>\n\nlonelywjx left a comment (StrayMeteor3337/WechatRealFriends#76)\n\n我看来应该只能检测拉黑，因为同时拉黑删除只提示拉黑\n\n—\nReply to this email directly, view it on GitHub, or unsubscribe.\nYou are receiving this because you authored the thread.Message ID: ***@***.***>"
       }
     ],
     "satisfaction_conditions": [

@@ -4,6 +4,7 @@
     "title": "error compiling sim.c",
     "created_at": "2025-04-02T21:49:57Z",
     "closed_at": "2025-04-03T13:41:01Z",
+    "commit_id": "33e86b34aeb83908940d893f13d3b1590ce311a7",
     "labels": [],
     "url": "https://github.com/AncientJames/multivox/issues/3",
     "body": "Hello James,\nthis is an amazing project you have made here.\nI have issues compiling the code on my raspberry pi 5 unsucessful with the following error:\n/home/rpi5/multivox/src/simulator/sim.c:14:10: fatal error: **GLES3/gl3.h**: No such file or directory.\nI will be grateful for any advice on how to install the open-gl libraries or skip compiling your simulator.",

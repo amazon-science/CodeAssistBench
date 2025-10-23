@@ -4,6 +4,7 @@
     "title": "docs(README.md): fix spelling",
     "created_at": "2025-03-29T18:24:35Z",
     "closed_at": "2025-03-29T18:28:51Z",
+    "commit_id": "cba07f2ef9603d2e27386df4e339c685f5767136",
     "labels": [],
     "url": "https://github.com/EmberEmu/Hexi/pull/11",
     "body": "- accomodate => accommodate\r\n- determing => determining\r\n- read => reads",

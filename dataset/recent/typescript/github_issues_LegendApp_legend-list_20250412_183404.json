@@ -4,6 +4,7 @@
     "title": "version ^1.0.0-beta.17 is causing crash",
     "created_at": "2025-03-13T07:56:35Z",
     "closed_at": "2025-03-13T08:16:19Z",
+    "commit_id": "1ae440722f086c3705c117a002c6eb0f2502b74b",
     "labels": [],
     "url": "https://github.com/LegendApp/legend-list/issues/142",
     "body": "after upgrading to ^1.0.0-beta.17 getting this error :\n\n```\nWarning: ReferenceError: Property 'React' doesn't exist\n\nThis error is located at:\n    in Containers2 (created by ListComponent2)\n    in RCTView (created by View)\n    in View (created by ScrollView)\n    in RCTScrollView\n    in VScrollViewNativeComponent (created by ScrollView)\n    in AndroidSwipeRefreshLayout (created by RefreshControl)\n    in RefreshControl\n    in ScrollView (created by ScrollView)\n    in Wrapper (created by ListComponent2)\n    in ListComponent2\n    in LegendListInner2\n    in StateProvider\n    in LegendList2\n```",
@@ -18,7 +19,7 @@
       {
         "user": "SumitR9910",
         "created_at": "2025-03-13T08:28:32Z",
-        "body": "works fine in beta.19 \ud83d\udc4d\ud83c\udffb\n"
+        "body": "works fine in beta.19 👍🏻\n"
       }
     ],
     "satisfaction_conditions": [
@@ -36,6 +37,7 @@
     "title": "[issue] onViewableItemsChanged not firing with/after new data appended to start",
     "created_at": "2025-02-24T00:05:30Z",
     "closed_at": "2025-03-17T15:13:56Z",
+    "commit_id": "e44d64d42602e8c4ce92079fc3bd07c9ceb435f3",
     "labels": [
       "1.0",
       "done?"
@@ -53,7 +55,7 @@
       {
         "user": "niek-hdas",
         "created_at": "2025-03-17T13:41:16Z",
-        "body": "@jmeistrich it does seem to be working now, great! \ud83c\udf89"
+        "body": "@jmeistrich it does seem to be working now, great! 🎉"
       }
     ],
     "satisfaction_conditions": [
@@ -71,6 +73,7 @@
     "title": "fix unstable_batchedUpdates on web.",
     "created_at": "2024-12-09T23:28:24Z",
     "closed_at": "2024-12-16T22:15:32Z",
+    "commit_id": "41d2375dcfee93381c9f21bb534b0c485d951902",
     "labels": [],
     "url": "https://github.com/LegendApp/legend-list/pull/35",
     "body": "fixes #34",

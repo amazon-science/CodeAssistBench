@@ -4,6 +4,7 @@
     "title": "[WinError 2] The system cannot find the file specified",
     "created_at": "2025-03-08T10:25:11Z",
     "closed_at": "2025-03-25T23:57:18Z",
+    "commit_id": "7d1bf783b1d591aefb09b2dbbdd967e2c732aedb",
     "labels": [
       "bug"
     ],
@@ -47,6 +48,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:06:13"
-    }
+    },
+    "dockerfile": "FROM python:3.12-slim\n\n# Add labels\nLABEL maintainer=\"MCP Agent Team\"\nLABEL description=\"Environment for validating mcp-agent with Node.js MCP servers\"\n\n# Set environment variables\nENV PYTHONUNBUFFERED=1 \\\n    PYTHONDONTWRITEBYTECODE=1 \\\n    PIP_NO_CACHE_DIR=1\n\n# Install system dependencies\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    curl \\\n    git \\\n    gnupg \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Install Node.js and npm\nRUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \\\n    && apt-get install -y --no-install-recommends nodejs \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Install uv (Python package manager)\nRUN pip install uv\n\n# Create app directory\nWORKDIR /app\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/lastmile-ai/mcp-agent.git . \\\n    && git checkout 7d1bf783b1d591aefb09b2dbbdd967e2c732aedb\n\n# Create a virtual environment and install project dependencies with uv\nRUN uv venv && uv pip install -e .\n\n# Install Node.js MCP servers globally\nRUN npm install -g @abhiz123/todoist-mcp-server @modelcontextprotocol/server-brave-search\n\n# Install uvx for the fetch server\nRUN pip install uvicorn mcp-server-fetch\n\n# Create directory for user files\nRUN mkdir -p /app/user_files\n\n# Set working directory for user files\nWORKDIR /app/user_files\n\n# Copy example config file from the cloned repository\nRUN cp /app/examples/mcp_basic_agent/mcp_agent.config.yaml /app/user_files/mcp_agent.config.yaml\n\n# Create a placeholder secrets file (user will need to provide their own)\nRUN echo \"openai:\\n  api_key: your_api_key_here\" > /app/user_files/mcp_agent.secrets.yaml\n\n# Verify Node.js and npm versions\nRUN node --version && npm --version\n\n# Verify Python and uv versions\nRUN python --version && uv --version\n\n# The user will need to mount their code to this directory\nVOLUME [\"/app/user_files\"]"
   }
 ]

@@ -1,24 +1,25 @@
 [
   {
     "number": 58,
-    "title": "./data_processing_pipeline.sh \u4e3a\u4ec0\u4e48CPU\u5360\u7528\u7387\u8fd9\u4e48\u9ad8\uff1f",
+    "title": "./data_processing_pipeline.sh 为什么CPU占用率这么高？",
     "created_at": "2025-01-09T17:59:53Z",
     "closed_at": "2025-01-13T07:50:17Z",
+    "commit_id": "0c3489c87c53fdc03820def9cf9100c0e81e2964",
     "labels": [],
     "url": "https://github.com/bytedance/LatentSync/issues/58",
-    "body": "@chunyu-li \u60a8\u8fd0\u884c\u4ee3\u7801\u662f\u7528\u4ec0\u4e48\u914d\u7f6e? \u6211\u4e24\u5f204090\uff0c\u4f46\u662fCPU100%\u4f7f\u7528\u7387\u3002\r\n\r\n\u51fa\u73b0\u8fd9\u4e2a INFO: Created TensorFlow Lite XNNPACK delegate for CPU. \u662f\u4e0d\u662fTensorFlow \u6ca1\u6709\u5b89\u88c5GPU\u7684\u7248\u672c\uff1f",
+    "body": "@chunyu-li 您运行代码是用什么配置? 我两张4090，但是CPU100%使用率。\r\n\r\n出现这个 INFO: Created TensorFlow Lite XNNPACK delegate for CPU. 是不是TensorFlow 没有安装GPU的版本？",
     "comments_url": "https://api.github.com/repos/bytedance/LatentSync/issues/58/comments",
     "author": "wangaocheng",
     "comments": [
       {
         "user": "chunyu-li",
         "created_at": "2025-01-10T07:39:34Z",
-        "body": "`per_gpu_num_workers` \u90a3\u4e2a\u53c2\u6570\u662f\u6bcf\u5f20\u5361\u7528\u591a\u5c11\u8fdb\u7a0b \uff0c\u5982\u679c\u4f60\u662f\u4e24\u5f20\u5361\u90a3\u5c31\u662f\u603b\u5171 40 \u4e2a\u8fdb\u7a0b\uff0c\u5982\u679c\u4f60\u7684 CPU \u6ca1\u6709 40 \u6838\u4ee5\u4e0a\u5c31\u4f1a\u5360\u7528\u7387\u5f88\u9ad8"
+        "body": "`per_gpu_num_workers` 那个参数是每张卡用多少进程 ，如果你是两张卡那就是总共 40 个进程，如果你的 CPU 没有 40 核以上就会占用率很高"
       },
       {
         "user": "wangaocheng",
         "created_at": "2025-01-10T12:57:35Z",
-        "body": "\u4e86\u89e3\uff0c\u6211\u4eca\u5929\u770b\u4e86\u4e00\u4e0b\u4ee3\u7801\uff0c\u9884\u5904\u7406\u6709\u5f88\u591a\u9879\u76ee\u7528\u4e0d\u5230GPU"
+        "body": "了解，我今天看了一下代码，预处理有很多项目用不到GPU"
       }
     ],
     "satisfaction_conditions": [
@@ -29,6 +30,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:07:24"
-    }
+    },
+    "dockerfile": "FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04\n\n# Set non-interactive mode for apt\nENV DEBIAN_FRONTEND=noninteractive\n\n# Install basic dependencies\nRUN apt-get update && apt-get install -y \\\n    git \\\n    python3 \\\n    python3-pip \\\n    python3-dev \\\n    wget \\\n    ffmpeg \\\n    libsm6 \\\n    libxext6 \\\n    libgl1-mesa-glx \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Create working directory\nWORKDIR /app\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/bytedance/LatentSync.git && \\\n    cd LatentSync && \\\n    git checkout 0c3489c87c53fdc03820def9cf9100c0e81e2964\n\n# Set working directory to the repository\nWORKDIR /app/LatentSync\n\n# Install PyTorch with CUDA support\nRUN pip3 install --no-cache-dir \\\n    torch==2.0.1 \\\n    torchvision==0.15.2 \\\n    torchaudio==2.0.2 \\\n    --extra-index-url https://download.pytorch.org/whl/cu118\n\n# Install TensorFlow with GPU support (using compatible version)\nRUN pip3 install --no-cache-dir tensorflow==2.10.0\n\n# Fix xformers installation issue by modifying requirements.txt\nRUN sed -i 's/xformers==0.0.26/xformers==0.0.20/g' requirements.txt\n\n# Install other dependencies from requirements.txt\nRUN pip3 install --no-cache-dir -r requirements.txt || true\n\n# Install additional dependencies mentioned in the repository\nRUN pip3 install --no-cache-dir \\\n    opencv-python \\\n    matplotlib \\\n    scikit-image \\\n    tensorboard \\\n    gradio \\\n    einops \\\n    transformers \\\n    diffusers==0.18.2 \\\n    accelerate\n\n# Try to install xformers separately\nRUN pip3 install --no-cache-dir xformers==0.0.20\n\n# Make the data_processing_pipeline.sh executable\nRUN chmod +x data_processing_pipeline.sh\n\n# Set environment variables for GPU usage\nENV CUDA_VISIBLE_DEVICES=0,1\nENV TF_FORCE_GPU_ALLOW_GROWTH=true\nENV XLA_FLAGS=\"--xla_gpu_cuda_data_dir=/usr/local/cuda\"\nENV TF_ENABLE_ONEDNN_OPTS=0\nENV TF_GPU_THREAD_MODE=gpu_private\n\n# Set the default command to a shell to allow user interaction\nCMD [\"/bin/bash\"]"
   }
 ]

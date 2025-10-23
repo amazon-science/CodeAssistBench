@@ -4,6 +4,7 @@
     "title": "question: why observability/prom-adapter.yaml only handles vllm_num_requests_waiting metric",
     "created_at": "2025-04-01T16:29:08Z",
     "closed_at": "2025-04-03T01:45:53Z",
+    "commit_id": "1a36a9be9ba6d3d4fa1d9c908241f7e28142aad7",
     "labels": [],
     "url": "https://github.com/vllm-project/production-stack/issues/341",
     "body": "In the observability/prom-adapter.yaml configuration, why does the rule only match the metric vllm_num_requests_waiting\n\nCurrent\n\n```\nrules:\n  custom:\n    - seriesQuery: '{__name__=~\"^vllm:num_requests_waiting$\"}'  # Only matches vllm metric\n```\n\nHow to determine additional metrics (e.g., gpu_prefix_cache_hit_rate)",

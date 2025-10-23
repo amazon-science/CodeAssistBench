@@ -4,6 +4,7 @@
     "title": "Issue installing packages on a Mac",
     "created_at": "2024-12-04T17:13:20Z",
     "closed_at": "2024-12-04T18:16:58Z",
+    "commit_id": "7ce42e0a76f13ac8b3fe85f44c140cebc76488b1",
     "labels": [],
     "url": "https://github.com/michaellatman/mcp-get/issues/21",
     "body": "Hello,\r\n\r\nI'm getting the following error when I try to install a package on a Mac.  Any thoughts?:\r\n\r\nRestarting Claude desktop app...\r\nFailed to restart Claude desktop app: Error: Command failed: killall \"Claude\" && open -a \"Claude\"\r\n_LSOpenURLsWithCompletionHandler() failed for the application /Applications/Claude.app with error -600.\r\n\r\n    at genericNodeError (node:internal/errors:983:15)\r\n    at wrappedFn (node:internal/errors:537:14)\r\n    at ChildProcess.exithandler (node:child_process:421:12)\r\n    at ChildProcess.emit (node:events:519:28)\r\n    at maybeClose (node:internal/child_process:1104:16)\r\n    at ChildProcess._handle.onexit (node:internal/child_process:304:5) {\r\n  code: 1,\r\n  killed: false,\r\n  signal: null,\r\n  cmd: 'killall \"Claude\" && open -a \"Claude\"',\r\n  stdout: '',\r\n  stderr: '_LSOpenURLsWithCompletionHandler() failed for the application /Applications/Claude.app with error -600.\\n'\r\n}\r\n\r\nMac OS: 15.1.1 (24B91)",

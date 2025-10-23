@@ -4,6 +4,7 @@
     "title": "[Bug]: Module not found: Can't resolve 'crypto'",
     "created_at": "2025-03-16T01:18:42Z",
     "closed_at": "2025-03-20T05:35:01Z",
+    "commit_id": "b7d15971e563b5b4ebccffc35bee9666aa4c926e",
     "labels": [
       "question"
     ],

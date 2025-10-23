@@ -4,6 +4,7 @@
     "title": "Please Update README.md to mention new TOOLs",
     "created_at": "2025-03-11T07:20:50Z",
     "closed_at": "2025-03-11T17:18:23Z",
+    "commit_id": "e0c91608a1c3090e36bb152f101c47be76265bb2",
     "labels": [],
     "url": "https://github.com/GLips/Figma-Context-MCP/issues/27",
     "body": "There are new tools that MCP server is showing - `get_figma_data` , `download_figma_images` .\n\nThe TOOLs that README.md is showing - `get_node` and `get_file`.\n\nIf new TOOLs are different from the older ones then please write about it, for the contextual awareness.",
@@ -18,7 +19,7 @@
       {
         "user": "sujayxaradhya",
         "created_at": "2025-03-11T19:10:39Z",
-        "body": "> Whoops. Thought I updated that previously. In fact I had meant to remove that section from the README entirely as I didn't think it's super useful, but if you found it interesting I'll keep it.\n> \n> Just updated!\n\nThanks alot \ud83d\ude4f \nThis would really help everyone \ud83d\udcaf"
+        "body": "> Whoops. Thought I updated that previously. In fact I had meant to remove that section from the README entirely as I didn't think it's super useful, but if you found it interesting I'll keep it.\n> \n> Just updated!\n\nThanks alot 🙏 \nThis would really help everyone 💯"
       }
     ],
     "satisfaction_conditions": [

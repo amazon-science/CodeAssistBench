@@ -1,24 +1,25 @@
 [
   {
     "number": 32,
-    "title": "steam\u4e0e\u7ed1\u5b9a\u7684bot\u5f3a\u5173\u8054",
+    "title": "steam与绑定的bot强关联",
     "created_at": "2024-12-24T09:42:44Z",
     "closed_at": "2024-12-24T13:33:30Z",
+    "commit_id": "f018be25be2b35b50f4c4c5a326ced519e905744",
     "labels": [],
     "url": "https://github.com/XasYer/steam-plugin/issues/32",
-    "body": "\u5927\u4f6c\uff0c\u76ee\u524d\u53d1\u73b0\u4e00\u4e2a\u95ee\u9898\uff0c\u5982\u679c\u662f\u57281\u53f7QQ\u7ed1\u5b9a\u7684steam\uff0c\u56e0\u4e3a\u67d0\u4e9b\u4e0d\u53ef\u6297\u6027\u7684\u539f\u56e01\u53f7QQ\u5c01\u53f7\u4e86\uff0cyunzai\u66f4\u6539\u53e6\u5916\u4e00\u4e2aQQ\u767b\u5f55\u7684\u65f6\u5019\uff0csteam\u4e0d\u4f1a\u518d\u8fdb\u884c\u64ad\u62a5\uff0c\u67e5\u4e86\u4e00\u4e0b\u63d2\u4ef6\u4e0b\u7684data\u76ee\u5f55\u91cc\u7684db\u6587\u4ef6\uff0c\u53d1\u73b0\u7ed1\u5b9a\u4fe1\u606f\u4f3c\u4e4e\u548cBOT\u7684qq\u53f7\u7ed1\u5b9a\uff0c\u4ece\u800c\u5bfc\u81f4\u65b0\u7684QQ\u6ca1\u529e\u6cd5\u63a8\u9001\u72b6\u6001",
+    "body": "大佬，目前发现一个问题，如果是在1号QQ绑定的steam，因为某些不可抗性的原因1号QQ封号了，yunzai更改另外一个QQ登录的时候，steam不会再进行播报，查了一下插件下的data目录里的db文件，发现绑定信息似乎和BOT的qq号绑定，从而导致新的QQ没办法推送状态",
     "comments_url": "https://api.github.com/repos/XasYer/steam-plugin/issues/32/comments",
     "author": "chz091",
     "comments": [
       {
         "user": "XasYer",
         "created_at": "2024-12-24T10:05:43Z",
-        "body": "\u5982\u679c\u662fTRSS, \u66f4\u65b0\u540e\u53d1`#steam\u8bbe\u7f6e\u968f\u673aBot\u5f00\u542f`, \u5982\u679c\u65b0Bot\u548c\u65e7Bot\u5728\u540c\u4e00\u4e2a\u7fa4\u5219\u4f1a\u7ee7\u7eed\u63a8\u9001, \u5982\u679c\u662fMiao\u81ea\u884c\u89e3\u51b3"
+        "body": "如果是TRSS, 更新后发`#steam设置随机Bot开启`, 如果新Bot和旧Bot在同一个群则会继续推送, 如果是Miao自行解决"
       },
       {
         "user": "chz091",
         "created_at": "2024-12-24T13:27:20Z",
-        "body": "> \u5982\u679c\u662fTRSS, \u66f4\u65b0\u540e\u53d1`#steam\u8bbe\u7f6e\u968f\u673aBot\u5f00\u542f`, \u5982\u679c\u65b0Bot\u548c\u65e7Bot\u5728\u540c\u4e00\u4e2a\u7fa4\u5219\u4f1a\u7ee7\u7eed\u63a8\u9001, \u5982\u679c\u662fMiao\u81ea\u884c\u89e3\u51b3\r\n\r\n\u611f\u8c22\u4f6c"
+        "body": "> 如果是TRSS, 更新后发`#steam设置随机Bot开启`, 如果新Bot和旧Bot在同一个群则会继续推送, 如果是Miao自行解决\r\n\r\n感谢佬"
       }
     ],
     "satisfaction_conditions": [

@@ -4,6 +4,7 @@
     "title": "A few questions about stage2 2B model training",
     "created_at": "2025-03-04T03:51:10Z",
     "closed_at": "2025-03-18T10:56:12Z",
+    "commit_id": "a2e8a67da8ccc978ddbdbc10cff3e52c3fc5b083",
     "labels": [],
     "url": "https://github.com/FoundationVision/FlashVideo/issues/18",
     "body": "Hello, I would like to ask a few questions about stage2 2B model training:\n\n1. What is the sampling interval during training? That is, what the `num_noise_interval` parameter setting in the code?\n2. How to set some parameters during training, such as the `learning rate scheduler` and `cfg scale`?\n3. Are the sampler and denoiser in the code useful? As far as I understand, if flow matching is used for training, these two modules should not be used?\n4. In the code, when solving the integral, inference uses `rk4` instead of `euler`. Do these two have a big impact on the result video?\n5. In the pre-training 1 and 2 stages, is the `add noise range` for training images and training videos 600-900? Because I saw that the noise range for images and videos in the code uses two different parameters `img_ref_noise_step_range` and `ref_noise_step_range`, so I want to confirm.",
@@ -33,12 +34,12 @@
       {
         "user": "jshilong",
         "created_at": "2025-03-05T12:10:25Z",
-        "body": "1. As discussed in the paper, higher frame counts and larger resolutions require greater noise strength. However, directly calculating the optimal value is challenging. Therefore, we use a wide range of noise strengths during the initial training phase to search for the optimal setting.\n\n2. We do not utilize `logit_norm` in SD3 because, in our setting\u2014where the starting point is a low-resolution video\u2014the most challenging $t$ interval may differ from starting with pure noise. When starting from pure noise(SD3), the most challenging part is typically in the middle of the $t$ interval. However, in our setting, where we start with a low-resolution video, I believe the most challenging part should be near $t = 0$. While I have not conducted specific ablation studies to confirm this, I consider this assumption to be reasonable. So I only apply a $t$ shift, setting it to 3 during training."
+        "body": "1. As discussed in the paper, higher frame counts and larger resolutions require greater noise strength. However, directly calculating the optimal value is challenging. Therefore, we use a wide range of noise strengths during the initial training phase to search for the optimal setting.\n\n2. We do not utilize `logit_norm` in SD3 because, in our setting—where the starting point is a low-resolution video—the most challenging $t$ interval may differ from starting with pure noise. When starting from pure noise(SD3), the most challenging part is typically in the middle of the $t$ interval. However, in our setting, where we start with a low-resolution video, I believe the most challenging part should be near $t = 0$. While I have not conducted specific ablation studies to confirm this, I consider this assumption to be reasonable. So I only apply a $t$ shift, setting it to 3 during training."
       },
       {
         "user": "frozoul",
         "created_at": "2025-03-05T13:26:00Z",
-        "body": "Thanks very much for your reply\uff01"
+        "body": "Thanks very much for your reply！"
       }
     ],
     "satisfaction_conditions": [
@@ -59,6 +60,7 @@
     "title": "missing sat.model",
     "created_at": "2025-02-11T05:19:28Z",
     "closed_at": "2025-02-11T07:47:57Z",
+    "commit_id": "bb93f9d7b537482c4da91c2534ba6dd3fb44ae87",
     "labels": [
       "help wanted"
     ],

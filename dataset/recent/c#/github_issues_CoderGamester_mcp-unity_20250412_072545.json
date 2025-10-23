@@ -4,6 +4,7 @@
     "title": "Some tools return error messages in Claude Desktop",
     "created_at": "2025-04-03T16:18:59Z",
     "closed_at": "2025-04-04T15:15:10Z",
+    "commit_id": "6e6bd61195efcc568cdf0f6b584381b5c3ec68a8",
     "labels": [
       "bug"
     ],
@@ -44,6 +45,7 @@
     "title": "README Suggestion: Unity *needs to be* in focus or tools may time out",
     "created_at": "2025-04-01T18:17:03Z",
     "closed_at": "2025-04-02T23:35:18Z",
+    "commit_id": "3acfb232f564ae2ef10282469c22359be035961d",
     "labels": [
       "bug"
     ],
@@ -55,12 +57,12 @@
       {
         "user": "alexander-andrianov",
         "created_at": "2025-04-02T08:24:54Z",
-        "body": "+1, can confirm this behavior too. Based on how Unity handles thread prioritization, it\u2019s likely some intentional optimization to throttle background processes (at least on Apple Silicon)\n@dsarno did you test it on windows / intel?"
+        "body": "+1, can confirm this behavior too. Based on how Unity handles thread prioritization, it’s likely some intentional optimization to throttle background processes (at least on Apple Silicon)\n@dsarno did you test it on windows / intel?"
       },
       {
         "user": "dsarno",
         "created_at": "2025-04-02T13:36:04Z",
-        "body": "Alexander I didn\u2019t test on PC but would definitely be interested if it made\r\na difference.\r\n"
+        "body": "Alexander I didn’t test on PC but would definitely be interested if it made\r\na difference.\r\n"
       },
       {
         "user": "CoderGamester",
@@ -88,6 +90,7 @@
     "title": "Missing ConsoleWindowUtility on Unity 2022.3",
     "created_at": "2025-03-20T09:48:31Z",
     "closed_at": "2025-03-24T06:53:20Z",
+    "commit_id": "7d2a2dab10bf34ea671ef569842924d3ed842a39",
     "labels": [
       "bug"
     ],

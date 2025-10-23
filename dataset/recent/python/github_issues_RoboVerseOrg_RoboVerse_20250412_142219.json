@@ -4,6 +4,7 @@
     "title": "How to add static objects?",
     "created_at": "2025-04-08T00:51:22Z",
     "closed_at": "2025-04-08T05:59:15Z",
+    "commit_id": "ae0875d4af06360129588a693aba7cc4feb7d058",
     "labels": [],
     "url": "https://github.com/RoboVerseOrg/RoboVerse/issues/39",
     "body": "How to add an object with fixed pose, but still participate in collision checking?",

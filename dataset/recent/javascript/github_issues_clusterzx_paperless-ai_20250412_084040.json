@@ -4,6 +4,7 @@
     "title": "Dark theme is not very readable in some places",
     "created_at": "2025-02-12T14:07:50Z",
     "closed_at": "2025-02-14T17:49:42Z",
+    "commit_id": "e83a591acd0c9d2b8240fa8efa42069dec119543",
     "labels": [],
     "url": "https://github.com/clusterzx/paperless-ai/issues/330",
     "body": "**Describe the bug**\nThe dark theme seems to be forgotten in some places\n\n**To Reproduce**\nSteps to reproduce the behavior:\n1. Switch to dark theme\n2. browse the page\n\nI believe it does not need any additional information.\n\nOtherwise thank you for the nice tool! <3",
@@ -33,7 +34,7 @@
       {
         "user": "clusterzx",
         "created_at": "2025-02-12T20:56:54Z",
-        "body": "> Task runner status and black text in the settings are the two things, that draw my attention in the first place.\n> \n> Also I just realised, that the theme trigger (that button in the top right corner) on the \"Manual\" page is not working.\n> \n> I also found some \"minor\" stuff (I would not have created a ticket for that).\n> \n> * would be awesome if the box with the text \"The application is already configured. You can update the configuration below.\" was also darker in dark mode.\n> * the background of the pie chart in \"Document Type Distribution\"\n> * paperless itself has a dark mode for its pdf preview tiles. is it somehow possible to use that in the Playground in paperless-ai in dark mode? (that is probably more of a feature request)\n\nThanks for the specific information. Funny how I never realized that the switch on the manual page is not working. \ud83d\ude06 "
+        "body": "> Task runner status and black text in the settings are the two things, that draw my attention in the first place.\n> \n> Also I just realised, that the theme trigger (that button in the top right corner) on the \"Manual\" page is not working.\n> \n> I also found some \"minor\" stuff (I would not have created a ticket for that).\n> \n> * would be awesome if the box with the text \"The application is already configured. You can update the configuration below.\" was also darker in dark mode.\n> * the background of the pie chart in \"Document Type Distribution\"\n> * paperless itself has a dark mode for its pdf preview tiles. is it somehow possible to use that in the Playground in paperless-ai in dark mode? (that is probably more of a feature request)\n\nThanks for the specific information. Funny how I never realized that the switch on the manual page is not working. 😆 "
       },
       {
         "user": "woozar",
@@ -63,6 +64,7 @@
     "title": "OpenAI API Key is not valid. Please check the key.",
     "created_at": "2025-02-10T20:59:29Z",
     "closed_at": "2025-02-10T22:01:15Z",
+    "commit_id": "86c531da4d9c16e178afaaea898c3d6c9462716e",
     "labels": [],
     "url": "https://github.com/clusterzx/paperless-ai/issues/316",
     "body": "Hey Clusterzx,\n I'm just about to set up paperless-ai, now it only fails because of the OpenAI key \"OpenAI API Key is not valid. Please check the key.\" The key is 100% correct... Do you have any idea what else I'm doing wrong?",
@@ -95,6 +97,7 @@
     "title": "Rescan after Prompt Description change.",
     "created_at": "2025-02-09T17:00:39Z",
     "closed_at": "2025-02-09T19:39:54Z",
+    "commit_id": "964c1bceefaf54502b606944b0dcdf5b4735eb15",
     "labels": [],
     "url": "https://github.com/clusterzx/paperless-ai/issues/309",
     "body": "Hi,\n\nThanks for this great tool.\n\nI have one question regarding understanding.\n\nToday I set up paperless-ai and successfully scanned over 400 documents. Tags and types are working fine, and all documents have an \"ai-processed\" tag.\n\nNow I decided to change many settings in the \"Prompt Description\" to optimize the output. I thought I could simply rescan everything and that the optimized prompts would be applied to all documents, but it's not working.\n\nHow can I rescan all documents with the new Prompt Description?\n\nThanks a lot.\n",
@@ -109,7 +112,7 @@
       {
         "user": "kolossboss",
         "created_at": "2025-02-09T19:22:58Z",
-        "body": "Thx a lot.\n\nWorks great\ud83d\udc4d"
+        "body": "Thx a lot.\n\nWorks great👍"
       }
     ],
     "satisfaction_conditions": [
@@ -127,6 +130,7 @@
     "title": "Failed to get own user ID.  Abort scanning.",
     "created_at": "2025-02-07T19:10:11Z",
     "closed_at": "2025-02-07T19:21:06Z",
+    "commit_id": "35c0f7fed119c39adaf3b09e4eb39b07593fe985",
     "labels": [],
     "url": "https://github.com/clusterzx/paperless-ai/issues/297",
     "body": "\nI am setting up Paperless-AI for the first time, and after configuration I get \"Failed to get own user ID.  Abort scanning.\"\n\nWhat does that mean and how do I fix it?\n",
@@ -174,6 +178,7 @@
     "title": "Chat feature not working with Custom AI agents",
     "created_at": "2025-01-20T18:51:42Z",
     "closed_at": "2025-01-20T19:30:20Z",
+    "commit_id": "808d3a373a7b889be959fc29c2f14368c80eb051",
     "labels": [
       "bug"
     ],
@@ -200,7 +205,7 @@
       {
         "user": "clusterzx",
         "created_at": "2025-01-20T20:04:05Z",
-        "body": "You are very welcome \ud83d\udc4d "
+        "body": "You are very welcome 👍 "
       }
     ],
     "satisfaction_conditions": [
@@ -218,6 +223,7 @@
     "title": "Login failing",
     "created_at": "2025-01-14T21:10:53Z",
     "closed_at": "2025-01-14T21:41:57Z",
+    "commit_id": "89a4ca1b7e216d422ba1903fd14b0f6799996e43",
     "labels": [],
     "url": "https://github.com/clusterzx/paperless-ai/issues/156",
     "body": "**Describe the bug**\r\nAfter finalizing the setup I am not able to log back into the dashboard.\r\n\r\n**To Reproduce**\r\n- finalize setup with user name and password\r\n- save settings\r\n- once restarted, log in through the UI\r\n\r\nlog shows:\r\nLogin attempt for user: PaperlessAI\r\nPassword validation result: false\r\n\r\nI have tried removing the .env (and config) files.\r\nremoved the whole container\r\n\r\nPlease let me know if there is more information I can provide.\r\n",
@@ -237,7 +243,7 @@
       {
         "user": "clusterzx",
         "created_at": "2025-01-14T21:45:47Z",
-        "body": "Maybe you entered only some false login credentials thinking of a different password or capslock. I don't know \ud83d\ude05\n\nBut there is no bug currently known, the login page is present since some versions now. If there was then there would be more people with the same issue. \n\nSo who knows what it was, luckily it works now! Have a great day \u2764\ufe0f"
+        "body": "Maybe you entered only some false login credentials thinking of a different password or capslock. I don't know 😅\n\nBut there is no bug currently known, the login page is present since some versions now. If there was then there would be more people with the same issue. \n\nSo who knows what it was, luckily it works now! Have a great day ❤️"
       }
     ],
     "satisfaction_conditions": [

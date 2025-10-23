@@ -4,6 +4,7 @@
     "title": "replacing github.com's \"hub\" by \"injest\" does not work",
     "created_at": "2024-12-24T14:16:14Z",
     "closed_at": "2024-12-24T17:05:10Z",
+    "commit_id": "dafe508fb846f40029a166fa9c7b02e2f74345ab",
     "labels": [],
     "url": "https://github.com/cyclotruc/gitingest/issues/51",
     "body": "All my browsers said \"Cann't find the Server\". ",

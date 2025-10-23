@@ -4,9 +4,10 @@
     "title": "How can use my own local model when my when local environment cannot connect to the Internet.",
     "created_at": "2025-03-19T06:24:45Z",
     "closed_at": "2025-03-24T08:28:38Z",
+    "commit_id": "0ed6fa19fdb49f32b75e6bf04cbe31c0c46e15cd",
     "labels": [],
     "url": "https://github.com/zilliztech/deep-searcher/issues/158",
-    "body": "This is really an excellent project\uff01Thank you for your contributions\uff01 I would like to ask if it's possible to download the model from Hugging Face to use locally instead of accessing it through the API?",
+    "body": "This is really an excellent project！Thank you for your contributions！ I would like to ask if it's possible to download the model from Hugging Face to use locally instead of accessing it through the API?",
     "comments_url": "https://api.github.com/repos/zilliztech/deep-searcher/issues/158/comments",
     "author": "CALVINhzy1",
     "comments": [

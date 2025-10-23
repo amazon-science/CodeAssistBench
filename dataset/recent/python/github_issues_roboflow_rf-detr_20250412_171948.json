@@ -4,6 +4,7 @@
     "title": "No Wandb logging",
     "created_at": "2025-04-03T16:25:54Z",
     "closed_at": "2025-04-03T17:26:36Z",
+    "commit_id": "5e2979d55e2aab0da80bd8a8ca8cf09c6f4ab909",
     "labels": [
       "bug"
     ],
@@ -36,6 +37,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:09:01"
-    }
+    },
+    "dockerfile": "FROM python:3.9-slim\n\n# Set environment variables\nENV PYTHONDONTWRITEBYTECODE=1\nENV PYTHONUNBUFFERED=1\n\n# Install system dependencies\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    git \\\n    build-essential \\\n    ffmpeg \\\n    libsm6 \\\n    libxext6 \\\n    cmake \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Create working directory\nWORKDIR /app\n\n# Clone repository and checkout specific commit\nRUN git clone https://github.com/roboflow/rf-detr.git . \\\n    && git checkout 5e2979d55e2aab0da80bd8a8ca8cf09c6f4ab909\n\n# Upgrade pip first\nRUN pip install --no-cache-dir --upgrade pip\n\n# Install torch separately to ensure compatibility\nRUN pip install --no-cache-dir torch torchvision\n\n# Install project with metrics dependencies\nRUN pip install --no-cache-dir -e \".[metrics]\"\n\n# Install wandb explicitly to ensure correct version\nRUN pip install --no-cache-dir wandb==0.19.9\n\n# Set the working directory to the project root\nWORKDIR /app\n\n# The container is now ready for the user to run their code\nCMD [\"bash\"]"
   }
 ]

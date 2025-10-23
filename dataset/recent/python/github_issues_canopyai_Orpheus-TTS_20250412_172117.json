@@ -4,6 +4,7 @@
     "title": "Using repo with transformers fix - Model adds words to my text at the end, is there a way to prevent this?",
     "created_at": "2025-04-11T13:56:46Z",
     "closed_at": "2025-04-11T14:18:37Z",
+    "commit_id": "81b2f4af5a8429a957508e05fc6a79baa3fe449f",
     "labels": [],
     "url": "https://github.com/canopyai/Orpheus-TTS/issues/137",
     "body": "I'm using the repo suggested in one of the issues with vllm_c, because on windows vllm does not work.\n\nThis means the version may be a bit outdated to the current one, but I wanted to ask if this happens to others, the model adds some words or phrases I don't have in my text, is there a way to prevent this?",
@@ -35,6 +36,7 @@
     "title": "About training multilingual models",
     "created_at": "2025-04-10T08:30:17Z",
     "closed_at": "2025-04-11T02:31:34Z",
+    "commit_id": "45c6a1f0b173458ee18ef280ed4d863c07ee3fef",
     "labels": [],
     "url": "https://github.com/canopyai/Orpheus-TTS/issues/132",
     "body": "Hi , thanks for your repo! I want to ask some details about training multilingual models. \n1. In your training  stage , did you still follow the rule, the ratio of text batch :speech batch  start with 1:1 and gradually decrease to 0:1 for TTS?   As we all know, for TTS datasets, text and speech should always be one-to-one corresponding, that is, 1:1, 0:1 means there is only speech. Why is the 0:1 situation feasible?\n\n2. In finetuning stage, how did you ensure that so many tags are supported while using only 300 cases ?\n\n3. If I finetune the pre-trained model you released using more of the same language data instead of training from scratch, and then fine-tune the above model using the single speaker data, will I get a better single speaker model?",
@@ -49,7 +51,7 @@
       {
         "user": "shanhaidexiamo",
         "created_at": "2025-04-11T02:31:25Z",
-        "body": "Thank you very much for answering my question \uff01"
+        "body": "Thank you very much for answering my question ！"
       }
     ],
     "satisfaction_conditions": [
@@ -68,6 +70,7 @@
     "title": "Pre-train Data Structure",
     "created_at": "2025-03-21T17:10:40Z",
     "closed_at": "2025-03-23T02:36:39Z",
+    "commit_id": "cf909a24296f8273a87c6322947e92bc3aff97c8",
     "labels": [],
     "url": "https://github.com/canopyai/Orpheus-TTS/issues/37",
     "body": "Thank you for sharing great work, I want to know about pre-train data format and it meaning given config file\n\n```\n> `\n> # Datasets\n> text_QA_dataset: <speech input-ids>\n> TTS_dataset: <text-input-ids>\n```\nBasically i want to know how can i prepare `text_QA_dataset` and `TTS_dataset` and it's format structure. i am waiting for your response and great-full to you.  \n\nWhat is the different between `text_QA_dataset` and `TTS_dataset`.",
@@ -97,7 +100,7 @@
       {
         "user": "saifulislam79",
         "created_at": "2025-03-21T22:19:18Z",
-        "body": "**This is the last clarification**\nExample with Token IDs (simplified illustration)\nAssume the tokenizer produces the following (again, just for illustration):\n**input sentence 1** : What is 2 + 2? ----> audio1.mp3\n\n **Answer other sentence** : Great question, 2 + 2 = 4. --->  audio2.mp3\n\n\n```\n\"start of human\" \u2192 [101]\n\"start of text\" \u2192 [102]\n\"What is 2 + 2?\" \u2192 [2001, 2002, 2003, 2004, 2005]\n\"end of text\" \u2192 [103]\n\"end of human\" \u2192 [104]\n\"start of ai\" \u2192 [105]\n\"start of text\" \u2192 [102]\n\"Great question, 2 + 2 = 4.\" \u2192 [3001, 3002, 3003, 3004, 3005, 3006]\n\"end of text\" \u2192 [103]\n\"end of ai\" \u2192 [106]\n```\n\n\nChained together example of question and answer:\n\n`[101, 102, 2001, 2002, 2003, 2004, 2005, 103, 104, 105, 102, 3001, 3002, 3003, 3004, 3005, 3006, 103, 106]`\n\nif i have 1M text sentences and it's corresponding audio codes,  what will be `<speech input-ids>` and `<text-input-ids>`. Could you please give a example ."
+        "body": "**This is the last clarification**\nExample with Token IDs (simplified illustration)\nAssume the tokenizer produces the following (again, just for illustration):\n**input sentence 1** : What is 2 + 2? ----> audio1.mp3\n\n **Answer other sentence** : Great question, 2 + 2 = 4. --->  audio2.mp3\n\n\n```\n\"start of human\" → [101]\n\"start of text\" → [102]\n\"What is 2 + 2?\" → [2001, 2002, 2003, 2004, 2005]\n\"end of text\" → [103]\n\"end of human\" → [104]\n\"start of ai\" → [105]\n\"start of text\" → [102]\n\"Great question, 2 + 2 = 4.\" → [3001, 3002, 3003, 3004, 3005, 3006]\n\"end of text\" → [103]\n\"end of ai\" → [106]\n```\n\n\nChained together example of question and answer:\n\n`[101, 102, 2001, 2002, 2003, 2004, 2005, 103, 104, 105, 102, 3001, 3002, 3003, 3004, 3005, 3006, 103, 106]`\n\nif i have 1M text sentences and it's corresponding audio codes,  what will be `<speech input-ids>` and `<text-input-ids>`. Could you please give a example ."
       },
       {
         "user": "saiful9379",

@@ -1,34 +1,35 @@
 [
   {
     "number": 6,
-    "title": "\u5982\u4f55\u4fee\u6539\u5bb9\u566880\u7aef\u53e3",
+    "title": "如何修改容器80端口",
     "created_at": "2025-03-13T15:23:17Z",
     "closed_at": "2025-03-13T15:57:02Z",
+    "commit_id": "49855b7b7cde8d8b330f64d1b5964b0c88092022",
     "labels": [],
     "url": "https://github.com/levywang/avhub/issues/6",
-    "body": "80\uff0c81\u88abNPM\u5360\u7528",
+    "body": "80，81被NPM占用",
     "comments_url": "https://api.github.com/repos/levywang/avhub/issues/6/comments",
     "author": "Hansen1018",
     "comments": [
       {
         "user": "levywang",
         "created_at": "2025-03-13T15:56:52Z",
-        "body": "\u4e3e\u4f8b\n```bash\ndocker run -d -p 8080:80 -v $PWD:/app --name avhub levywang/avhub:latest \n``` \n"
+        "body": "举例\n```bash\ndocker run -d -p 8080:80 -v $PWD:/app --name avhub levywang/avhub:latest \n``` \n"
       },
       {
         "user": "Hansen1018",
         "created_at": "2025-03-13T16:04:04Z",
-        "body": "> \u4e3e\u4f8b\n> \n> docker run -d -p 8080:80 -v $PWD:/app --name avhub levywang/avhub:latest\n\n\u662fdocker\u5185\u90e8\u7aef\u53e3"
+        "body": "> 举例\n> \n> docker run -d -p 8080:80 -v $PWD:/app --name avhub levywang/avhub:latest\n\n是docker内部端口"
       },
       {
         "user": "levywang",
         "created_at": "2025-03-14T01:23:42Z",
-        "body": "\u4f60\u8fd9\u4e2a\u9700\u6c42\u592a\u5c0f\u4f17\uff0c\u9700\u8981\u624b\u52a8\u6784\u5efa\u4e00\u4e2a\u81ea\u5df1\u7684\u955c\u50cf\uff1a\n\u514b\u9686\u4ed3\u5e93\u540e\uff0c\u4fee\u6539`nginx.example.conf`\u4e2d\u7684\u7aef\u53e3\u4e3a\u4f60\u81ea\u5df1\u60f3\u8981\u7684\u7aef\u53e3\n\u518d\u4fee\u6539`Dockerfile`\u4e2d\u7684`EXPOSE 80`\u7aef\u53e3\uff0c\u4e0e\u4e0a\u9762\u7684\u4fdd\u6301\u4e00\u81f4\n\u6700\u540e\u624b\u52a8\u6784\u5efa\n```bash\ndocker build -t <your_image_name> .\ndocker run ... <your_image_name>\n```\n"
+        "body": "你这个需求太小众，需要手动构建一个自己的镜像：\n克隆仓库后，修改`nginx.example.conf`中的端口为你自己想要的端口\n再修改`Dockerfile`中的`EXPOSE 80`端口，与上面的保持一致\n最后手动构建\n```bash\ndocker build -t <your_image_name> .\ndocker run ... <your_image_name>\n```\n"
       },
       {
         "user": "Hansen1018",
         "created_at": "2025-03-14T02:51:08Z",
-        "body": "> \u4f60\u8fd9\u4e2a\u9700\u6c42\u592a\u5c0f\u4f17\uff0c\u9700\u8981\u624b\u52a8\u6784\u5efa\u4e00\u4e2a\u81ea\u5df1\u7684\u955c\u50cf\uff1a \u514b\u9686\u4ed3\u5e93\u540e\uff0c\u4fee\u6539`nginx.example.conf`\u4e2d\u7684\u7aef\u53e3\u4e3a\u4f60\u81ea\u5df1\u60f3\u8981\u7684\u7aef\u53e3 \u518d\u4fee\u6539`Dockerfile`\u4e2d\u7684`EXPOSE 80`\u7aef\u53e3\uff0c\u4e0e\u4e0a\u9762\u7684\u4fdd\u6301\u4e00\u81f4 \u6700\u540e\u624b\u52a8\u6784\u5efa\n> \n> docker build -t <your_image_name> .\n> docker run ... <your_image_name>\n\n\u597d\u7684\uff0c\u611f\u8c22"
+        "body": "> 你这个需求太小众，需要手动构建一个自己的镜像： 克隆仓库后，修改`nginx.example.conf`中的端口为你自己想要的端口 再修改`Dockerfile`中的`EXPOSE 80`端口，与上面的保持一致 最后手动构建\n> \n> docker build -t <your_image_name> .\n> docker run ... <your_image_name>\n\n好的，感谢"
       }
     ],
     "satisfaction_conditions": [

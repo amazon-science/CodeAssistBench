@@ -4,6 +4,7 @@
     "title": "Unable to install zipfs extension. Getting \"Failed to download extension zipfs \" : Duckdb version 1.1.0",
     "created_at": "2025-02-04T07:04:47Z",
     "closed_at": "2025-02-04T13:31:03Z",
+    "commit_id": "1998be89bf7f2a464161121661f016e0c8fe1302",
     "labels": [],
     "url": "https://github.com/isaacbrodsky/duckdb-zipfs/issues/8",
     "body": "Hi, I am unable to execute the following zipfs install command on Duckdb 1.1.0\n```sql\nINSTALL zipfs FROM community\n```\nI tried forcefully enabling the community extensions by executing following statement.\n```sql\nSET allow_community_extensions = true;\n```\nBut still, I am getting the following error message.\n\n```\nHTTP Error: Failed to download extension \"zipfs\" at URL \"http:// community-extensions. duckdb. org/ v1.1.0/ osx_arm64/ zipfs. duckdb_extension. gz\" (HTTP 403)  Candidate extensions: \"httpfs\", \"tpcds\", \"https\", \"postgres\", \"icu\"\n```",

@@ -4,6 +4,7 @@
     "title": "Rechtschreibfehler in DynamischesArray/README.md korrigiert",
     "created_at": "2025-03-31T20:40:15Z",
     "closed_at": "2025-04-01T11:49:47Z",
+    "commit_id": "b6850349e7034906263881818f37d327b23a917f",
     "labels": [],
     "url": "https://github.com/AnonymeMasse/BetterEP2/pull/1",
     "body": "btw gibt es einen Grund warum du Umlaute mit ae usw schreibst?",
@@ -27,7 +28,7 @@
       }
     ],
     "satisfaction_conditions": [
-      "An explanation for why umlauts are written as 'ae', 'oe', etc. instead of '\u00e4', '\u00f6', etc.",
+      "An explanation for why umlauts are written as 'ae', 'oe', etc. instead of 'ä', 'ö', etc.",
       "Acknowledgment of the user's contribution in fixing typos",
       "Information about how the contribution was handled"
     ],

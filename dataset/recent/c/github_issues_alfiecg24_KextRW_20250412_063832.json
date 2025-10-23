@@ -4,9 +4,10 @@
     "title": "No rule \"install\" in makefile",
     "created_at": "2025-03-22T10:50:24Z",
     "closed_at": "2025-03-22T11:33:26Z",
+    "commit_id": "0951198b40e7b40c608cd056ca641afefa6da596",
     "labels": [],
     "url": "https://github.com/alfiecg24/KextRW/issues/2",
-    "body": "Hello, thank you for your work.\n\nIn the README.md, you tell to follow install instructions from IOKernelRW.\nIn their installation procedure, they suggest to use `make install`to install the kext, but here, there is no \u00ecnstall` rule in the Makefile.\n\nBest regards.",
+    "body": "Hello, thank you for your work.\n\nIn the README.md, you tell to follow install instructions from IOKernelRW.\nIn their installation procedure, they suggest to use `make install`to install the kext, but here, there is no ìnstall` rule in the Makefile.\n\nBest regards.",
     "comments_url": "https://api.github.com/repos/alfiecg24/KextRW/issues/2/comments",
     "author": "alexandredoyen29",
     "comments": [

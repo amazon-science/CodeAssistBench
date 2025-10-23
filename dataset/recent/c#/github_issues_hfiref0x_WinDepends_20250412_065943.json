@@ -4,6 +4,7 @@
     "title": "Shell integration",
     "created_at": "2024-12-06T13:21:58Z",
     "closed_at": "2025-02-16T03:16:43Z",
+    "commit_id": "b9a3e7167453b8ca04071f079cd03a6f56cffabf",
     "labels": [
       "bug"
     ],

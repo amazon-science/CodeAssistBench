@@ -4,6 +4,7 @@
     "title": "LFO (without sync) changes speed based on song tempo",
     "created_at": "2025-02-13T13:10:16Z",
     "closed_at": "2025-02-13T13:38:07Z",
+    "commit_id": "fa45ec23037802a2e9254101f6d9c706f26e775b",
     "labels": [],
     "url": "https://github.com/baconpaul/six-sines/issues/247",
     "body": "DAW tempo controls or offsets LFO RATE even with SYNC OFF. That can't be right. \n",
@@ -28,7 +29,7 @@
       {
         "user": "Taronium",
         "created_at": "2025-02-13T13:40:07Z",
-        "body": "Awesome, Paul, no worries! You're doing a bang up job! \ud83d\ude0e\ud83d\udc4d"
+        "body": "Awesome, Paul, no worries! You're doing a bang up job! 😎👍"
       },
       {
         "user": "baconpaul",
@@ -51,6 +52,7 @@
     "title": "Bass/Brand New Bass & Substrata are not tuned in the same way as the other basslines",
     "created_at": "2025-01-27T13:54:55Z",
     "closed_at": "2025-03-17T21:43:11Z",
+    "commit_id": "897c131fb6419ce101649b5ca3ab22fe541b30a7",
     "labels": [],
     "url": "https://github.com/baconpaul/six-sines/issues/173",
     "body": "i have to play it at G-4 and G-5 to hear what the other basslines sound like at C-4 C-5.\nany chance the tuning could match?\n",

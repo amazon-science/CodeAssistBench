@@ -4,6 +4,7 @@
     "title": "Brave search mcp server error: fetch is not defined",
     "created_at": "2024-12-10T23:16:32Z",
     "closed_at": "2024-12-11T00:30:53Z",
+    "commit_id": "1c30f54b2dd27f50003a9b1f85c4fce93c09b08d",
     "labels": [
       "bug"
     ],
@@ -32,6 +33,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:01:48"
-    }
+    },
+    "dockerfile": "FROM node:20-slim\n\n# Set working directory\nWORKDIR /app\n\n# Install necessary tools\nRUN apt-get update && \\\n    apt-get install -y git && \\\n    apt-get clean && \\\n    rm -rf /var/lib/apt/lists/*\n\n# Clone the repository and checkout specific commit\nRUN git clone https://github.com/modelcontextprotocol/servers.git . && \\\n    git checkout 1c30f54b2dd27f50003a9b1f85c4fce93c09b08d\n\n# Install dependencies for brave-search server\nWORKDIR /app/src/brave-search\n\n# Install dependencies and build the project\nRUN npm ci && \\\n    npm run build\n\n# Set environment variables (user will need to provide their own API key)\nENV BRAVE_API_KEY=\"\"\n\n# Set working directory back to the project root\nWORKDIR /app\n\n# Comment explaining the issue and solution\n# This Dockerfile sets up an environment to address the \"fetch is not defined\" error\n# in the brave search MCP server. The issue is likely due to a missing polyfill \n# in the Node.js environment. Building the project from the specific commit ensures\n# we're working with the version that exhibits the issue."
   }
 ]

@@ -1,31 +1,32 @@
 [
   {
     "number": 1,
-    "title": "\u5e0c\u671b\u589e\u52a0\u6587\u5b57\u957f\u5ea6\u4e0a\u9650",
+    "title": "希望增加文字长度上限",
     "created_at": "2024-12-10T09:29:12Z",
     "closed_at": "2024-12-11T04:55:56Z",
+    "commit_id": "483a2e9d7e38bec610e9f6a9f3026241fdfddc14",
     "labels": [
       "enhancement"
     ],
     "url": "https://github.com/bestZwei/ciallo-tts/issues/1",
-    "body": "\u76ee\u524d\u6709\u5b57\u7b26\u9650\u5236\uff0c\u5927\u6982\u770b\u4e86\u4e00\u4e0b\u60a8\u7684\u4ee3\u7801\r\n\u53d1\u73b0\u8bf7\u6c42api\u4f7f\u7528\u7684\u662fget\u65b9\u6cd5\uff0c\u957f\u5ea6\u8fc7\u957f\u4f1a\u62a5error\r\n\u671f\u5f85\u60a8\u7684\u4f18\u5316\r\n",
+    "body": "目前有字符限制，大概看了一下您的代码\r\n发现请求api使用的是get方法，长度过长会报error\r\n期待您的优化\r\n",
     "comments_url": "https://api.github.com/repos/bestZwei/ciallo-tts/issues/1/comments",
     "author": "uniqueww",
     "comments": [
       {
         "user": "bestZwei",
         "created_at": "2024-12-10T13:48:34Z",
-        "body": "\u95ee\u9898\u662f\uff0capi \u8fd4\u56de\u7684\u97f3\u9891\u6700\u957f10\u5206\u949f"
+        "body": "问题是，api 返回的音频最长10分钟"
       },
       {
         "user": "bestZwei",
         "created_at": "2024-12-10T17:38:49Z",
-        "body": "\u4f60\u8bd5\u8bd5\uff0c\u505a\u4e86\u4e2a\u667a\u80fd\u5206\u6bb5\uff0c2500\u4e2d\u6587\u5b57\u7b26\uff0c\u6216\u80055000\u5176\u4ed6\u5b57\u7b26\uff0c\u5206\u6210\u4e00\u6bb5\u3002\u957f\u6587\u672c\u5c06\u81ea\u52a8\u5207\u5206\uff0c\u4f18\u5148\u6839\u636e\u5206\u6bb5-\u53e5\u53f7-\u9017\u53f7\u5207\u5206"
+        "body": "你试试，做了个智能分段，2500中文字符，或者5000其他字符，分成一段。长文本将自动切分，优先根据分段-句号-逗号切分"
       },
       {
         "user": "uniqueww",
         "created_at": "2024-12-11T00:37:08Z",
-        "body": "> \u4f60\u8bd5\u8bd5\uff0c\u505a\u4e86\u4e2a\u667a\u80fd\u5206\u6bb5\uff0c2500\u4e2d\u6587\u5b57\u7b26\uff0c\u6216\u80055000\u5176\u4ed6\u5b57\u7b26\uff0c\u5206\u6210\u4e00\u6bb5\u3002\u957f\u6587\u672c\u5c06\u81ea\u52a8\u5207\u5206\uff0c\u4f18\u5148\u6839\u636e\u5206\u6bb5-\u53e5\u53f7-\u9017\u53f7\u5207\u5206\r\n\r\n\u597d\u7684\uff0c\u539f\u6765\u662fapi\u7684\u8fd4\u56de\u9650\u5236\u4e86\u5b57\u7b26\uff0c\u6211\u5c1d\u8bd5\u4f18\u5316\u4e00\u4e0b\uff0c\u611f\u8c22\u4f60\u7684\u56de\u590d\r\n"
+        "body": "> 你试试，做了个智能分段，2500中文字符，或者5000其他字符，分成一段。长文本将自动切分，优先根据分段-句号-逗号切分\r\n\r\n好的，原来是api的返回限制了字符，我尝试优化一下，感谢你的回复\r\n"
       }
     ],
     "satisfaction_conditions": [

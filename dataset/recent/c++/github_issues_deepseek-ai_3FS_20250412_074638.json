@@ -1,24 +1,25 @@
 [
   {
     "number": 157,
-    "title": "\u5982\u4f55\u4fee\u6539storage_main\u7684\u76d1\u542c\u7aef\u53e3\uff1f\u6211\u4fee\u6539\u540e\u8fd8\u662f\u7aef\u53e3\u51b2\u7a818000",
+    "title": "如何修改storage_main的监听端口？我修改后还是端口冲突8000",
     "created_at": "2025-03-12T03:14:17Z",
     "closed_at": "2025-03-12T03:44:15Z",
+    "commit_id": "3a30c53bf25c23a963aaa547098dcceff2c33baf",
     "labels": [],
     "url": "https://github.com/deepseek-ai/3FS/issues/157",
-    "body": "### Issue Report\n### \u6807\u9898\nstorage_main \u8fdb\u7a0b\u5728\u521d\u59cb\u5316\u65f6\u56e0\u7aef\u53e3\u51b2\u7a81\u5d29\u6e83\n\n### \u95ee\u9898\u63cf\u8ff0\nstorage_main \u8fdb\u7a0b\u5728\u521d\u59cb\u5316\u65f6\u5d29\u6e83\uff0c\u5e76\u751f\u6210\u4e86coredump\u6587\u4ef6\u3002\u5d29\u6e83\u53d1\u751f\u5728\u5c1d\u8bd5\u7ed1\u5b9a\u5230\u7aef\u53e38000\u65f6\uff0c\u56e0\u4e3a\u8be5\u7aef\u53e3\u5df2\u7ecf\u88ab\u5360\u7528\u3002\n\n### \u73af\u5883\u4fe1\u606f\n\u64cd\u4f5c\u7cfb\u7edf: Ubuntu\n\u7a0b\u5e8f\u8def\u5f84: /opt/3fs/bin/storage_main\n### \u914d\u7f6e\u6587\u4ef6\u8def\u5f84:\n/opt/3fs/etc/storage_main_launcher.toml\n/opt/3fs/etc/storage_main.toml\n### \u5d29\u6e83\u4fe1\u606f\n\u4fe1\u53f7: SIGABRT (Aborted)\n\u8fdb\u7a0bID: 99874\n\u7ebf\u7a0bID: 0x7f7c290f8b80 (LWP 99874)\n### \u8c03\u7528\u6808\u4fe1\u606f\n<TEXT>\n@ 00000000011e5aef _ZN5folly10symbolizer12_GLOBAL__N_113signalHandlerEiP9siginfo_tPv /root/3fs/3fs/third_party/folly/folly/experimental/symbolizer/SignalHandler.cpp:449\n@ 000000000004251f (unknown)\n@ 00000000000969fc pthread_kill\n@ 0000000000042475 raise\n@ 00000000000287f2 abort\n@ 000000000124c220 _ZNK5folly11LogCategory12admitMessageERKNS_10LogMessageE /root/3fs/3fs/third_party/folly/folly/logging/LogCategory.cpp:71\n@ 000000000124b6d6 _ZN5folly18LogStreamProcessor6logNowEv /root/3fs/3fs/third_party/folly/folly/logging/LogStreamProcessor.cpp:190\n@ 000000000124b929 _ZN5folly16LogStreamVoidifyILb1EEanERSo /root/3fs/3fs/third_party/folly/folly/logging/LogStreamProcessor.cpp:222\n@ 00000000022a7c48 _ZN5hf3fs19TwoPhaseApplicationINS_7storage13StorageServerEE15initApplicationEv /root/3fs/3fs/src/common/app/TwoPhaseApplication.h:59 -> /root/3fs/3fs/src/storage/storage.cpp\n@ 0000000000f79956 _ZN5hf3fs15ApplicationBase3runEiPPc /root/3fs/3fs/src/common/app/ApplicationBase.cc:65\n@ 00000000022a4a43 main /root/3fs/3fs/src/storage/storage.cpp:7\n@ 0000000000029d8f (unknown)\n@ 0000000000029e3f __libc_start_main\n@ 00000000007eb964 _start\n### \u65e5\u5fd7\u4fe1\u606f\n<TEXT>\n[2025-03-12T11:02:58.636580924+08:00 storage_main:99874 Listener.cc:102 ERROR] create socket failed: std::system_error: failed to bind to async server socket: 192.168.223.128:8000: Address already in use\n[2025-03-12T11:02:58.636735964+08:00 storage_main:99874 ServiceGroup.cc:26 ERROR] error: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.636880029+08:00 storage_main:99874 Server.cc:27 ERROR] Setup group (StorageSerde) failed: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.637110823+08:00 storage_main:99874 Server.cc:31 ERROR] Server::setup failed: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.637139597+08:00 storage_main:99874 TwoPhaseApplication.h:59 FATAL] Init server failed: RPC::ListenFailed(2011)\n### \u914d\u7f6e\u4fe1\u606f\nmgmtd_server_addresses = [\"RDMA://192.168.223.128:8000\"] (\u51fa\u73b0\u5728\u591a\u4e2a\u914d\u7f6e\u6587\u4ef6\u4e2d)\nlisten_port = 18000 (\u51fa\u73b0\u5728\u67d0\u4e9b\u914d\u7f6e\u6587\u4ef6\u4e2d)\nlisten_port = 9000 (\u51fa\u73b0\u5728\u67d0\u4e9b\u914d\u7f6e\u6587\u4ef6\u4e2d)\n### \u8be6\u7ec6\u4fe1\u606f\n\u5d29\u6e83\u70b9: hf3fs::TwoPhaseApplication<hf3fs::storage::StorageServer>::initApplication \u65b9\u6cd5\u4e2d\n### \u76f8\u5173\u4ee3\u7801\u8def\u5f84:\n/root/3fs/3fs/src/common/app/TwoPhaseApplication.h:59\n/root/3fs/3fs/src/storage/storage.cpp\n/root/3fs/3fs/src/common/app/ApplicationBase.cc:65\n/root/3fs/3fs/src/storage/storage.cpp:7\n### \u53ef\u80fd\u7684\u539f\u56e0\n\u7aef\u53e3\u51b2\u7a81: \u7aef\u53e38000\u5df2\u7ecf\u88ab\u5176\u4ed6\u8fdb\u7a0b\u5360\u7528\uff0c\u5bfc\u81f4storage_main\u65e0\u6cd5\u7ed1\u5b9a\u5230\u8be5\u7aef\u53e3\u3002\n\u914d\u7f6e\u4e0d\u4e00\u81f4: \u914d\u7f6e\u6587\u4ef6\u4e2d\u5b58\u5728\u591a\u4e2a\u4e0d\u540c\u7684listen_port\u8bbe\u7f6e\uff0c\u53ef\u80fd\u5bfc\u81f4\u7aef\u53e3\u51b2\u7a81\u3002\n### \u91cd\u73b0\u6b65\u9aa4\n\u542f\u52a8 storage_main \u8fdb\u7a0b\uff0c\u4f7f\u7528\u914d\u7f6e\u6587\u4ef6 /opt/3fs/etc/storage_main_launcher.toml \u548c /opt/3fs/etc/storage_main.toml\u3002\n",
+    "body": "### Issue Report\n### 标题\nstorage_main 进程在初始化时因端口冲突崩溃\n\n### 问题描述\nstorage_main 进程在初始化时崩溃，并生成了coredump文件。崩溃发生在尝试绑定到端口8000时，因为该端口已经被占用。\n\n### 环境信息\n操作系统: Ubuntu\n程序路径: /opt/3fs/bin/storage_main\n### 配置文件路径:\n/opt/3fs/etc/storage_main_launcher.toml\n/opt/3fs/etc/storage_main.toml\n### 崩溃信息\n信号: SIGABRT (Aborted)\n进程ID: 99874\n线程ID: 0x7f7c290f8b80 (LWP 99874)\n### 调用栈信息\n<TEXT>\n@ 00000000011e5aef _ZN5folly10symbolizer12_GLOBAL__N_113signalHandlerEiP9siginfo_tPv /root/3fs/3fs/third_party/folly/folly/experimental/symbolizer/SignalHandler.cpp:449\n@ 000000000004251f (unknown)\n@ 00000000000969fc pthread_kill\n@ 0000000000042475 raise\n@ 00000000000287f2 abort\n@ 000000000124c220 _ZNK5folly11LogCategory12admitMessageERKNS_10LogMessageE /root/3fs/3fs/third_party/folly/folly/logging/LogCategory.cpp:71\n@ 000000000124b6d6 _ZN5folly18LogStreamProcessor6logNowEv /root/3fs/3fs/third_party/folly/folly/logging/LogStreamProcessor.cpp:190\n@ 000000000124b929 _ZN5folly16LogStreamVoidifyILb1EEanERSo /root/3fs/3fs/third_party/folly/folly/logging/LogStreamProcessor.cpp:222\n@ 00000000022a7c48 _ZN5hf3fs19TwoPhaseApplicationINS_7storage13StorageServerEE15initApplicationEv /root/3fs/3fs/src/common/app/TwoPhaseApplication.h:59 -> /root/3fs/3fs/src/storage/storage.cpp\n@ 0000000000f79956 _ZN5hf3fs15ApplicationBase3runEiPPc /root/3fs/3fs/src/common/app/ApplicationBase.cc:65\n@ 00000000022a4a43 main /root/3fs/3fs/src/storage/storage.cpp:7\n@ 0000000000029d8f (unknown)\n@ 0000000000029e3f __libc_start_main\n@ 00000000007eb964 _start\n### 日志信息\n<TEXT>\n[2025-03-12T11:02:58.636580924+08:00 storage_main:99874 Listener.cc:102 ERROR] create socket failed: std::system_error: failed to bind to async server socket: 192.168.223.128:8000: Address already in use\n[2025-03-12T11:02:58.636735964+08:00 storage_main:99874 ServiceGroup.cc:26 ERROR] error: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.636880029+08:00 storage_main:99874 Server.cc:27 ERROR] Setup group (StorageSerde) failed: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.637110823+08:00 storage_main:99874 Server.cc:31 ERROR] Server::setup failed: RPC::ListenFailed(2011)\n[2025-03-12T11:02:58.637139597+08:00 storage_main:99874 TwoPhaseApplication.h:59 FATAL] Init server failed: RPC::ListenFailed(2011)\n### 配置信息\nmgmtd_server_addresses = [\"RDMA://192.168.223.128:8000\"] (出现在多个配置文件中)\nlisten_port = 18000 (出现在某些配置文件中)\nlisten_port = 9000 (出现在某些配置文件中)\n### 详细信息\n崩溃点: hf3fs::TwoPhaseApplication<hf3fs::storage::StorageServer>::initApplication 方法中\n### 相关代码路径:\n/root/3fs/3fs/src/common/app/TwoPhaseApplication.h:59\n/root/3fs/3fs/src/storage/storage.cpp\n/root/3fs/3fs/src/common/app/ApplicationBase.cc:65\n/root/3fs/3fs/src/storage/storage.cpp:7\n### 可能的原因\n端口冲突: 端口8000已经被其他进程占用，导致storage_main无法绑定到该端口。\n配置不一致: 配置文件中存在多个不同的listen_port设置，可能导致端口冲突。\n### 重现步骤\n启动 storage_main 进程，使用配置文件 /opt/3fs/etc/storage_main_launcher.toml 和 /opt/3fs/etc/storage_main.toml。\n",
     "comments_url": "https://api.github.com/repos/deepseek-ai/3FS/issues/157/comments",
     "author": "xiaoyaoyouyue",
     "comments": [
       {
         "user": "yuchengkang",
         "created_at": "2025-03-12T03:31:22Z",
-        "body": "\u4fee\u6539\u914d\u7f6e\u540e\u9700\u8981\u91cd\u65b0\u6267\u884c /opt/3fs/bin/admin_cli -cfg /opt/3fs/etc/admin_cli.toml  \"set-config --type STORAGE --file /opt/3fs/etc/storage_main.toml\""
+        "body": "修改配置后需要重新执行 /opt/3fs/bin/admin_cli -cfg /opt/3fs/etc/admin_cli.toml  \"set-config --type STORAGE --file /opt/3fs/etc/storage_main.toml\""
       },
       {
         "user": "xiaoyaoyouyue",
         "created_at": "2025-03-12T03:44:13Z",
-        "body": "> \u4fee\u6539\u914d\u7f6e\u540e\u9700\u8981\u91cd\u65b0\u6267\u884c /opt/3fs/bin/admin_cli -cfg /opt/3fs/etc/admin_cli.toml \"set-config --type STORAGE --file /opt/3fs/etc/storage_main.toml\"\n\n\u591a\u8c22\uff0c"
+        "body": "> 修改配置后需要重新执行 /opt/3fs/bin/admin_cli -cfg /opt/3fs/etc/admin_cli.toml \"set-config --type STORAGE --file /opt/3fs/etc/storage_main.toml\"\n\n多谢，"
       }
     ],
     "satisfaction_conditions": [
@@ -36,6 +37,7 @@
     "title": "Why does create op need to be added in batcheop?",
     "created_at": "2025-03-04T07:19:28Z",
     "closed_at": "2025-03-04T11:38:36Z",
+    "commit_id": "fc90de11107ad37512e2e0f3885be077341cb46f",
     "labels": [],
     "url": "https://github.com/deepseek-ai/3FS/issues/84",
     "body": "In my view, batch could be useful in occasion of concurrent setattr, to avoid foundation 'lock'. But how could create relative to this?",
@@ -68,9 +70,10 @@
     "title": "question about the peak reading throughput of KV Cache",
     "created_at": "2025-03-03T06:26:56Z",
     "closed_at": "2025-03-03T07:13:56Z",
+    "commit_id": "c69d46e7914b07dae9a14e79895da4f848d8a045",
     "labels": [],
     "url": "https://github.com/deepseek-ai/3FS/issues/53",
-    "body": "The compute node just has a 1x200 Gbps NIC\uff0cso how the peak reading throughput of KV Cache can reach 40 GiB/s\uff1f\n\nDoes the KV cache storage system use the DRAM to save some hot KV Cache in the compute node\uff1f\n\nHope for your answer\uff01Thank you\uff01",
+    "body": "The compute node just has a 1x200 Gbps NIC，so how the peak reading throughput of KV Cache can reach 40 GiB/s？\n\nDoes the KV cache storage system use the DRAM to save some hot KV Cache in the compute node？\n\nHope for your answer！Thank you！",
     "comments_url": "https://api.github.com/repos/deepseek-ai/3FS/issues/53/comments",
     "author": "DoubleEspresso-7",
     "comments": [
@@ -82,12 +85,12 @@
       {
         "user": "DoubleEspresso-7",
         "created_at": "2025-03-03T07:13:53Z",
-        "body": "Thank you\uff01Maybe you can add this information in the KV Cache part to avoid misunderstanding.\n"
+        "body": "Thank you！Maybe you can add this information in the KV Cache part to avoid misunderstanding.\n"
       },
       {
         "user": "SF-Zhou",
         "created_at": "2025-03-03T08:21:14Z",
-        "body": "> Thank you\uff01Maybe you can add this information in the KV Cache part to avoid misunderstanding.\n\nDone!"
+        "body": "> Thank you！Maybe you can add this information in the KV Cache part to avoid misunderstanding.\n\nDone!"
       }
     ],
     "satisfaction_conditions": [

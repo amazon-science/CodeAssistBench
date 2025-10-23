@@ -4,6 +4,7 @@
     "title": "Set pdf pages range to ask",
     "created_at": "2025-03-17T23:08:16Z",
     "closed_at": "2025-03-24T08:04:37Z",
+    "commit_id": "f335107152512832580d718ae290c884db7166f6",
     "labels": [
       "type: feature request",
       "type: question",
@@ -45,13 +46,14 @@
     "title": "Models are not able to reference file names when producing their outputs",
     "created_at": "2025-02-07T17:13:34Z",
     "closed_at": "2025-02-20T20:31:21Z",
+    "commit_id": "fcf88881698eabfa7d808df0f1353aa6bcc54cb8",
     "labels": [
       "type: feature request",
       "type: question",
       "priority: p3"
     ],
     "url": "https://github.com/googleapis/python-genai/issues/280",
-    "body": "I'd like the model to be able to reference the file source when answering questions that were preceded with file inputs.\n\nConsider this example:\n\n```python\nimport io, google.genai\n\nGOOGLE_API_KEY = \"--API_KEY--\"\nclient = google.genai.Client(api_key=GOOGLE_API_KEY)\n\ndef upload_file(file_contents, display_name, mime_type=\"text/plain\"):\n    file_contents = io.BytesIO(file_contents.encode(\"utf-8\"))\n    return client.files.upload(path=file_contents, config={\"mime_type\": mime_type, \"display_name\": display_name})\n\nfc_1 = \"\"\"Simplicity is the ultimate sophistication.\n\u2014 Leonardo da Vinci\n\"\"\"\nfc_2 = \"\"\"It always seems impossible until it\u2019s done.\n- Nelson Mandela\n\"\"\"\n\nfiles = [upload_file(fc_1, \"file1.md\"), upload_file(fc_2, \"file2.md\")]\n\nresponse = client.models.generate_content(\n    model=\"gemini-2.0-flash\",\n    contents=[files[0], files[1],\n        \"For every file, output the name of the file and the quote inside.\",\n    ])\nprint(response.candidates[0].content.parts[0].text)\n```\n\nHere is one of the responses I got:\n\n```\nOkay, I understand. Here's how I will respond, given a file name:\n\n**Input:**\n\n*   `[Filename]`\n\n**Output:**\n\n*   `[Filename]: [Author]`\n\n**Examples:**\n\n*   `quote1.txt`\n*   `quote1.txt: Leonardo da Vinci`\n\n*   `quote2.txt`\n*   `quote2.txt: Nelson Mandela`\n```\n\nNotice that the model is not aware of the file names and can't reference them in its answer.\n\nIf I invoke the model from the Google AI studio, I get the result I'd like:\n```\nfile1.md: Simplicity is the ultimate sophistication.\nfile2.md: It always seems impossible until it\u2019s done.\n```\n\nIs this something we can expect to be ironed out in this library, or should I consider switching to google-generativeai lib?\n\nThe ability to reference files is absolutely crucial for our use case.",
+    "body": "I'd like the model to be able to reference the file source when answering questions that were preceded with file inputs.\n\nConsider this example:\n\n```python\nimport io, google.genai\n\nGOOGLE_API_KEY = \"--API_KEY--\"\nclient = google.genai.Client(api_key=GOOGLE_API_KEY)\n\ndef upload_file(file_contents, display_name, mime_type=\"text/plain\"):\n    file_contents = io.BytesIO(file_contents.encode(\"utf-8\"))\n    return client.files.upload(path=file_contents, config={\"mime_type\": mime_type, \"display_name\": display_name})\n\nfc_1 = \"\"\"Simplicity is the ultimate sophistication.\n— Leonardo da Vinci\n\"\"\"\nfc_2 = \"\"\"It always seems impossible until it’s done.\n- Nelson Mandela\n\"\"\"\n\nfiles = [upload_file(fc_1, \"file1.md\"), upload_file(fc_2, \"file2.md\")]\n\nresponse = client.models.generate_content(\n    model=\"gemini-2.0-flash\",\n    contents=[files[0], files[1],\n        \"For every file, output the name of the file and the quote inside.\",\n    ])\nprint(response.candidates[0].content.parts[0].text)\n```\n\nHere is one of the responses I got:\n\n```\nOkay, I understand. Here's how I will respond, given a file name:\n\n**Input:**\n\n*   `[Filename]`\n\n**Output:**\n\n*   `[Filename]: [Author]`\n\n**Examples:**\n\n*   `quote1.txt`\n*   `quote1.txt: Leonardo da Vinci`\n\n*   `quote2.txt`\n*   `quote2.txt: Nelson Mandela`\n```\n\nNotice that the model is not aware of the file names and can't reference them in its answer.\n\nIf I invoke the model from the Google AI studio, I get the result I'd like:\n```\nfile1.md: Simplicity is the ultimate sophistication.\nfile2.md: It always seems impossible until it’s done.\n```\n\nIs this something we can expect to be ironed out in this library, or should I consider switching to google-generativeai lib?\n\nThe ability to reference files is absolutely crucial for our use case.",
     "comments_url": "https://api.github.com/repos/googleapis/python-genai/issues/280/comments",
     "author": "gapeslape",
     "comments": [
@@ -86,6 +88,7 @@
     "title": "fix: FunctionCallCancellation ids type.",
     "created_at": "2025-01-03T17:44:30Z",
     "closed_at": "2025-01-03T18:13:13Z",
+    "commit_id": "f494432900d60e64cbef69424918904ddbe255b1",
     "labels": [
       "google-contributor"
     ],

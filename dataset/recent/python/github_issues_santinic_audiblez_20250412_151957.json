@@ -4,6 +4,7 @@
     "title": "v3 overwriting .wav files creating incomplete short book",
     "created_at": "2025-01-29T23:44:23Z",
     "closed_at": "2025-02-01T23:22:03Z",
+    "commit_id": "12fbf89fccfe5cf0b0a2eadfb462f0238a9acfe1",
     "labels": [
       "v3"
     ],
@@ -47,6 +48,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 01:18:05"
-    }
+    },
+    "dockerfile": "FROM python:3.11-slim\n\n# Set working directory\nWORKDIR /app\n\n# Install system dependencies including ffmpeg\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends \\\n    git \\\n    ffmpeg \\\n    wget \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/santinic/audiblez.git . && \\\n    git checkout 12fbf89fccfe5cf0b0a2eadfb462f0238a9acfe1\n\n# Install poetry\nRUN pip install --no-cache-dir poetry\n\n# Configure poetry to not create a virtual environment\nRUN poetry config virtualenvs.create false\n\n# Install dependencies and build the project\nRUN poetry install\n\n# Download required model files\nRUN wget https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/kokoro-v0_19.onnx && \\\n    wget https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files/voices.json\n\n# Set the entrypoint to the audiblez command\nENTRYPOINT [\"audiblez\"]\n\n# Default command shows help\nCMD [\"--help\"]"
   }
 ]

@@ -4,6 +4,7 @@
     "title": "other players",
     "created_at": "2025-03-30T03:19:29Z",
     "closed_at": "2025-03-30T17:24:43Z",
+    "commit_id": "f906cb01019e06dea65bd62009cc695d27d50da9",
     "labels": [],
     "url": "https://github.com/azuradara/neo-act-plugin/issues/49",
     "body": "is there a way to see party member dps ? i can only see myself, but i saw people tracking other people too. what do i have to do for that to show ? ",

@@ -4,6 +4,7 @@
     "title": "Garbage collection failed",
     "created_at": "2025-03-20T11:37:11Z",
     "closed_at": "2025-03-22T20:08:53Z",
+    "commit_id": "cc2c2f5488fc94c84acdcac3214f1d303acc879a",
     "labels": [],
     "url": "https://github.com/ai-christianson/RA.Aid/issues/157",
     "body": "When responding to agent, the following error started appearing, any advice on how to fix?\n\nra_aid.ra_aid.database.repositories.human_input_repository - ERROR - Failed to garbage collect human input records: FOREIGN KEY constraint failed",

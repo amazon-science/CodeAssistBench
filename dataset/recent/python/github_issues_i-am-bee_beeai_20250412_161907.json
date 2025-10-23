@@ -4,6 +4,7 @@
     "title": "docs: update copyright",
     "created_at": "2025-04-08T01:05:04Z",
     "closed_at": "2025-04-09T14:26:52Z",
+    "commit_id": "ad75976d1f3ff32445a2df8e5ade5038b453a039",
     "labels": [],
     "url": "https://github.com/i-am-bee/beeai/pull/516",
     "body": null,
@@ -18,12 +19,12 @@
       {
         "user": "jenna-winkler",
         "created_at": "2025-04-09T13:04:49Z",
-        "body": "> @jenna-winkler Is the copyright year intentionally missing?\r\n\r\n@JanPokorny good catch I checked with the LF because this is the string they provided me with but they said that wasn\u2019t intentional we can include year  "
+        "body": "> @jenna-winkler Is the copyright year intentionally missing?\r\n\r\n@JanPokorny good catch I checked with the LF because this is the string they provided me with but they said that wasn’t intentional we can include year  "
       },
       {
         "user": "JanPokorny",
         "created_at": "2025-04-09T13:53:01Z",
-        "body": "@jenna-winkler OK nice, it's easier if I don't have to hack NWA to _not_ include year \ud83d\ude01 In that case I'll just update the NWA config in this PR so that the checks pass"
+        "body": "@jenna-winkler OK nice, it's easier if I don't have to hack NWA to _not_ include year 😁 In that case I'll just update the NWA config in this PR so that the checks pass"
       }
     ],
     "satisfaction_conditions": [

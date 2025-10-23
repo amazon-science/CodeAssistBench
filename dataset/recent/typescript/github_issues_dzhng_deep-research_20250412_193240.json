@@ -4,6 +4,7 @@
     "title": "Not starting",
     "created_at": "2025-02-06T12:41:06Z",
     "closed_at": "2025-02-07T16:46:24Z",
+    "commit_id": "b1b26a8ab940d4a9a5134e84b8dc733a609c6070",
     "labels": [],
     "url": "https://github.com/dzhng/deep-research/issues/6",
     "body": "Hi, I get \n`> open-deep-research@0.0.1 start\n> tsx --env-file=.env.local src/run.ts` on start and it exits (on Windows)",

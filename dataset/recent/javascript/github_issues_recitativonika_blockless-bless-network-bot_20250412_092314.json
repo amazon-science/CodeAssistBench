@@ -4,6 +4,7 @@
     "title": "Dear, so now it is not possible to use five devices under the same account?",
     "created_at": "2025-01-06T11:52:50Z",
     "closed_at": "2025-01-06T14:51:34Z",
+    "commit_id": "e17f233791675664a9cfcddb61731d324f942066",
     "labels": [],
     "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/27",
     "body": "Dear, so now it is not possible to use five devices under the same account?",
@@ -35,6 +36,7 @@
     "title": "Can multiple proxies run on 1 usertoken?",
     "created_at": "2024-11-25T07:46:33Z",
     "closed_at": "2024-11-25T07:49:36Z",
+    "commit_id": "f138367ec841e68df44b25ce91f79b501c7e7080",
     "labels": [],
     "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/12",
     "body": "I have a question: if a userToken has one nodeId and one hardwareId, can it run multiple proxies? Will it receive multiple rewards?\r\nOr can each userToken, nodeId, and hardwareId only run on one proxy?\r\n\r\nThanks for reading. I look forward to your reply.",
@@ -49,7 +51,7 @@
       {
         "user": "lenhu96",
         "created_at": "2024-11-25T08:08:39Z",
-        "body": "Thank you for sharing.\r\nBut I noticed in the config.js file, there is a format like the one below:\r\n\r\njavascript\r\nCopy code\r\nusertoken: 'usertoken1',\r\nnodes: [\r\n    { nodeId: 'nodeid1', hardwareId: 'hardwareid1', proxy: 'proxy1' },\r\n    { nodeId: 'nodeid2', hardwareId: 'hardwareid2', proxy: 'proxy2' },\r\n    { nodeId: 'nodeid3', hardwareId: 'hardwareid3', proxy: 'proxy3' },\r\n    { nodeId: 'nodeid4', hardwareId: 'hardwareid4', proxy: 'proxy4' },\r\n    { nodeId: 'nodeid5', hardwareId: 'hardwareid5', proxy: 'proxy5' }\r\n]\r\nFrom this, I see that on the same PC, if there are 2 browsers, there will be 2 userTokens and 2 nodeIds but the same hardwareId.\r\nSo, in what situation would there be a case like the format you shared, where one userToken has multiple nodeIds?\r\n\r\nI hope you understand as I still don\u2019t fully grasp it.\r\nLooking forward to your response.\r\n\r\nThank you very much."
+        "body": "Thank you for sharing.\r\nBut I noticed in the config.js file, there is a format like the one below:\r\n\r\njavascript\r\nCopy code\r\nusertoken: 'usertoken1',\r\nnodes: [\r\n    { nodeId: 'nodeid1', hardwareId: 'hardwareid1', proxy: 'proxy1' },\r\n    { nodeId: 'nodeid2', hardwareId: 'hardwareid2', proxy: 'proxy2' },\r\n    { nodeId: 'nodeid3', hardwareId: 'hardwareid3', proxy: 'proxy3' },\r\n    { nodeId: 'nodeid4', hardwareId: 'hardwareid4', proxy: 'proxy4' },\r\n    { nodeId: 'nodeid5', hardwareId: 'hardwareid5', proxy: 'proxy5' }\r\n]\r\nFrom this, I see that on the same PC, if there are 2 browsers, there will be 2 userTokens and 2 nodeIds but the same hardwareId.\r\nSo, in what situation would there be a case like the format you shared, where one userToken has multiple nodeIds?\r\n\r\nI hope you understand as I still don’t fully grasp it.\r\nLooking forward to your response.\r\n\r\nThank you very much."
       },
       {
         "user": "recitativonika",
@@ -78,6 +80,7 @@
     "title": "Position B7S_AUTH_TOKEN ",
     "created_at": "2024-11-17T01:18:24Z",
     "closed_at": "2024-11-17T01:23:59Z",
+    "commit_id": "62dd9dcd52b1df1a3021274794d56ed16bad8e10",
     "labels": [],
     "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/5",
     "body": "bang posisi B7S_AUTH_TOKEN dimana ya barusan pake console tab dan check distorage application,,, kosong..",
@@ -109,6 +112,7 @@
     "title": "Can i run more than one nodeid?",
     "created_at": "2024-11-14T20:58:41Z",
     "closed_at": "2024-11-15T11:48:13Z",
+    "commit_id": "29238b7df408fa30be40ab888d4f86b2a877913d",
     "labels": [],
     "url": "https://github.com/recitativonika/blockless-bless-network-bot/issues/1",
     "body": "Can i run more than one node id at the same time? Coz when i put second nodeid in the new line it doean't react",

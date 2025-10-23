@@ -4,11 +4,12 @@
     "title": "910b4",
     "created_at": "2025-02-21T02:22:02Z",
     "closed_at": "2025-02-22T07:24:24Z",
+    "commit_id": "3a4ce2aa15a9c7d442b49ba87c14591b41be3aae",
     "labels": [
       "question"
     ],
     "url": "https://github.com/vllm-project/vllm-ascend/issues/129",
-    "body": "\u8bf7\u95ee\u652f\u4e0d\u652f\u6301910b4",
+    "body": "请问支不支持910b4",
     "comments_url": "https://api.github.com/repos/vllm-project/vllm-ascend/issues/129/comments",
     "author": "w1051868626",
     "comments": [
@@ -42,6 +43,7 @@
     "title": "[Platform] add dispatch key",
     "created_at": "2025-02-07T02:51:08Z",
     "closed_at": "2025-02-21T09:10:31Z",
+    "commit_id": "7d9ae22ecb6dc3ea4e720e5109cf46e1ae7da730",
     "labels": [],
     "url": "https://github.com/vllm-project/vllm-ascend/pull/17",
     "body": "### What this PR does / why we need it?\r\nAdd dispatch key for NPU, so that the log could be print correctly.\r\n\r\nNow\r\n```\r\nexecutor_base.py:110] # CPU blocks: 220478, # CPU blocks: 21845\r\n```\r\n\r\nAfter this pr\r\n```\r\nexecutor_base.py:110] # NPU blocks: 220478, # CPU blocks: 21845\r\n```\r\n\r\n### Does this PR introduce _any_ user-facing change?\r\nN/A\r\n\r\n### How was this patch tested?\r\nCI passed and log printed as above\r\n\r\n",

@@ -4,6 +4,7 @@
     "title": "Timestep \"starvation at tail\"",
     "created_at": "2025-01-21T11:36:59Z",
     "closed_at": "2025-01-21T14:57:32Z",
+    "commit_id": "caf9f0c4670b462b51c845abff7f5731ed138364",
     "labels": [],
     "url": "https://github.com/Lightricks/LTX-Video/issues/106",
     "body": "Hi @yoavhacohen, thanks for the repo and your hard work.\n\nCan you please clarify a thing in your paper:\n\n> \"To prevent starvation at the tail of the resolution we clamp the pdf at percentiles 0.5 and 99.9.\"\n\nYou say that you don't want zero probabilities for the tails during training. Why does this matter if the minimum timestep you use during inference is 100 (due to the `shift_terminal` = 0.1)? Or is the the `shift_terminal` also applied during training?",
@@ -13,7 +14,7 @@
       {
         "user": "yoavhacohen",
         "created_at": "2025-01-21T13:43:29Z",
-        "body": "Hi @donthomasitos, thanks for your interest in our work!\n\nEven at t=0.1\ufffc, there weren\u2019t enough samples when the sequence was long.\nAdditionally, due to generalization from the contiguous timestep range, adding margins around the time steps in use helps make the distribution of samples contributing to each timestep more even."
+        "body": "Hi @donthomasitos, thanks for your interest in our work!\n\nEven at t=0.1￼, there weren’t enough samples when the sequence was long.\nAdditionally, due to generalization from the contiguous timestep range, adding margins around the time steps in use helps make the distribution of samples contributing to each timestep more even."
       },
       {
         "user": "donthomasitos",

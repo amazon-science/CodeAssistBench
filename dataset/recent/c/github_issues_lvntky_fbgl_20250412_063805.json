@@ -4,6 +4,7 @@
     "title": "Fixed example code in README.md",
     "created_at": "2024-11-24T12:44:22Z",
     "closed_at": "2024-11-24T12:52:47Z",
+    "commit_id": "8155eade51a897da19d7e3758e68251f2bd0b066",
     "labels": [],
     "url": "https://github.com/lvntky/fbgl/pull/5",
     "body": "Example code now correctly declares a fbgl_t buffer and passes it to relevant functions, also, fbgl_get_{width,height} are renamed to the kernel functions fb_get_{width,height} as a library-provided wrapper is non-existent (and probably unnecessary).",
@@ -13,7 +14,7 @@
       {
         "user": "lvntky",
         "created_at": "2024-11-24T12:52:25Z",
-        "body": "Thanks @dario-loi im merging the commits and also will add you in contributors list in .h file when i log in to my computer, much appreciated \ud83d\ude4f "
+        "body": "Thanks @dario-loi im merging the commits and also will add you in contributors list in .h file when i log in to my computer, much appreciated 🙏 "
       }
     ],
     "satisfaction_conditions": [

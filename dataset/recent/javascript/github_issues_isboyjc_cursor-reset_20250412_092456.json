@@ -1,9 +1,10 @@
 [
   {
     "number": 14,
-    "title": "win10\u5b89\u88c5\u4e86cursor\u4f46\u662f\u811a\u672c\u63d0\u793a\u672a\u5b89\u88c5",
+    "title": "win10安装了cursor但是脚本提示未安装",
     "created_at": "2025-04-01T08:50:22Z",
     "closed_at": "2025-04-01T08:52:25Z",
+    "commit_id": "fd531cfec18325924e381fe4bcf1ab30b00eb09d",
     "labels": [],
     "url": "https://github.com/isboyjc/cursor-reset/issues/14",
     "body": null,
@@ -13,12 +14,12 @@
       {
         "user": "isboyjc",
         "created_at": "2025-04-01T08:52:25Z",
-        "body": "\u8bf7\u52ff\u66f4\u6539\u5b89\u88c5\u4f4d\u7f6e"
+        "body": "请勿更改安装位置"
       },
       {
         "user": "chenhanzxc",
         "created_at": "2025-04-01T08:53:40Z",
-        "body": "\u53ef\u4ee5\u4e86\u8c22\u8c22"
+        "body": "可以了谢谢"
       }
     ],
     "satisfaction_conditions": [

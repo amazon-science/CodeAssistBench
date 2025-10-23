@@ -4,9 +4,10 @@
     "title": "Error: unprocessable entity",
     "created_at": "2024-12-17T10:16:44Z",
     "closed_at": "2024-12-17T15:18:13Z",
+    "commit_id": "6e0f3d66b904fcb069f625feef45b0c893b5ce0c",
     "labels": [],
     "url": "https://github.com/public-transport/db-vendo-client/issues/1",
-    "body": "The int.bahn.de server seems to respond with an unprocessable entity when using `journeys`.\r\nJust running /p/db/example.js with \r\n\r\n```\r\n let data = await client.journeys(berlinJungfernheide, m\u00fcnchenHbf, {\r\n        results: 1,\r\n        tickets: true,\r\n })\r\n```\r\n\r\nerrors out at\r\n\r\n```\r\n\t\tconst err = new Error(res.statusText);\r\n\t\t            ^\r\n\r\nError: Unprocessable Entity\r\n    at Object.request (file:///home/tgrossen/Projekte/Technical/db-vendo-client/lib/request.js:142:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\r\n    at async Object.journeys (file:///home/tgrossen/Projekte/Technical/db-vendo-client/index.js:213:25)\r\n    at async file:///home/tgrossen/Projekte/Technical/db-vendo-client/p/db/example.js:38:13\r\n```\r\n\r\n",
+    "body": "The int.bahn.de server seems to respond with an unprocessable entity when using `journeys`.\r\nJust running /p/db/example.js with \r\n\r\n```\r\n let data = await client.journeys(berlinJungfernheide, münchenHbf, {\r\n        results: 1,\r\n        tickets: true,\r\n })\r\n```\r\n\r\nerrors out at\r\n\r\n```\r\n\t\tconst err = new Error(res.statusText);\r\n\t\t            ^\r\n\r\nError: Unprocessable Entity\r\n    at Object.request (file:///home/tgrossen/Projekte/Technical/db-vendo-client/lib/request.js:142:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\r\n    at async Object.journeys (file:///home/tgrossen/Projekte/Technical/db-vendo-client/index.js:213:25)\r\n    at async file:///home/tgrossen/Projekte/Technical/db-vendo-client/p/db/example.js:38:13\r\n```\r\n\r\n",
     "comments_url": "https://api.github.com/repos/public-transport/db-vendo-client/issues/1/comments",
     "author": "grssnbchr",
     "comments": [
@@ -29,6 +30,7 @@
     "_classification": {
       "category": "Can be dockerized without any issue",
       "timestamp": "2025-04-14 00:59:22"
-    }
+    },
+    "dockerfile": "FROM node:18-alpine\nWORKDIR /app\n\n# Install git for cloning the repository\nRUN apk add --update git\n\n# Clone the repository and checkout the specific commit\nRUN git clone https://github.com/public-transport/db-vendo-client.git . && \\\n    git checkout 6e0f3d66b904fcb069f625feef45b0c893b5ce0c\n\n# Install dependencies (using npm install instead of npm ci)\nRUN npm install\n\n# Set the default command to keep the container running\nCMD [\"tail\", \"-f\", \"/dev/null\"]"
   }
 ]

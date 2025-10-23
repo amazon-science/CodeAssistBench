@@ -4,6 +4,7 @@
     "title": "Failed to resolve app state",
     "created_at": "2025-03-13T12:34:16Z",
     "closed_at": "2025-03-13T14:10:16Z",
+    "commit_id": "d0c1c5dfe9a14e1412dc55e955dae0e76e45fdbf",
     "labels": [],
     "url": "https://github.com/duckdb/duckdb-ui/issues/42",
     "body": "Hi there, \n\nThanks for creating this UI, I am excited to try it out!\n\nI was able to get it working earlier, but I am now hit with an error whenever I run `duckdb -ui`: \n```\nFailed to resolve app state with user - Error: Binder Error: Catalog \"_duckdb_ui\" does not exist!\nUser ID: unknown\nUser E-mail: unknown\n```\n\nIs this a known thing? \n\nKind regards, \nDaniel\n\n",

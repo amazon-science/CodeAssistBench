@@ -4,6 +4,7 @@
     "title": "hello, seem the url is broken",
     "created_at": "2025-04-07T07:29:10Z",
     "closed_at": "2025-04-09T00:31:28Z",
+    "commit_id": "a70e1f2f921888724d64a9bfe06f1fa64c118a09",
     "labels": [],
     "url": "https://github.com/itcon-pty-au/stremio-ai-search/issues/64",
     "body": "thanks.",
@@ -23,7 +24,7 @@
       {
         "user": "ericvlog",
         "created_at": "2025-04-08T08:50:59Z",
-        "body": "> Is it working for you now?\n\nYup it workings now, maybe just URL down.\n\ud83d\udc4d"
+        "body": "> Is it working for you now?\n\nYup it workings now, maybe just URL down.\n👍"
       }
     ],
     "satisfaction_conditions": [
@@ -40,6 +41,7 @@
     "title": "[Bug Report] RPDB API Key",
     "created_at": "2025-03-13T18:26:33Z",
     "closed_at": "2025-03-14T13:33:38Z",
+    "commit_id": "e7b9abb37c78df235e728f5ff7bea336a7fb3a91",
     "labels": [
       "issue"
     ],

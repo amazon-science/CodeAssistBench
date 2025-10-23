@@ -4,6 +4,7 @@
     "title": "Python API (developer mode) - kiss_slam_pipeline throws errors",
     "created_at": "2025-03-25T11:06:04Z",
     "closed_at": "2025-03-25T13:44:30Z",
+    "commit_id": "45e0989ec64a3c1fc0605a915e30531e0aa97190",
     "labels": [],
     "url": "https://github.com/PRBonn/kiss-slam/issues/11",
     "body": "Thank you for publishing your work!\n\nAfter your latest commit, I am able to install the package as an editable. However, \n`$ kiss_slam_pipeline -v <dataset>`\nis giving the following error:\n\n> Running cmake --build & --install in /home/kiss-slam/build/cp312-cp312-linux_x86_64\n> [0/1] Re-running CMake...\n> /bin/sh: 1: /tmp/pip-build-env-aoqahp9b/normal/lib/python3.12/site-packages/cmake/data/bin/cmake: not found\n> FAILED: build.ninja \n> /tmp/pip-build-env-aoqahp9b/normal/lib/python3.12/site-packages/cmake/data/bin/cmake --regenerate-during-build -S/home/kiss-slam -B/home/kiss-slam/build/cp312-cp312-linux_x86_64\n> ninja: error: rebuilding 'build.ninja': subcommand failed\n> ERROR: None\n\nPlease let me know if I am doing something wrong.",

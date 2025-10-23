@@ -4,6 +4,7 @@
     "title": "GPU image does not use GPU",
     "created_at": "2025-01-13T12:12:31Z",
     "closed_at": "2025-01-13T12:53:46Z",
+    "commit_id": "1e45a3107f6f23df3f8a824f72639d8ff7711519",
     "labels": [],
     "url": "https://github.com/remsky/Kokoro-FastAPI/issues/43",
     "body": "I am using following image: ghcr.io/remsky/kokoro-fastapi-gpu:v0.0.5post1 with unmodified `docker-compose.yml` from repo.\r\n```\r\nkokoro-tts-1     | INFO:     Started server process [1]\r\nkokoro-tts-1     | INFO:     Waiting for application startup.\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | Loading TTS model and voice packs...\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | CUDA available: False\r\nkokoro-tts-1     | 11:30:33 AM | INFO     | Initializing model on cpu\r\n```\r\n\r\nImage runs as `appuser` instead of root and on linux you need to be in proper group to use NVIDIA driver (even when using nvidia-container-toolkit).\r\n```\r\ndevilan@darkstar:~/git/Kokoro-FastAPI (master) $ docker exec -it b5ed10b82d7f /bin/bash\r\nappuser@b5ed10b82d7f:/app$ nvidia-smi \r\nFailed to initialize NVML: Insufficient Permissions\r\n```\r\n\r\nYou should at least point this out clearly in README if this app should not work as root user.\r\nThere are some methods to resolve this problem, but each of them compromises system a bit.\r\nYou can chmod 666 /dev/nvidia* so no access restriction for this device (but not everyone would like to do so).",

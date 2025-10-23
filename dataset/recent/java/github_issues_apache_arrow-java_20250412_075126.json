@@ -4,6 +4,7 @@
     "title": "Deep copy a VectorSchemaRoot?",
     "created_at": "2024-12-24T12:29:02Z",
     "closed_at": "2024-12-26T05:46:13Z",
+    "commit_id": "3ef5450919dd3ebc0b566d1556c33c1207a10514",
     "labels": [
       "Type: enhancement"
     ],

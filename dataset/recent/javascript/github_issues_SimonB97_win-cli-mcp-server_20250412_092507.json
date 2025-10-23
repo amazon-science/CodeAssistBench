@@ -4,6 +4,7 @@
     "title": "Command chaining operators are not allowed (;, &, |, `)",
     "created_at": "2024-12-17T16:51:36Z",
     "closed_at": "2024-12-17T23:54:14Z",
+    "commit_id": "dc7ecccd2945cf9074a11d455bd1ffbfd1e42685",
     "labels": [],
     "url": "https://github.com/SimonB97/win-cli-mcp-server/issues/1",
     "body": "Hi, came across this issue:\r\n\r\n{\r\n  `shell`: `powershell`,\r\n  `command`: `[some powershell with a query paramater]' 'AzureDiagnostics | take 2'`\r\n}\r\n\r\nSo when passing parameters like a kudo query in this case should allow the pipe character\r\n\r\nI know i can disable that check globally, but that's risky.\r\n\r\n",
@@ -13,7 +14,7 @@
       {
         "user": "SimonB97",
         "created_at": "2024-12-17T23:54:14Z",
-        "body": "I have added a shell-specific `blockedOperators` setting to the config in version `0.1.8`. You can pass a list of operators to be blocked (if `enableInjectionProtection` is set to `true`):\r\n\r\n```json\r\n{\r\n  \"security\": {\r\n    \"enableInjectionProtection\": true\r\n  }\r\n  \"cmd\": {\r\n        \"enabled\": true,\r\n        \"command\": \"cmd.exe\",\r\n        \"args\": [\"/c\"],\r\n        \"blockedOperators\": [\"&\", \"|\", \";\", \"`\"]\r\n  }\r\n}\r\n```\r\n\r\nLet me know if this doesn't solve the issue, otherwise I'll consider this solved and close.\r\n\r\nP.S.: Thanks for being my first issue! \ud83e\udd47 "
+        "body": "I have added a shell-specific `blockedOperators` setting to the config in version `0.1.8`. You can pass a list of operators to be blocked (if `enableInjectionProtection` is set to `true`):\r\n\r\n```json\r\n{\r\n  \"security\": {\r\n    \"enableInjectionProtection\": true\r\n  }\r\n  \"cmd\": {\r\n        \"enabled\": true,\r\n        \"command\": \"cmd.exe\",\r\n        \"args\": [\"/c\"],\r\n        \"blockedOperators\": [\"&\", \"|\", \";\", \"`\"]\r\n  }\r\n}\r\n```\r\n\r\nLet me know if this doesn't solve the issue, otherwise I'll consider this solved and close.\r\n\r\nP.S.: Thanks for being my first issue! 🥇 "
       },
       {
         "user": "BartNetJS",

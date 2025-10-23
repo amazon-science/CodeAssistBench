@@ -1,9 +1,10 @@
 [
   {
     "number": 91,
-    "title": "\u8bf7\u6559\u4e00\u4e2a\u95ee\u9898\uff0c\u4e3a\u4ec0\u4e48\u7528\u6237\u4e0a\u4f20\u6587\u4ef6\u540e\uff0c\u70b9\u51fb\u4e86\u53d1\u9001\uff0c\u6587\u4ef6\u6ca1\u6709\u51fa\u73b0\u5728\u7528\u6237\u7684\u6d88\u606f\u680f\uff0c\u8981\u7b49\u6700\u540eai\u8f93\u51fa\u5b8c\uff0c\u83b7\u53d6\u6d88\u606f\u5217\u8868\u624d\u51fa\u73b0\u6587\u4ef6\uff1f",
+    "title": "请教一个问题，为什么用户上传文件后，点击了发送，文件没有出现在用户的消息栏，要等最后ai输出完，获取消息列表才出现文件？",
     "created_at": "2025-03-28T03:31:04Z",
     "closed_at": "2025-03-29T13:26:39Z",
+    "commit_id": "c2567db9717f4a1ab79ba30b3ab7db32f1d39832",
     "labels": [
       "bug"
     ],
@@ -20,7 +21,7 @@
       {
         "user": "bin-bin-6",
         "created_at": "2025-03-31T01:33:14Z",
-        "body": "\u4eb2\u6d4b\u53ef\u4ee5\uff0c\u975e\u5e38\u611f\u8c22"
+        "body": "亲测可以，非常感谢"
       }
     ],
     "satisfaction_conditions": [
