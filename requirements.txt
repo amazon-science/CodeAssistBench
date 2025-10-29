@@ -1,0 +1,27 @@
+# Core dependencies for CAB Evaluation
+boto3>=1.34.0
+botocore>=1.34.0
+openai>=1.3.0
+docker>=6.1.0
+python-dotenv>=1.0.0
+
+# Strands framework for enhanced agent capabilities
+# Note: Install from local path or package repository
+# strands>=1.12.0
+
+# Data processing and ML
+numpy>=1.24.0
+rank-bm25>=0.2.0
+pydantic>=2.0.0
+
+# Development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+sphinx>=7.0.0
+sphinx-rtd-theme>=1.3.0
+
+# Optional dependencies
+requests>=2.31.0
