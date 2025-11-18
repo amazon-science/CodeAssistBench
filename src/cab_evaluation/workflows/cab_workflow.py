@@ -1,5 +1,6 @@
 """Complete CAB workflow - combines generation and evaluation."""
 
+import os
 import logging
 from datetime import datetime
 from typing import Optional, Dict, Any, List
@@ -36,7 +37,8 @@ class CABWorkflow:
     async def run_complete_evaluation(
         self,
         issue_data: IssueData,
-        agent_model_mapping: Optional[Dict[str, str]] = None
+        agent_model_mapping: Optional[Dict[str, str]] = None,
+        issue_logger: Optional[logging.Logger] = None
     ) -> CABResult:
         """Run complete CAB evaluation workflow.
         
@@ -44,11 +46,15 @@ class CABWorkflow:
             issue_data: Issue data to process
             agent_model_mapping: Optional mapping of agent types to model names
                                 Example: {"maintainer": "sonnet37", "user": "haiku", "judge": "sonnet"}
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             CABResult with complete evaluation results
         """
-        logger.info(f"Starting complete CAB evaluation for issue: {issue_data.id}")
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
+        log.info(f"Starting complete CAB evaluation for issue: {issue_data.id}")
         
         # Validate issue data
         if not self.data_processor.validate_issue_data(issue_data):
@@ -56,22 +62,22 @@ class CABWorkflow:
         
         # Log issue summary
         issue_summary = self.data_processor.create_issue_summary(issue_data)
-        logger.info(f"Processing issue: {issue_summary}")
+        log.info(f"Processing issue: {issue_summary}")
         
         try:
             # Step 1: Run generation workflow
-            logger.info("=== STARTING GENERATION WORKFLOW ===")
+            log.info("=== STARTING GENERATION WORKFLOW ===")
             generation_result = await self.generation_workflow.run_generation(
-                issue_data, agent_model_mapping
+                issue_data, agent_model_mapping, issue_logger=issue_logger
             )
-            logger.info("=== GENERATION WORKFLOW COMPLETE ===")
+            log.info("=== GENERATION WORKFLOW COMPLETE ===")
             
             # Step 2: Run evaluation workflow
-            logger.info("=== STARTING EVALUATION WORKFLOW ===")
+            log.info("=== STARTING EVALUATION WORKFLOW ===")
             evaluation_result = await self.evaluation_workflow.run_evaluation(
-                generation_result, agent_model_mapping
+                generation_result, agent_model_mapping, issue_logger=issue_logger
             )
-            logger.info("=== EVALUATION WORKFLOW COMPLETE ===")
+            log.info("=== EVALUATION WORKFLOW COMPLETE ===")
             
             # Create processing metadata
             processing_metadata = {
@@ -95,14 +101,14 @@ class CABWorkflow:
             )
             
             # Log final summary
-            logger.info(f"=== CAB EVALUATION COMPLETE FOR ISSUE {issue_data.id} ===")
-            logger.info(f"User satisfied: {generation_result.user_satisfied}")
-            logger.info(f"Final verdict: {evaluation_result.verdict.value}")
-            logger.info(f"Conversation rounds: {generation_result.total_conversation_rounds}")
-            logger.info(f"Total LLM calls: {sum(evaluation_result.llm_calls.values())}")
+            log.info(f"=== CAB EVALUATION COMPLETE FOR ISSUE {issue_data.id} ===")
+            log.info(f"User satisfied: {generation_result.user_satisfied}")
+            log.info(f"Final verdict: {evaluation_result.verdict.value}")
+            log.info(f"Conversation rounds: {generation_result.total_conversation_rounds}")
+            log.info(f"Total LLM calls: {sum(evaluation_result.llm_calls.values())}")
             
             if evaluation_result.alignment_score:
-                logger.info(
+                log.info(
                     f"Alignment score: {evaluation_result.alignment_score.satisfied}/"
                     f"{evaluation_result.alignment_score.total} conditions met "
                     f"({evaluation_result.alignment_score.percentage:.1f}%)"
@@ -111,7 +117,7 @@ class CABWorkflow:
             return result
             
         except Exception as e:
-            logger.error(f"Error in CAB evaluation workflow: {e}")
+            log.error(f"Error in CAB evaluation workflow: {e}", exc_info=True)
             raise CABEvaluationError(f"CAB workflow failed for issue {issue_data.id}: {str(e)}")
     
     async def process_dataset(
@@ -167,26 +173,60 @@ class CABWorkflow:
         
         logger.info(f"Processing {len(issues_to_process)} new issues")
         
-        # Process issues in batches
-        results = []
-        batch_num = 1
-        current_batch = []
+        # Create log directory for this run
+        log_dir = os.path.join(output_dir, f'logs_{timestamp}')
+        os.makedirs(log_dir, exist_ok=True)
+        logger.info(f"📁 Log directory created: {log_dir}")
+        
+        # Process issues and save immediately after each completion
+        successful_count = 0
+        error_count = 0
         
         for i, issue_data in enumerate(issues_to_process):
-            logger.info(f"Processing issue {i+1}/{len(issues_to_process)}: {issue_data.first_question.title}")
+            logger.info(f"\n{'='*80}")
+            logger.info(f"📋 Processing issue {i+1}/{len(issues_to_process)}: {issue_data.first_question.title}")
+            logger.info(f"{'='*80}")
+            
+            # Setup issue-specific logger
+            issue_logger = None
             
             try:
-                # Run complete CAB evaluation
-                cab_result = await self.run_complete_evaluation(issue_data, agent_model_mapping)
+                # Create dedicated logger for this issue
+                issue_logger = self.data_processor.setup_issue_logger(issue_data, log_dir)
+                log_filename = self.data_processor.create_issue_log_filename(issue_data)
+                logger.info(f"📝 Logging to: {log_filename}")
+                
+                # Run complete CAB evaluation with issue logger
+                cab_result = await self.run_complete_evaluation(
+                    issue_data, 
+                    agent_model_mapping,
+                    issue_logger=issue_logger
+                )
                 
                 # Convert to dictionary for saving
                 result_dict = self._cab_result_to_dict(cab_result)
-                current_batch.append(result_dict)
                 
-                logger.info(f"Issue {issue_data.id} processed successfully")
+                # Save immediately after processing
+                is_docker = issue_data.dockerfile is not None
+                self.data_processor.save_single_result(
+                    result_dict, 
+                    output_dir, 
+                    timestamp,
+                    issue_number=i+1,
+                    is_docker=is_docker
+                )
+                
+                successful_count += 1
+                logger.info(f"✅ Issue {issue_data.id} processed and saved successfully ({successful_count}/{i+1})")
                 
             except Exception as e:
-                logger.error(f"Error processing issue {issue_data.id}: {e}")
+                error_count += 1
+                logger.error(f"❌ Error processing issue {issue_data.id}: {e}")
+                
+                # Log error to issue logger if available
+                if issue_logger:
+                    issue_logger.error(f"Fatal error during evaluation: {e}", exc_info=True)
+                
                 # Create error result
                 error_result = {
                     'issue_id': issue_data.id,
@@ -198,26 +238,30 @@ class CABWorkflow:
                     'processing_metadata': {
                         'timestamp': timestamp,
                         'error_occurred': True,
-                        'error_message': str(e)
+                        'error_message': str(e),
+                        'issue_number': i+1
                     }
                 }
-                current_batch.append(error_result)
-            
-            # Save batch when it reaches batch_size
-            if len(current_batch) >= batch_size:
-                self.data_processor.save_batch_results(
-                    current_batch, batch_num, output_dir, timestamp
+                
+                # Save error result immediately
+                is_docker = issue_data.dockerfile is not None
+                self.data_processor.save_single_result(
+                    error_result,
+                    output_dir,
+                    timestamp,
+                    issue_number=i+1,
+                    is_docker=is_docker
                 )
-                logger.info(f"Saved batch {batch_num} with {len(current_batch)} results")
-                current_batch = []
-                batch_num += 1
-        
-        # Save any remaining results
-        if current_batch:
-            self.data_processor.save_batch_results(
-                current_batch, batch_num, output_dir, timestamp
-            )
-            logger.info(f"Saved final batch {batch_num} with {len(current_batch)} results")
+                logger.info(f"⚠️  Error result saved for issue {issue_data.id} ({error_count} errors so far)")
+            
+            finally:
+                # Always cleanup issue logger
+                if issue_logger:
+                    self.data_processor.cleanup_issue_logger(issue_logger)
+            
+            # Log progress summary
+            if (i + 1) % 5 == 0 or (i + 1) == len(issues_to_process):
+                logger.info(f"\n📊 Progress: {i+1}/{len(issues_to_process)} issues processed | ✅ {successful_count} successful | ❌ {error_count} errors")
         
         # Create processing summary
         summary = {
@@ -228,12 +272,28 @@ class CABWorkflow:
             'total_issues_in_dataset': len(issues),
             'already_processed': len(processed_issues),
             'newly_processed': len(issues_to_process),
-            'total_batches': batch_num,
+            'successful_count': successful_count,
+            'error_count': error_count,
+            'success_rate': f"{(successful_count / len(issues_to_process) * 100):.1f}%" if issues_to_process else "N/A",
             'agent_model_mapping': agent_model_mapping or {},
-            'processing_complete': True
+            'processing_complete': True,
+            'save_mode': 'immediate'  # Indicates results saved immediately after each issue
         }
         
-        logger.info(f"Dataset processing complete: {summary}")
+        logger.info(f"\n{'='*80}")
+        logger.info(f"🎉 Dataset processing complete!")
+        logger.info(f"{'='*80}")
+        logger.info(f"📊 Summary:")
+        logger.info(f"   - Total issues in dataset: {len(issues)}")
+        logger.info(f"   - Already processed: {len(processed_issues)}")
+        logger.info(f"   - Newly processed: {len(issues_to_process)}")
+        logger.info(f"   - ✅ Successful: {successful_count}")
+        logger.info(f"   - ❌ Errors: {error_count}")
+        logger.info(f"   - Success rate: {summary['success_rate']}")
+        logger.info(f"   - Output directory: {output_dir}")
+        logger.info(f"   - Results saved: Immediately after each issue (no batch waiting)")
+        logger.info(f"{'='*80}\n")
+        
         return summary
     
     def _cab_result_to_dict(self, cab_result: CABResult) -> Dict[str, Any]:

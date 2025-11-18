@@ -271,6 +271,76 @@ class DataProcessor:
             logger.error(f"Error reading output directory: {e}")
             return set()
     
+    def save_single_result(
+        self,
+        result: Dict[str, Any],
+        results_dir: str,
+        timestamp: str,
+        issue_number: int = 0,
+        is_docker: bool = False
+    ):
+        """Save a single result immediately after processing.
+        
+        Args:
+            result: Result dictionary to save
+            results_dir: Results directory
+            timestamp: Timestamp string
+            issue_number: Issue number for tracking
+            is_docker: Whether this is a Docker issue
+        """
+        try:
+            # Create results directory
+            os.makedirs(results_dir, exist_ok=True)
+            
+            # Add metadata
+            result['metadata'] = {
+                'timestamp': timestamp,
+                'issue_number': issue_number,
+                'processing_date': result.get('timestamp', timestamp),
+                'has_docker': 'docker_validation' in result or is_docker,
+                'total_conversation_rounds': result.get('total_conversation_rounds', 'N/A')
+            }
+            
+            # Ensure conversation_history is serializable
+            if 'conversation_history' in result:
+                for message in result['conversation_history']:
+                    if 'content' in message and not isinstance(
+                        message['content'], (str, int, float, bool, type(None))
+                    ):
+                        message['content'] = str(message['content'])
+            
+            # Determine output file based on Docker status
+            if is_docker or ('docker_validation' in result and result['docker_validation'] is not None):
+                output_file = os.path.join(results_dir, f'docker_responses_{timestamp}.jsonl')
+            else:
+                output_file = os.path.join(results_dir, f'responses_{timestamp}.jsonl')
+            
+            # Append result to file (create if doesn't exist)
+            with open(output_file, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(result) + '\n')
+            
+            logger.info(f"✅ Saved result for issue {result.get('issue_id', 'unknown')} to {os.path.basename(output_file)}")
+            
+        except Exception as e:
+            logger.error(f"Error saving single result: {e}")
+            # Try emergency save with simplified data
+            try:
+                emergency_file = os.path.join(results_dir, f'emergency_save_{timestamp}.jsonl')
+                simplified = {
+                    'issue_id': result.get('issue_id', 'unknown'),
+                    'question_title': result.get('question_title', ''),
+                    'initial_verdict': result.get('initial_verdict', 'UNKNOWN'),
+                    'final_verdict': result.get('final_verdict', 'UNKNOWN'),
+                    'user_satisfied': result.get('user_satisfied', False),
+                    'error': 'Failed to save full result',
+                    'timestamp': timestamp
+                }
+                with open(emergency_file, 'a', encoding='utf-8') as f:
+                    f.write(json.dumps(simplified) + '\n')
+                logger.warning(f"⚠️  Saved emergency backup for issue {result.get('issue_id', 'unknown')}")
+            except Exception as e2:
+                logger.error(f"Emergency save also failed: {e2}")
+
     def save_batch_results(
         self,
         results_batch: List[Dict[str, Any]],
@@ -279,6 +349,9 @@ class DataProcessor:
         timestamp: str
     ):
         """Save a batch of results to files.
+        
+        DEPRECATED: This method is kept for backward compatibility.
+        Use save_single_result() for immediate saves after each issue.
         
         Args:
             results_batch: Batch of results to save
@@ -483,6 +556,122 @@ class DataProcessor:
             formatted_conversation.append(formatted_message)
         
         return formatted_conversation
+    
+    def create_issue_log_filename(self, issue_data: IssueData) -> str:
+        """Generate sanitized log filename from issue data.
+        
+        Args:
+            issue_data: Issue data
+            
+        Returns:
+            Log filename (e.g., "ripplebiz_MeshCore_113.log")
+        """
+        import re
+        
+        # Extract repo info from URL
+        repo_url = issue_data.commit_info.repository
+        
+        if "github.com" in repo_url:
+            # Parse: https://github.com/owner/repo
+            match = re.search(r'github\.com/([^/]+)/([^/]+)', repo_url)
+            if match:
+                owner = match.group(1)
+                repo = match.group(2).replace('.git', '')
+                issue_id = issue_data.id
+                
+                # Sanitize for filename
+                owner = re.sub(r'[^\w\-]', '_', owner)
+                repo = re.sub(r'[^\w\-]', '_', repo)
+                issue_id = re.sub(r'[^\w\-]', '_', str(issue_id))
+                
+                return f"{owner}_{repo}_{issue_id}.log"
+        
+        # Fallback for non-GitHub or malformed URLs
+        safe_id = re.sub(r'[^\w\-]', '_', str(issue_data.id))
+        return f"issue_{safe_id}.log"
+    
+    def setup_issue_logger(
+        self, 
+        issue_data: IssueData, 
+        log_dir: str
+    ) -> logging.Logger:
+        """Setup dedicated logger for a specific issue.
+        
+        Args:
+            issue_data: Issue data
+            log_dir: Directory for log files
+            
+        Returns:
+            Configured logger instance
+        """
+        # Create log directory
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # Generate log filename
+        log_filename = self.create_issue_log_filename(issue_data)
+        log_path = os.path.join(log_dir, log_filename)
+        
+        # Create unique logger name
+        logger_name = f"cab_evaluation.issue.{issue_data.id}"
+        issue_logger = logging.getLogger(logger_name)
+        issue_logger.setLevel(logging.DEBUG)
+        
+        # Prevent propagation to avoid duplicate logs in main logger
+        issue_logger.propagate = False
+        
+        # Remove existing handlers
+        issue_logger.handlers = []
+        
+        # Create file handler
+        file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
+        file_handler.setLevel(logging.DEBUG)
+        
+        # Create formatter
+        formatter = logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+        file_handler.setFormatter(formatter)
+        
+        # Add handler
+        issue_logger.addHandler(file_handler)
+        
+        # Log issue header
+        issue_logger.info("="*80)
+        issue_logger.info(f"CAB Evaluation Log - Issue {issue_data.id}")
+        issue_logger.info("="*80)
+        issue_logger.info(f"Title: {issue_data.first_question.title}")
+        issue_logger.info(f"Language: {issue_data.language}")
+        issue_logger.info(f"Repository: {issue_data.commit_info.repository}")
+        issue_logger.info(f"Commit SHA: {issue_data.commit_info.sha}")
+        issue_logger.info(f"Has Dockerfile: {issue_data.dockerfile is not None}")
+        issue_logger.info(f"Comment Count: {len(issue_data.comments)}")
+        issue_logger.info(f"Satisfaction Conditions: {len(issue_data.user_satisfaction_condition)}")
+        issue_logger.info("="*80)
+        issue_logger.info("")
+        
+        return issue_logger
+    
+    def cleanup_issue_logger(self, issue_logger: logging.Logger):
+        """Cleanup issue-specific logger handlers.
+        
+        Args:
+            issue_logger: Logger to cleanup
+        """
+        if issue_logger:
+            try:
+                # Log footer
+                issue_logger.info("")
+                issue_logger.info("="*80)
+                issue_logger.info("End of CAB Evaluation Log")
+                issue_logger.info("="*80)
+                
+                # Close and remove handlers
+                for handler in issue_logger.handlers[:]:
+                    handler.close()
+                    issue_logger.removeHandler(handler)
+            except Exception as e:
+                logger.error(f"Error cleaning up issue logger: {e}")
     
     def create_dataset_statistics(self, issues: List[IssueData]) -> Dict[str, Any]:
         """Create statistics for a dataset.

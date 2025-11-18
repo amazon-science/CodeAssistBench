@@ -38,18 +38,23 @@ class GenerationWorkflow:
     async def run_generation(
         self,
         issue_data: IssueData,
-        agent_model_mapping: Optional[Dict[str, str]] = None
+        agent_model_mapping: Optional[Dict[str, str]] = None,
+        issue_logger: Optional[logging.Logger] = None
     ) -> GenerationResult:
         """Run generation workflow for an issue.
         
         Args:
             issue_data: Issue data to process
             agent_model_mapping: Optional mapping of agent types to model names
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             GenerationResult with conversation and exploration data
         """
-        logger.info(f"Starting generation workflow for issue: {issue_data.first_question.title}")
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
+        log.info(f"Starting generation workflow for issue: {issue_data.first_question.title}")
         
         # Create agents
         if agent_model_mapping:
@@ -72,7 +77,7 @@ class GenerationWorkflow:
             issue_data.commit_info.sha, question
         )
         
-        logger.info(f"Selected commit for exploration: {selected_commit}")
+        log.info(f"Selected commit for exploration: {selected_commit}")
         
         # Clone repository
         repo_dir = self.repository_manager.clone_repository(repo_url, selected_commit)
@@ -81,12 +86,12 @@ class GenerationWorkflow:
         
         try:
             # Perform interactive exploration
-            logger.info("Starting interactive exploration")
+            log.info("Starting interactive exploration")
             initial_answer, exploration_history, exploration_log = await self._interactive_exploration(
-                repo_dir, question, maintainer_agent, issue_data.id
+                repo_dir, question, maintainer_agent, issue_data.id, issue_logger
             )
             
-            logger.info(f"Exploration complete. Initial answer length: {len(initial_answer)}")
+            log.info(f"Exploration complete. Initial answer length: {len(initial_answer)}")
             
             # Initialize conversation history
             conversation_history = [
@@ -103,15 +108,15 @@ class GenerationWorkflow:
             # Run Docker validation for initial answer if needed
             docker_results = None
             if issue_data.dockerfile:
-                logger.info("Running initial Docker validation...")
+                log.info("Running initial Docker validation...")
                 docker_results = await self._run_docker_validation(
-                    issue_data, initial_answer, exploration_log
+                    issue_data, initial_answer, exploration_log, issue_logger
                 )
             
             # Conduct conversation between agents
-            logger.info("Starting agent conversation")
+            log.info("Starting agent conversation")
             final_conversation, total_rounds, final_satisfaction = await self._conduct_conversation(
-                repo_dir, issue_data, conversation_history, maintainer_agent, user_agent, docker_results, exploration_log
+                repo_dir, issue_data, conversation_history, maintainer_agent, user_agent, docker_results, exploration_log, issue_logger
             )
             
             # Get final LLM call statistics
@@ -178,10 +183,10 @@ class GenerationWorkflow:
                 prompt_cache=prompt_cache_metrics
             )
             
-            logger.info(f"Generation workflow complete for issue {issue_data.id}")
-            logger.info(f"User satisfied: {result.user_satisfied}")
-            logger.info(f"Total conversation rounds: {total_rounds}")
-            logger.info(f"Total LLM calls: {sum(llm_call_stats.values())}")
+            log.info(f"Generation workflow complete for issue {issue_data.id}")
+            log.info(f"User satisfied: {result.user_satisfied}")
+            log.info(f"Total conversation rounds: {total_rounds}")
+            log.info(f"Total LLM calls: {sum(llm_call_stats.values())}")
             
             return result
             
@@ -195,6 +200,7 @@ class GenerationWorkflow:
         question: str,
         maintainer_agent,
         issue_id: str,
+        issue_logger: Optional[logging.Logger] = None,
         max_iterations: int = 5
     ) -> Tuple[str, List[str], str]:
         """Perform interactive repository exploration.
@@ -204,11 +210,15 @@ class GenerationWorkflow:
             question: User's question
             maintainer_agent: Maintainer agent instance
             issue_id: Issue ID for tracking
+            issue_logger: Optional dedicated logger for this issue
             max_iterations: Maximum exploration iterations
             
         Returns:
             Tuple of (final_answer, exploration_history, exploration_log)
         """
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
         exploration_history = []
         exploration_log = ""
         
@@ -216,10 +226,10 @@ class GenerationWorkflow:
         max_context_size = 600000
         current_exploration_context = ""
         
-        logger.info(f"Starting interactive exploration with max {max_iterations} iterations")
+        log.info(f"Starting interactive exploration with max {max_iterations} iterations")
         
         for iteration in range(max_iterations):
-            logger.info(f"Exploration iteration {iteration+1}/{max_iterations}")
+            log.info(f"Exploration iteration {iteration+1}/{max_iterations}")
             
             # Create system prompt based on iteration
             if iteration == 0:
@@ -237,19 +247,19 @@ class GenerationWorkflow:
                 
                 # Check for input too long error
                 if exploration_plan == "ERROR_INPUT_TOO_LONG":
-                    logger.warning("Input too long error. Stopping exploration.")
+                    log.warning("Input too long error. Stopping exploration.")
                     exploration_log += "\n--- EXPLORATION STOPPED: Input too long error ---\n"
                     break
                 
                 exploration_history.append(exploration_plan)
-                logger.info(f"Received exploration plan ({len(exploration_plan)} chars)")
+                log.info(f"Received exploration plan ({len(exploration_plan)} chars)")
                 
             except InputTooLongError:
-                logger.warning("Input too long error in exploration. Stopping exploration.")
+                log.warning("Input too long error in exploration. Stopping exploration.")
                 exploration_log += "\n--- EXPLORATION STOPPED: Input too long error ---\n"
                 break
             except Exception as e:
-                logger.error(f"Error getting exploration plan: {e}")
+                log.error(f"Error getting exploration plan: {e}")
                 exploration_log += f"\n--- ERROR IN ITERATION {iteration+1} ---\n{str(e)}\n"
                 break
             
@@ -262,16 +272,16 @@ class GenerationWorkflow:
                     if line.strip().startswith("EXPLORE:")
                 ]
                 
-                logger.info(f"Executing {len(commands)} exploration commands")
+                log.info(f"Executing {len(commands)} exploration commands")
                 
                 for i, cmd in enumerate(commands):
                     try:
-                        logger.info(f"Executing command {i+1}/{len(commands)}: {cmd}")
+                        log.info(f"Executing command {i+1}/{len(commands)}: {cmd}")
                         result = execute_command(repo_dir, cmd, timeout=self.config.workflow.command_timeout)
                         iteration_results += f"Command: {cmd}\nResult:\n{result}\n\n"
                     except Exception as e:
                         error_msg = f"Error executing command: {cmd}\nError: {str(e)}\n\n"
-                        logger.error(f"Command execution error: {str(e)}")
+                        log.error(f"Command execution error: {str(e)}")
                         iteration_results += error_msg
             
             # Add iteration results to full log
@@ -281,7 +291,7 @@ class GenerationWorkflow:
             new_context = current_exploration_context + f"\n--- ITERATION {iteration+1} ---\n{iteration_results}"
             
             if len(new_context) > max_context_size:
-                logger.warning(f"Exploration context would exceed size limit. Stopping exploration.")
+                log.warning(f"Exploration context would exceed size limit. Stopping exploration.")
                 exploration_log += "\n--- EXPLORATION STOPPED: Context size limit ---\n"
                 break
             else:
@@ -289,12 +299,12 @@ class GenerationWorkflow:
             
             # Check for answer
             if "ANSWER:" in exploration_plan:
-                logger.info("Found ANSWER section. Extracting final answer.")
+                log.info("Found ANSWER section. Extracting final answer.")
                 answer_part = exploration_plan.split("ANSWER:", 1)[1].strip()
                 return answer_part, exploration_history, exploration_log
         
         # Generate final answer if no explicit answer found
-        logger.info("Generating final answer from exploration results")
+        log.info("Generating final answer from exploration results")
         final_system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.FINAL_ANSWER_GENERATION
         final_user_prompt = f"""
         Question: {question}
@@ -311,17 +321,17 @@ class GenerationWorkflow:
             )
             
             if final_answer == "ERROR_INPUT_TOO_LONG":
-                logger.warning("Input too long in final answer generation. Using fallback.")
+                log.warning("Input too long in final answer generation. Using fallback.")
                 final_answer = "After extensive repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
             
             return final_answer, exploration_history, exploration_log
             
         except InputTooLongError:
-            logger.warning("Input too long in final answer generation. Using fallback.")
+            log.warning("Input too long in final answer generation. Using fallback.")
             final_answer = "After extensive repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
             return final_answer, exploration_history, exploration_log
         except Exception as e:
-            logger.error(f"Error generating final answer: {e}")
+            log.error(f"Error generating final answer: {e}")
             fallback_answer = f"Based on the exploration conducted, I can provide information about this issue. Note: Full analysis was interrupted due to error: {str(e)}"
             return fallback_answer, exploration_history, exploration_log
     
@@ -333,7 +343,8 @@ class GenerationWorkflow:
         maintainer_agent,
         user_agent,
         initial_docker_results: Optional[Dict[str, Any]] = None,
-        exploration_log: str = ""
+        exploration_log: str = "",
+        issue_logger: Optional[logging.Logger] = None
     ) -> Tuple[List[ConversationMessage], int, Dict[str, Any]]:
         """Conduct conversation between user and maintainer agents.
         
@@ -345,10 +356,14 @@ class GenerationWorkflow:
             user_agent: User agent
             initial_docker_results: Initial Docker validation results
             exploration_log: Exploration log from initial exploration
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             Tuple of (conversation_history, total_rounds, final_satisfaction_status)
         """
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
         max_rounds = self.config.workflow.max_conversation_rounds
         user_satisfied = False
         final_satisfaction = {
@@ -359,10 +374,10 @@ class GenerationWorkflow:
         
         for round_num in range(max_rounds):
             if user_satisfied:
-                logger.info("User is satisfied. Ending conversation.")
+                log.info("User is satisfied. Ending conversation.")
                 break
                 
-            logger.info(f"Starting conversation round {round_num + 1}/{max_rounds}")
+            log.info(f"Starting conversation round {round_num + 1}/{max_rounds}")
             
             # User agent responds to maintainer
             try:
@@ -389,32 +404,32 @@ class GenerationWorkflow:
                     ConversationMessage(role="user", content=user_response)
                 )
                 
-                logger.info(f"User response (round {round_num + 1}): {len(user_response)} chars")
-                logger.info(f"Satisfaction status: {satisfaction_status}")
+                log.info(f"User response (round {round_num + 1}): {len(user_response)} chars")
+                log.info(f"Satisfaction status: {satisfaction_status}")
                 
                 if user_satisfied:
-                    logger.info("User is fully satisfied. Ending conversation.")
+                    log.info("User is fully satisfied. Ending conversation.")
                     break
                     
             except InputTooLongError:
-                logger.warning("Input too long error in user agent. Ending conversation.")
+                log.warning("Input too long error in user agent. Ending conversation.")
                 break
             except Exception as e:
-                logger.error(f"Error getting user agent response: {e}")
+                log.error(f"Error getting user agent response: {e}")
                 conversation_history.append(
                     ConversationMessage(role="user", content=f"Error: Failed to get proper response. {str(e)}")
                 )
             
             # Early termination check
             if round_num == max_rounds - 1:
-                logger.info(f"Reached maximum conversation rounds ({max_rounds}). Ending conversation.")
+                log.info(f"Reached maximum conversation rounds ({max_rounds}). Ending conversation.")
                 break
             
             # Maintainer agent responds
             try:
                 if issue_data.dockerfile:
                     # Docker-aware response
-                    logger.info("Using Docker-aware maintainer response")
+                    log.info("Using Docker-aware maintainer response")
                     maintainer_response, extra_files, modified_dockerfile = await maintainer_agent.generate_docker_response(
                         repo_dir, issue_data, conversation_history
                     )
@@ -422,13 +437,13 @@ class GenerationWorkflow:
                     # Update issue data with modifications
                     if modified_dockerfile:
                         issue_data.dockerfile = modified_dockerfile
-                        logger.info("Updated Dockerfile with maintainer's modifications")
+                        log.info("Updated Dockerfile with maintainer's modifications")
                     
                     # Run Docker validation if changes were made
                     if extra_files or modified_dockerfile:
-                        logger.info("Running Docker build with maintainer's changes")
+                        log.info("Running Docker build with maintainer's changes")
                         docker_result = await self._run_docker_validation(
-                            issue_data, maintainer_response, exploration_log, extra_files
+                            issue_data, maintainer_response, exploration_log, extra_files, issue_logger
                         )
                         current_docker_results = docker_result
                         
@@ -454,21 +469,21 @@ class GenerationWorkflow:
                     # Add exploration to log (note: exploration_log is passed by reference)  
                     # We'll use a local variable to avoid parameter modification issues
                     if exploration_results:
-                        logger.info(f"Conversation round {round_num + 1} exploration results logged")
+                        log.info(f"Conversation round {round_num + 1} exploration results logged")
                 
-                logger.info(f"Maintainer response (round {round_num + 1}): {len(maintainer_response)} chars")
+                log.info(f"Maintainer response (round {round_num + 1}): {len(maintainer_response)} chars")
                 
             except InputTooLongError:
-                logger.warning("Input too long error in maintainer agent. Ending conversation.")
+                log.warning("Input too long error in maintainer agent. Ending conversation.")
                 break
             except Exception as e:
-                logger.error(f"Error getting maintainer agent response: {e}")
+                log.error(f"Error getting maintainer agent response: {e}")
                 conversation_history.append(
                     ConversationMessage(role="maintainer", content=f"Error: Failed to get proper response. {str(e)}")
                 )
         
         total_rounds = round_num + 1
-        logger.info(f"Conversation completed after {total_rounds} rounds")
+        log.info(f"Conversation completed after {total_rounds} rounds")
         
         return conversation_history, total_rounds, final_satisfaction
     
@@ -507,7 +522,8 @@ class GenerationWorkflow:
         issue_data: IssueData,
         maintainer_response: str,
         exploration_log: str,
-        extra_files: Optional[Dict[str, str]] = None
+        extra_files: Optional[Dict[str, str]] = None,
+        issue_logger: Optional[logging.Logger] = None
     ) -> Dict[str, Any]:
         """Run Docker validation for the current solution.
         
@@ -516,10 +532,14 @@ class GenerationWorkflow:
             maintainer_response: Maintainer's response
             exploration_log: Exploration results
             extra_files: Additional files to include
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             Dictionary with Docker validation results
         """
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
         try:
             # Generate test commands (simplified for now)
             test_commands = []  # Would implement test command generation here
@@ -543,7 +563,7 @@ class GenerationWorkflow:
             }
             
         except Exception as e:
-            logger.error(f"Error during Docker validation: {e}")
+            log.error(f"Error during Docker validation: {e}")
             return {
                 'success': False,
                 'logs': f"Docker validation error: {str(e)}",

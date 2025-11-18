@@ -40,18 +40,23 @@ class EvaluationWorkflow:
     async def run_evaluation(
         self,
         generation_result: GenerationResult,
-        agent_model_mapping: Optional[Dict[str, str]] = None
+        agent_model_mapping: Optional[Dict[str, str]] = None,
+        issue_logger: Optional[logging.Logger] = None
     ) -> EvaluationResult:
         """Run evaluation workflow on generation results.
         
         Args:
             generation_result: Results from generation workflow
             agent_model_mapping: Optional mapping of agent types to model names
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             EvaluationResult with judgment and metrics
         """
-        logger.info(f"Starting evaluation workflow for issue: {generation_result.issue_data.id}")
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
+        log.info(f"Starting evaluation workflow for issue: {generation_result.issue_data.id}")
         
         # Create judge agent
         if agent_model_mapping and "judge" in agent_model_mapping:
@@ -62,23 +67,24 @@ class EvaluationWorkflow:
         # Get final maintainer answer - prefer stored final_answer, fallback to extraction
         if hasattr(generation_result, 'final_answer') and generation_result.final_answer:
             final_answer = generation_result.final_answer
-            logger.info(f"Using stored final_answer from generation result ({len(final_answer)} chars)")
+            log.info(f"Using stored final_answer from generation result ({len(final_answer)} chars)")
         else:
             final_answer = self._extract_final_maintainer_answer(generation_result.conversation_history)
-            logger.info(f"Extracted final_answer from conversation history ({len(final_answer)} chars)")
+            log.info(f"Extracted final_answer from conversation history ({len(final_answer)} chars)")
         
         # Run final Docker validation if this is a Docker issue
         docker_results = None
         if generation_result.issue_data.dockerfile:
-            logger.info("Running final Docker validation for evaluation...")
+            log.info("Running final Docker validation for evaluation...")
             docker_results = await self._run_final_docker_validation(
                 generation_result.issue_data,
                 final_answer,
-                generation_result.exploration_log
+                generation_result.exploration_log,
+                issue_logger
             )
         
         # Judge the final answer
-        logger.info("Judging final maintainer answer...")
+        log.info("Judging final maintainer answer...")
         judgment, verdict, key_issues, alignment_score = await judge_agent.judge_maintainer_answer(
             generation_result.issue_data,
             final_answer,
@@ -142,11 +148,11 @@ class EvaluationWorkflow:
             prompt_cache=prompt_cache_metrics
         )
         
-        logger.info(f"Evaluation workflow complete for issue {generation_result.issue_data.id}")
-        logger.info(f"Final verdict: {verdict.value}")
+        log.info(f"Evaluation workflow complete for issue {generation_result.issue_data.id}")
+        log.info(f"Final verdict: {verdict.value}")
         if alignment_score:
-            logger.info(f"Alignment score: {alignment_score.satisfied}/{alignment_score.total} conditions met ({alignment_score.percentage:.1f}%)")
-        logger.info(f"Total LLM calls: {sum(total_llm_calls.values())}")
+            log.info(f"Alignment score: {alignment_score.satisfied}/{alignment_score.total} conditions met ({alignment_score.percentage:.1f}%)")
+        log.info(f"Total LLM calls: {sum(total_llm_calls.values())}")
         
         return result
 
@@ -358,7 +364,8 @@ class EvaluationWorkflow:
         self,
         issue_data: IssueData,
         final_answer: str,
-        exploration_log: str
+        exploration_log: str,
+        issue_logger: Optional[logging.Logger] = None
     ) -> Dict[str, Any]:
         """Run final Docker validation for evaluation.
         
@@ -366,10 +373,14 @@ class EvaluationWorkflow:
             issue_data: Issue data
             final_answer: Final maintainer answer
             exploration_log: Exploration log from generation
+            issue_logger: Optional dedicated logger for this issue
             
         Returns:
             Dictionary with Docker validation results
         """
+        # Use issue logger if provided, otherwise use default logger
+        log = issue_logger or logger
+        
         try:
             # Generate test commands based on final answer
             # For now, using empty list - could implement proper test command generation
@@ -387,7 +398,7 @@ class EvaluationWorkflow:
             }
             
         except Exception as e:
-            logger.error(f"Error during final Docker validation: {e}")
+            log.error(f"Error during final Docker validation: {e}")
             return {
                 'success': False,
                 'logs': f"Final Docker validation error: {str(e)}",
