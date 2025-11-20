@@ -211,6 +211,8 @@ class GenerationResult:
     satisfaction_reason: str = ""
     final_answer: str = ""  # Final maintainer answer extracted from conversation
     prompt_cache: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # Cache metrics per agent
+    agent_framework_used: str = "strands"  # Track which framework was used ("strands" or "openhands")
+    openhands_metadata: Optional[Dict[str, Any]] = None  # OpenHands-specific metadata
 
 
 @dataclass

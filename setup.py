@@ -48,6 +48,9 @@ setup(
             "mypy>=1.5.0",
             "sphinx>=7.0.0",
             "sphinx-rtd-theme>=1.3.0"
+        ],
+        "openhands": [
+            "openhands>=0.9.0,<1.0.0"
         ]
     },
     python_requires=">=3.8",

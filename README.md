@@ -16,8 +16,11 @@ CodeAssistBench implements a sophisticated **three-agent evaluation framework** 
 
 ### **Multi-Agent Architecture**
 - **🔧 Maintainer Agent**: Acts as experienced developer providing technical solutions
-- **👤 User Agent**: Simulates end-users asking questions and validating responses  
-- **⚖️ Judge Agent**: Evaluates solution quality and alignment with requirements
+  - **Framework Options**: Strands (default) or OpenHands (3rd party)
+  - **Strands**: Built-in framework with comprehensive tools
+  - **OpenHands**: Specialized for code generation and repository exploration
+- **👤 User Agent**: Simulates end-users asking questions and validating responses (Strands only)
+- **⚖️ Judge Agent**: Evaluates solution quality and alignment with requirements (Strands only)
 - **🔄 Interactive Workflows**: Multi-turn conversations with context awareness
 
 ###  **Docker Integration** 
@@ -87,6 +90,45 @@ asyncio.run(evaluate_agent())
 📊 Alignment score: 87.5%
 💬 Conversation rounds: 3
 ```
+
+---
+
+## 🤖 Agent Frameworks
+
+### **Default: Strands Framework**
+Built-in framework supporting all three agents (Maintainer, User, Judge) with comprehensive tool capabilities.
+
+### **Optional: OpenHands (3rd Party)**
+Alternative framework for the Maintainer agent, specialized for complex code generation tasks.
+
+**Installation:**
+```bash
+pip install -e .[openhands]
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+**Usage Example:**
+```bash
+# CLI with OpenHands maintainer
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4-5-20250929", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "openhands"}'
+
+# Python API with OpenHands maintainer
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4-5-20250929", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "openhands"}
+)
+```
+
+**Framework Comparison:**
+| Feature | Strands (Default) | OpenHands |
+|---------|-------------------|-----------|
+| **Setup** | Included | `pip install openhands` |
+| **Agent Support** | All 3 agents | Maintainer only |
+| **Best For** | General evaluation | Complex code tasks |
+
+See `examples/USAGE_GUIDE.md` for detailed usage and troubleshooting.
 
 ---
 

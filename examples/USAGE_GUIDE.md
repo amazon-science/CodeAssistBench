@@ -1,6 +1,6 @@
-# Strands Agent Usage Guide for CodeAssistBench
+# CodeAssistBench Usage Guide
 
-This guide shows how to use the Strands-enhanced CodeAssistBench system with the provided sample files.
+This guide shows how to use CodeAssistBench with both Strands (default) and OpenHands (optional) agent frameworks.
 
 ## 🚨 Important: Virtual Environment Setup
 
@@ -164,6 +164,99 @@ All agents now have access to:
 - **Read-Only Mode**: Safe operations only
 - **Command Restrictions**: Built-in safety for bash execution
 - **Graceful Fallback**: Works even without Strands framework
+
+---
+
+## 🤖 Agent Frameworks
+
+CodeAssistBench supports two agent frameworks for the Maintainer agent:
+
+### **Strands (Default)**
+- ✅ Built-in, no extra installation
+- ✅ Supports all 3 agents (Maintainer, User, Judge)
+- ✅ Optimized with prompt caching
+- ✅ Fast and cost-effective
+
+### **OpenHands (Optional 3rd Party)**
+- 🔧 Alternative framework for Maintainer agent only
+- 🔧 Specialized for complex code generation tasks
+- 🔧 Uses OpenHands SDK for repository exploration
+
+### Installation
+
+```bash
+# Install OpenHands support
+pip install -e .[openhands]
+
+# Set API key
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+### CLI Usage
+
+**Strands (default):**
+```bash
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "sonnet37", "user": "haiku", "judge": "sonnet37"}'
+```
+
+**OpenHands maintainer:**
+```bash
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4-5-20250929", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "openhands"}'
+```
+
+### Python API Usage
+
+```python
+from cab_evaluation import create_cab_evaluator
+
+# Strands (default)
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "sonnet37", "user": "haiku", "judge": "sonnet37"}
+)
+
+# OpenHands maintainer  
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4-5-20250929", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "openhands"}
+)
+```
+
+### Model Name Formats
+
+| Framework | Format | Example |
+|-----------|--------|---------|
+| **Strands** | Short names | `"sonnet37"`, `"haiku"` |
+| **OpenHands** | Full model ID | `"claude-sonnet-4-5-20250929"` |
+
+### Framework Comparison
+
+| Feature | Strands | OpenHands |
+|---------|---------|-----------|
+| **Installation** | Included | `pip install openhands` |
+| **Agent Support** | All 3 agents | Maintainer only |
+| **Speed** | Fast | Moderate |
+| **Best For** | General evaluation | Complex code tasks |
+
+### Troubleshooting
+
+**OpenHands not found:**
+```bash
+pip install openhands
+```
+
+**API key not set:**
+```bash
+export ANTHROPIC_API_KEY="your-key-here"
+```
+
+**Import errors:**
+- System automatically falls back to Strands
+- No action needed
+
+---
 
 ## Advanced Usage
 

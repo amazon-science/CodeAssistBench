@@ -36,6 +36,15 @@ class DockerConfig:
 
 
 @dataclass
+class AgentFrameworkConfig:
+    """Configuration for agent framework selection."""
+    maintainer_framework: str = "strands"
+    openhands_config_path: Optional[str] = None
+    openhands_model_id: str = "anthropic/claude-3-5-sonnet-20241022"
+    openhands_timeout: int = 1800  # 30 minutes
+
+
+@dataclass
 class WorkflowConfig:
     """Configuration for workflow execution."""
     max_conversation_rounds: int = 10
@@ -72,15 +81,18 @@ class CABConfig:
     # Logging configuration
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     
+    # Agent framework configuration
+    agent_framework: AgentFrameworkConfig = field(default_factory=AgentFrameworkConfig)
+    
     # Paths
     prompts_dir: str = "prompts"
     results_dir: str = "results"
     temp_dir: str = "/tmp/cab_evaluation"
     
-    # Agent settings - Updated to use sonnet37 as default for Strands framework
     default_maintainer_model: str = "sonnet37"
     default_user_model: str = "sonnet37"
     default_judge_model: str = "sonnet37"
+    default_maintainer_framework: str = "strands"
     
     def __post_init__(self):
         """Initialize default model configurations."""
@@ -166,15 +178,20 @@ class CABConfig:
             if 'logging' in config_dict:
                 logging_config = LoggingConfig(**config_dict['logging'])
             
+            agent_framework_config = AgentFrameworkConfig()
+            if 'agent_framework' in config_dict:
+                agent_framework_config = AgentFrameworkConfig(**config_dict['agent_framework'])
+            
             # Remove nested configs from main dict to avoid duplicate field errors
             main_config = {k: v for k, v in config_dict.items() 
-                          if k not in ['models', 'workflow', 'docker', 'logging']}
+                          if k not in ['models', 'workflow', 'docker', 'logging', 'agent_framework']}
             
             return cls(
                 models=models,
                 workflow=workflow_config,
                 docker=docker_config,
                 logging=logging_config,
+                agent_framework=agent_framework_config,
                 **main_config
             )
         except Exception as e:
@@ -198,6 +215,21 @@ class CABConfig:
     
     def get_model_config(self, model_name: str) -> ModelConfig:
         """Get model configuration by name."""
+        is_openhands_model = (
+            "/" in model_name or 
+            model_name.startswith("claude-") or 
+            model_name.startswith("gpt-")
+        )
+        
+        if is_openhands_model:
+            logger.info(f"Creating minimal config for OpenHands model: {model_name}")
+            return ModelConfig(
+                name=model_name,
+                model_id=model_name,
+                max_tokens=8192,
+                provider="openhands"
+            )
+        
         if model_name not in self.models:
             raise ConfigurationError(f"Unknown model: {model_name}")
         return self.models[model_name]
@@ -207,14 +239,12 @@ class CABConfig:
         errors = []
         warnings = []
         
-        # Check required directories exist or can be created
         for dir_path in [self.prompts_dir, self.results_dir]:
             try:
                 Path(dir_path).mkdir(parents=True, exist_ok=True)
             except Exception as e:
                 errors.append(f"Cannot create directory {dir_path}: {e}")
         
-        # Validate model configurations
         bedrock_models = 0
         openai_models = 0
         
@@ -231,25 +261,21 @@ class CABConfig:
             else:
                 warnings.append(f"Unknown provider '{model_config.provider}' for model {name}")
         
-        # Check that we have at least one working model
         if bedrock_models == 0 and openai_models == 0:
             errors.append("No valid models configured")
         elif bedrock_models == 0 and openai_models > 0:
             warnings.append("Only OpenAI models configured - ensure GPT_TOKEN environment variable is set")
         
-        # Validate default models exist
         for default_model in [self.default_maintainer_model, self.default_user_model, self.default_judge_model]:
             if default_model not in self.models:
                 errors.append(f"Default model '{default_model}' not found in configured models")
         
-        # Validate workflow settings
         if self.workflow.max_conversation_rounds <= 0:
             errors.append("max_conversation_rounds must be positive")
         
         if self.workflow.max_exploration_iterations <= 0:
             errors.append("max_exploration_iterations must be positive")
         
-        # Log warnings
         for warning in warnings:
             logger.warning(f"Configuration warning: {warning}")
         

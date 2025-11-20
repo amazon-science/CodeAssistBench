@@ -19,35 +19,44 @@ class AgentFactory:
     """Factory class for creating CAB evaluation agents."""
     
     def __init__(self, config: Optional[CABConfig] = None, prompt_manager: Optional[PromptManager] = None):
-        """Initialize agent factory.
-        
-        Args:
-            config: CAB configuration
-            prompt_manager: Prompt manager instance
-        """
+        """Initialize agent factory."""
         self.config = config or CABConfig()
         self.prompt_manager = prompt_manager or PromptManager(self.config.prompts_dir)
         
-        # Validate configuration
         self.config.validate()
         self.config.setup_directories()
     
     def create_maintainer_agent(
         self,
         model_name: Optional[str] = None,
+        framework: str = "strands",
+        openhands_config: Optional[str] = None,
         **kwargs
-    ) -> MaintainerAgent:
-        """Create a maintainer agent.
-        
-        Args:
-            model_name: Model to use (defaults to config default)
-            **kwargs: Additional arguments
-            
-        Returns:
-            MaintainerAgent instance
-        """
+    ) -> BaseAgent:
+        """Create a maintainer agent with framework selection."""
         model_name = model_name or self.config.default_maintainer_model
         
+        if framework.lower() == "openhands":
+            logger.info("🤖 Creating OpenHands-based maintainer agent")
+            try:
+                from .openhands_maintainer_agent import OpenHandsMaintainerAgent
+                from ..utils.openhands_utils import map_cab_model_to_openhands
+                openhands_model = map_cab_model_to_openhands(model_name)
+                
+                return OpenHandsMaintainerAgent(
+                    model_name=openhands_model,
+                    config=self.config,
+                    prompt_manager=self.prompt_manager,
+                    config_file=openhands_config,
+                    **kwargs
+                )
+            except ImportError as e:
+                logger.error(f"❌ OpenHands not available: {e}")
+                logger.info("📦 Install with: pip install openhands")
+                logger.info("🔄 Falling back to Strands framework")
+                framework = "strands"
+        
+        logger.info("🤖 Creating Strands-based maintainer agent")
         return MaintainerAgent(
             model_name=model_name,
             config=self.config,
@@ -60,15 +69,7 @@ class AgentFactory:
         model_name: Optional[str] = None,
         **kwargs
     ) -> UserAgent:
-        """Create a user agent.
-        
-        Args:
-            model_name: Model to use (defaults to config default)
-            **kwargs: Additional arguments
-            
-        Returns:
-            UserAgent instance
-        """
+        """Create a user agent."""
         model_name = model_name or self.config.default_user_model
         
         return UserAgent(
@@ -84,16 +85,7 @@ class AgentFactory:
         judge_config: Optional[JudgeConfig] = None,
         **kwargs
     ) -> JudgeAgent:
-        """Create a judge agent.
-        
-        Args:
-            model_name: Model to use (defaults to config default)
-            judge_config: Configuration for judge behavior
-            **kwargs: Additional arguments
-            
-        Returns:
-            JudgeAgent instance
-        """
+        """Create a judge agent."""
         model_name = model_name or self.config.default_judge_model
         
         return JudgeAgent(
@@ -110,19 +102,7 @@ class AgentFactory:
         model_name: Optional[str] = None,
         **kwargs
     ) -> BaseAgent:
-        """Create an agent by type.
-        
-        Args:
-            agent_type: Type of agent to create (maintainer, user, judge)
-            model_name: Model to use
-            **kwargs: Additional arguments
-            
-        Returns:
-            Agent instance
-            
-        Raises:
-            ValueError: If agent_type is not supported
-        """
+        """Create an agent by type."""
         if agent_type == "maintainer":
             return self.create_maintainer_agent(model_name, **kwargs)
         elif agent_type == "user":
@@ -138,16 +118,7 @@ class AgentFactory:
         user_model: Optional[str] = None,
         judge_model: Optional[str] = None
     ) -> Dict[str, BaseAgent]:
-        """Create a complete set of agents for CAB evaluation.
-        
-        Args:
-            maintainer_model: Model for maintainer agent
-            user_model: Model for user agent
-            judge_model: Model for judge agent
-            
-        Returns:
-            Dictionary mapping agent types to agent instances
-        """
+        """Create a complete set of agents for CAB evaluation."""
         return {
             "maintainer": self.create_maintainer_agent(maintainer_model),
             "user": self.create_user_agent(user_model),
@@ -158,15 +129,7 @@ class AgentFactory:
         self,
         agent_model_mapping: Dict[str, str]
     ) -> Dict[str, BaseAgent]:
-        """Create agents with custom model mapping.
-        
-        Args:
-            agent_model_mapping: Dictionary mapping agent types to model names
-                                Example: {"maintainer": "sonnet37", "user": "haiku", "judge": "sonnet"}
-            
-        Returns:
-            Dictionary mapping agent types to agent instances
-        """
+        """Create agents with custom model mapping."""
         agents = {}
         
         for agent_type in ["maintainer", "user", "judge"]:

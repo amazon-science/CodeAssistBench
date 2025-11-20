@@ -73,13 +73,15 @@ __all__ = [
 
 def create_cab_evaluator(
     config_path: str = None,
-    agent_model_mapping: dict = None
+    agent_model_mapping: dict = None,
+    agent_framework_mapping: dict = None
 ) -> CABWorkflow:
     """Create a CAB evaluator with optional configuration.
     
     Args:
         config_path: Path to configuration file
         agent_model_mapping: Optional mapping of agents to models
+        agent_framework_mapping: Optional mapping of agents to frameworks (e.g., {"maintainer": "openhands"})
         
     Returns:
         Configured CABWorkflow instance
@@ -96,11 +98,30 @@ def create_cab_evaluator(
         ...         "judge": "sonnet"
         ...     }
         ... )
+        
+        >>> # Use OpenHands for maintainer agent
+        >>> evaluator = create_cab_evaluator(
+        ...     agent_model_mapping={
+        ...         "maintainer": "claude-3.5-sonnet",
+        ...         "user": "haiku",
+        ...         "judge": "haiku"
+        ...     },
+        ...     agent_framework_mapping={
+        ...         "maintainer": "openhands"
+        ...     }
+        ... )
     """
     if config_path:
         config = CABConfig.from_file(config_path)
     else:
         config = CABConfig()
+    
+    # Apply agent framework mapping if provided
+    if agent_framework_mapping:
+        if "maintainer" in agent_framework_mapping:
+            config.agent_framework.maintainer_framework = agent_framework_mapping["maintainer"]
+        # Note: Currently only maintainer framework is configurable
+        # user and judge agents always use Strands framework
     
     # Validate and setup
     config.validate()

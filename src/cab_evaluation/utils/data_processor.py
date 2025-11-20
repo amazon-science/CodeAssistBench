@@ -622,7 +622,7 @@ class DataProcessor:
         # Remove existing handlers
         issue_logger.handlers = []
         
-        # Create file handler
+        # Create file handler with explicit unbuffered mode
         file_handler = logging.FileHandler(log_path, mode='w', encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
         
@@ -650,7 +650,24 @@ class DataProcessor:
         issue_logger.info("="*80)
         issue_logger.info("")
         
+        # Flush immediately after header
+        self.flush_issue_logger(issue_logger)
+        
         return issue_logger
+    
+    def flush_issue_logger(self, issue_logger: logging.Logger):
+        """Explicitly flush all handlers of an issue logger.
+        
+        Args:
+            issue_logger: Logger to flush
+        """
+        if issue_logger:
+            try:
+                for handler in issue_logger.handlers:
+                    if hasattr(handler, 'flush'):
+                        handler.flush()
+            except Exception as e:
+                logger.error(f"Error flushing issue logger: {e}")
     
     def cleanup_issue_logger(self, issue_logger: logging.Logger):
         """Cleanup issue-specific logger handlers.
@@ -665,6 +682,9 @@ class DataProcessor:
                 issue_logger.info("="*80)
                 issue_logger.info("End of CAB Evaluation Log")
                 issue_logger.info("="*80)
+                
+                # Final flush before closing
+                self.flush_issue_logger(issue_logger)
                 
                 # Close and remove handlers
                 for handler in issue_logger.handlers[:]:

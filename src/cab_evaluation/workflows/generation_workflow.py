@@ -34,11 +34,25 @@ class GenerationWorkflow:
         self.agent_factory = AgentFactory(self.config)
         self.repository_manager = RepositoryManager()
         self.docker_manager = DockerManager(self.config.docker)
+    
+    def _flush_logger(self, log: logging.Logger):
+        """Explicitly flush all handlers of a logger to ensure immediate writes.
+        
+        Args:
+            log: Logger instance to flush
+        """
+        try:
+            for handler in log.handlers:
+                if hasattr(handler, 'flush'):
+                    handler.flush()
+        except Exception as e:
+            logger.error(f"Error flushing logger: {e}")
         
     async def run_generation(
         self,
         issue_data: IssueData,
         agent_model_mapping: Optional[Dict[str, str]] = None,
+        agent_framework_mapping: Optional[Dict[str, str]] = None,
         issue_logger: Optional[logging.Logger] = None
     ) -> GenerationResult:
         """Run generation workflow for an issue.
@@ -46,6 +60,8 @@ class GenerationWorkflow:
         Args:
             issue_data: Issue data to process
             agent_model_mapping: Optional mapping of agent types to model names
+            agent_framework_mapping: Optional mapping of agent types to frameworks
+                                    Example: {"maintainer": "openhands"}
             issue_logger: Optional dedicated logger for this issue
             
         Returns:
@@ -55,15 +71,25 @@ class GenerationWorkflow:
         log = issue_logger or logger
         
         log.info(f"Starting generation workflow for issue: {issue_data.first_question.title}")
+        self._flush_logger(log)
         
-        # Create agents
-        if agent_model_mapping:
+        # Create agents with framework selection
+        if agent_framework_mapping:
+            agents = self._create_agents_with_frameworks(
+                agent_model_mapping, agent_framework_mapping, log
+            )
+        elif agent_model_mapping:
             agents = self.agent_factory.update_model_mapping(agent_model_mapping)
         else:
             agents = self.agent_factory.create_agent_set()
         
         maintainer_agent = agents["maintainer"]
         user_agent = agents["user"]
+        
+        # Track which framework is being used
+        framework_used = agent_framework_mapping.get("maintainer", "strands") if agent_framework_mapping else "strands"
+        log.info(f"🤖 Maintainer agent framework: {framework_used}")
+        self._flush_logger(log)
         
         # Reset call counter for this issue
         maintainer_agent.reset_call_counter(issue_data.id)
@@ -78,6 +104,7 @@ class GenerationWorkflow:
         )
         
         log.info(f"Selected commit for exploration: {selected_commit}")
+        self._flush_logger(log)
         
         # Clone repository
         repo_dir = self.repository_manager.clone_repository(repo_url, selected_commit)
@@ -87,11 +114,13 @@ class GenerationWorkflow:
         try:
             # Perform interactive exploration
             log.info("Starting interactive exploration")
+            self._flush_logger(log)
             initial_answer, exploration_history, exploration_log = await self._interactive_exploration(
                 repo_dir, question, maintainer_agent, issue_data.id, issue_logger
             )
             
             log.info(f"Exploration complete. Initial answer length: {len(initial_answer)}")
+            self._flush_logger(log)
             
             # Initialize conversation history
             conversation_history = [
@@ -109,12 +138,15 @@ class GenerationWorkflow:
             docker_results = None
             if issue_data.dockerfile:
                 log.info("Running initial Docker validation...")
+                self._flush_logger(log)
                 docker_results = await self._run_docker_validation(
                     issue_data, initial_answer, exploration_log, issue_logger
                 )
+                self._flush_logger(log)
             
             # Conduct conversation between agents
             log.info("Starting agent conversation")
+            self._flush_logger(log)
             final_conversation, total_rounds, final_satisfaction = await self._conduct_conversation(
                 repo_dir, issue_data, conversation_history, maintainer_agent, user_agent, docker_results, exploration_log, issue_logger
             )
@@ -187,12 +219,50 @@ class GenerationWorkflow:
             log.info(f"User satisfied: {result.user_satisfied}")
             log.info(f"Total conversation rounds: {total_rounds}")
             log.info(f"Total LLM calls: {sum(llm_call_stats.values())}")
+            self._flush_logger(log)
             
             return result
             
         finally:
             # Cleanup repository
             self.repository_manager.cleanup_repository(repo_dir)
+    
+    def _create_agents_with_frameworks(
+        self,
+        model_mapping: Optional[Dict[str, str]],
+        framework_mapping: Dict[str, str],
+        logger_instance: logging.Logger
+    ) -> Dict[str, Any]:
+        """Create agents with framework selection.
+        
+        Args:
+            model_mapping: Mapping of agent types to model names
+            framework_mapping: Mapping of agent types to frameworks
+            logger_instance: Logger instance for logging
+            
+        Returns:
+            Dictionary of agent instances
+        """
+        agents = {}
+        
+        # Create maintainer with framework selection
+        maintainer_framework = framework_mapping.get("maintainer", "strands")
+        maintainer_model = model_mapping.get("maintainer") if model_mapping else None
+        
+        logger_instance.info(f"Creating maintainer agent with framework: {maintainer_framework}")
+        
+        agents["maintainer"] = self.agent_factory.create_maintainer_agent(
+            model_name=maintainer_model,
+            framework=maintainer_framework,
+            openhands_config=self.config.agent_framework.openhands_config_path
+        )
+        
+        # User and judge always use Strands (only maintainer can use OpenHands)
+        user_model = model_mapping.get("user") if model_mapping else None
+        agents["user"] = self.agent_factory.create_user_agent(user_model)
+        
+        logger_instance.info("Agent set created with framework selection")
+        return agents
     
     async def _interactive_exploration(
         self,
@@ -227,6 +297,7 @@ class GenerationWorkflow:
         current_exploration_context = ""
         
         log.info(f"Starting interactive exploration with max {max_iterations} iterations")
+        self._flush_logger(log)
         
         for iteration in range(max_iterations):
             log.info(f"Exploration iteration {iteration+1}/{max_iterations}")
@@ -242,7 +313,7 @@ class GenerationWorkflow:
             # Get exploration plan from maintainer
             try:
                 exploration_plan = await maintainer_agent.call_llm(
-                    user_prompt, system_prompt, issue_id
+                    user_prompt, system_prompt, issue_id, issue_logger=log
                 )
                 
                 # Check for input too long error
@@ -253,6 +324,7 @@ class GenerationWorkflow:
                 
                 exploration_history.append(exploration_plan)
                 log.info(f"Received exploration plan ({len(exploration_plan)} chars)")
+                self._flush_logger(log)
                 
             except InputTooLongError:
                 log.warning("Input too long error in exploration. Stopping exploration.")
@@ -273,6 +345,7 @@ class GenerationWorkflow:
                 ]
                 
                 log.info(f"Executing {len(commands)} exploration commands")
+                self._flush_logger(log)
                 
                 for i, cmd in enumerate(commands):
                     try:
@@ -300,11 +373,13 @@ class GenerationWorkflow:
             # Check for answer
             if "ANSWER:" in exploration_plan:
                 log.info("Found ANSWER section. Extracting final answer.")
+                self._flush_logger(log)
                 answer_part = exploration_plan.split("ANSWER:", 1)[1].strip()
                 return answer_part, exploration_history, exploration_log
         
         # Generate final answer if no explicit answer found
         log.info("Generating final answer from exploration results")
+        self._flush_logger(log)
         final_system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.FINAL_ANSWER_GENERATION
         final_user_prompt = f"""
         Question: {question}
@@ -317,7 +392,7 @@ class GenerationWorkflow:
         
         try:
             final_answer = await maintainer_agent.call_llm(
-                final_user_prompt, final_system_prompt, issue_id
+                final_user_prompt, final_system_prompt, issue_id, issue_logger=log
             )
             
             if final_answer == "ERROR_INPUT_TOO_LONG":
@@ -406,6 +481,7 @@ class GenerationWorkflow:
                 
                 log.info(f"User response (round {round_num + 1}): {len(user_response)} chars")
                 log.info(f"Satisfaction status: {satisfaction_status}")
+                self._flush_logger(log)
                 
                 if user_satisfied:
                     log.info("User is fully satisfied. Ending conversation.")
@@ -431,7 +507,7 @@ class GenerationWorkflow:
                     # Docker-aware response
                     log.info("Using Docker-aware maintainer response")
                     maintainer_response, extra_files, modified_dockerfile = await maintainer_agent.generate_docker_response(
-                        repo_dir, issue_data, conversation_history
+                        repo_dir, issue_data, conversation_history, issue_logger=log
                     )
                     
                     # Update issue data with modifications
@@ -459,7 +535,7 @@ class GenerationWorkflow:
                 else:
                     # Standard response with exploration
                     maintainer_response, exploration_results = await maintainer_agent.generate_standard_response(
-                        repo_dir, issue_data, conversation_history
+                        repo_dir, issue_data, conversation_history, issue_logger=log
                     )
                     
                     conversation_history.append(
@@ -472,6 +548,7 @@ class GenerationWorkflow:
                         log.info(f"Conversation round {round_num + 1} exploration results logged")
                 
                 log.info(f"Maintainer response (round {round_num + 1}): {len(maintainer_response)} chars")
+                self._flush_logger(log)
                 
             except InputTooLongError:
                 log.warning("Input too long error in maintainer agent. Ending conversation.")
@@ -484,6 +561,7 @@ class GenerationWorkflow:
         
         total_rounds = round_num + 1
         log.info(f"Conversation completed after {total_rounds} rounds")
+        self._flush_logger(log)
         
         return conversation_history, total_rounds, final_satisfaction
     

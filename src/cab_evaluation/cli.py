@@ -39,6 +39,17 @@ async def run_dataset(args):
     config = None
     if args.config:
         config = CABConfig.from_file(args.config)
+    else:
+        config = CABConfig()
+    
+    # Update config with OpenHands settings if provided
+    if hasattr(args, 'openhands_config') and args.openhands_config:
+        config.agent_framework.openhands_config_path = args.openhands_config
+    
+    # Update max conversation rounds if provided via CLI
+    if hasattr(args, 'max_conversation_rounds') and args.max_conversation_rounds is not None:
+        config.workflow.max_conversation_rounds = args.max_conversation_rounds
+        logger.info(f"Setting max_conversation_rounds to {args.max_conversation_rounds} from CLI argument")
     
     # Parse agent model mapping
     agent_model_mapping = None
@@ -49,6 +60,16 @@ async def run_dataset(args):
             logger.error(f"Invalid JSON in agent_models: {e}")
             return 1
     
+    # Parse agent framework mapping
+    agent_framework_mapping = None
+    if hasattr(args, 'agent_framework') and args.agent_framework:
+        try:
+            agent_framework_mapping = json.loads(args.agent_framework)
+            logger.info(f"Using agent frameworks: {agent_framework_mapping}")
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in agent_framework: {e}")
+            return 1
+    
     # Run dataset processing
     try:
         evaluator = CABWorkflow(config)
@@ -57,6 +78,7 @@ async def run_dataset(args):
             target_language=args.language,
             output_dir=args.output_dir,
             agent_model_mapping=agent_model_mapping,
+            agent_framework_mapping=agent_framework_mapping,
             batch_size=args.batch_size,
             resume_processing=args.resume
         )
@@ -77,6 +99,17 @@ async def run_generation_dataset(args):
     config = None
     if args.config:
         config = CABConfig.from_file(args.config)
+    else:
+        config = CABConfig()
+    
+    # Update config with OpenHands settings if provided
+    if hasattr(args, 'openhands_config') and args.openhands_config:
+        config.agent_framework.openhands_config_path = args.openhands_config
+    
+    # Update max conversation rounds if provided via CLI
+    if hasattr(args, 'max_conversation_rounds') and args.max_conversation_rounds is not None:
+        config.workflow.max_conversation_rounds = args.max_conversation_rounds
+        logger.info(f"Setting max_conversation_rounds to {args.max_conversation_rounds} from CLI argument")
     
     # Parse agent model mapping
     agent_model_mapping = None
@@ -86,6 +119,23 @@ async def run_generation_dataset(args):
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in agent_models: {e}")
             return 1
+    
+    # Parse agent framework mapping
+    agent_framework_mapping = None
+    if hasattr(args, 'agent_framework') and args.agent_framework:
+        try:
+            agent_framework_mapping = json.loads(args.agent_framework)
+            logger.info(f"Using agent frameworks: {agent_framework_mapping}")
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in agent_framework: {e}")
+            return 1
+    
+    # Build complete framework mapping for tracking (including defaults)
+    complete_framework_mapping = {
+        "maintainer": agent_framework_mapping.get("maintainer", "strands") if agent_framework_mapping else "strands",
+        "user": agent_framework_mapping.get("user", "strands") if agent_framework_mapping else "strands",
+        "judge": agent_framework_mapping.get("judge", "strands") if agent_framework_mapping else "strands"
+    }
     
     # Create output filename if not specified
     if not args.output:
@@ -157,8 +207,12 @@ async def run_generation_dataset(args):
                 logger.info(f"Processing issue {i+1}/{len(issues_to_process)}: {issue_data.id} - {issue_data.first_question.title}")
                 
                 try:
-                    # Run generation workflow
-                    result = await generation_workflow.run_generation(issue_data, agent_model_mapping)
+                    # Run generation workflow with framework mapping
+                    result = await generation_workflow.run_generation(
+                        issue_data, 
+                        agent_model_mapping, 
+                        agent_framework_mapping
+                    )
                     
                     # Get original issue data for complete metadata preservation
                     original_issue = None
@@ -202,6 +256,7 @@ async def run_generation_dataset(args):
                             'workflow': 'generation_only',
                             'timestamp': datetime.now().isoformat(),
                             'agent_model_mapping': agent_model_mapping or {},
+                            'agent_framework_mapping': complete_framework_mapping,
                             'input_file': args.dataset_file,
                             'language_filter': args.language
                         }
@@ -423,6 +478,16 @@ async def run_evaluation_dataset(args):
                         # Use traditional single-iteration evaluation
                         evaluation_result = await evaluation_workflow.run_evaluation(generation_result, agent_model_mapping)
                     
+                    # Extract agent framework mapping from generation results (preserve what was used in generation)
+                    generation_framework_mapping = generation_dict.get('processing_metadata', {}).get('agent_framework_mapping', {})
+                    
+                    # Build complete framework mapping (add judge framework to generation mapping)
+                    complete_eval_framework_mapping = generation_framework_mapping.copy() if generation_framework_mapping else {
+                        "maintainer": "strands",
+                        "user": "strands"
+                    }
+                    complete_eval_framework_mapping["judge"] = "strands"  # Judge always uses strands
+                    
                     # Convert to dictionary with complete metadata
                     result_dict = {
                         # Core evaluation result data
@@ -501,6 +566,7 @@ async def run_evaluation_dataset(args):
                             'workflow': 'evaluation_iterative' if judge_config else 'evaluation_only',
                             'timestamp': datetime.now().isoformat(),
                             'agent_model_mapping': agent_model_mapping or {},
+                            'agent_framework_mapping': complete_eval_framework_mapping,
                             'input_file': args.generation_results_file,
                             'judge_config_used': (
                                 {
@@ -607,6 +673,14 @@ def main():
         "--config",
         help="Configuration file path"
     )
+    parser.add_argument(
+        "--agent-framework",
+        help='JSON mapping of agents to frameworks (e.g., \'{"maintainer": "openhands"}\')'
+    )
+    parser.add_argument(
+        "--openhands-config",
+        help="Path to OpenHands config.toml file (required if using OpenHands framework)"
+    )
     
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     
@@ -640,6 +714,19 @@ def main():
         "--agent-models",
         help='JSON mapping of agents to models'
     )
+    dataset_parser.add_argument(
+        "--agent-framework",
+        help='JSON mapping of agents to frameworks (e.g., \'{"maintainer": "openhands"}\')'
+    )
+    dataset_parser.add_argument(
+        "--openhands-config",
+        help="Path to OpenHands config.toml file (only used if maintainer uses OpenHands framework)"
+    )
+    dataset_parser.add_argument(
+        "--max-conversation-rounds",
+        type=int,
+        help="Maximum conversation rounds between maintainer and user agents (default: 2)"
+    )
     
     # Generation dataset command for JSONL files
     generation_dataset_parser = subparsers.add_parser("generation-dataset", help="Run generation workflow on JSONL dataset")
@@ -663,6 +750,19 @@ def main():
         "--resume",
         action="store_true",
         help="Resume processing (skip already processed issues)"
+    )
+    generation_dataset_parser.add_argument(
+        "--agent-framework",
+        help='JSON mapping of agents to frameworks (e.g., \'{"maintainer": "openhands"}\')'
+    )
+    generation_dataset_parser.add_argument(
+        "--openhands-config",
+        help="Path to OpenHands config.toml file (only used if maintainer uses OpenHands framework)"
+    )
+    generation_dataset_parser.add_argument(
+        "--max-conversation-rounds",
+        type=int,
+        help="Maximum conversation rounds between maintainer and user agents (default: 2)"
     )
     
     # Evaluation dataset command for JSONL files with generation results
