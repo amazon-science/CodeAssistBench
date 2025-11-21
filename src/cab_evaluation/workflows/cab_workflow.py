@@ -327,5 +327,7 @@ class CABWorkflow:
                 **cab_result.generation_result.prompt_cache,
                 **cab_result.evaluation_result.prompt_cache
             },
+            'agent_framework_used': cab_result.generation_result.agent_framework_used,
+            'qcli_metadata': cab_result.generation_result.qcli_metadata,
             'processing_metadata': cab_result.processing_metadata
         }

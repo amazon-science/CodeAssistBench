@@ -169,7 +169,7 @@ All agents now have access to:
 
 ## 🤖 Agent Frameworks
 
-CodeAssistBench supports two agent frameworks for the Maintainer agent:
+CodeAssistBench supports three agent frameworks for the Maintainer agent:
 
 ### **Strands (Default)**
 - ✅ Built-in, no extra installation
@@ -182,14 +182,35 @@ CodeAssistBench supports two agent frameworks for the Maintainer agent:
 - 🔧 Specialized for complex code generation tasks
 - 🔧 Uses OpenHands SDK for repository exploration
 
+### **Q-CLI (Optional Amazon Q)**
+- 🔧 Alternative framework for Maintainer agent only
+- 🔧 Uses Amazon Q CLI for AWS-native workflows
+- 🔧 Subprocess-based integration
+
 ### Installation
 
+**OpenHands:**
 ```bash
 # Install OpenHands support
 pip install -e .[openhands]
 
 # Set API key
 export ANTHROPIC_API_KEY="your-key-here"
+```
+
+**Q-CLI:**
+```bash
+# Install Q-CLI following AWS documentation
+# Verify installation
+q --version
+
+# Configure AWS credentials (if not already done)
+aws configure
+
+# Test Q-CLI
+q chat --model claude-sonnet-4.5 "Hello"
+
+# No additional Python packages needed for Q-CLI
 ```
 
 ### CLI Usage
@@ -207,6 +228,13 @@ python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
   --agent-framework '{"maintainer": "openhands"}'
 ```
 
+**Q-CLI maintainer:**
+```bash
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "qcli"}'
+```
+
 ### Python API Usage
 
 ```python
@@ -222,6 +250,12 @@ evaluator = create_cab_evaluator(
     agent_model_mapping={"maintainer": "claude-sonnet-4-5-20250929", "user": "haiku", "judge": "sonnet37"},
     agent_framework_mapping={"maintainer": "openhands"}
 )
+
+# Q-CLI maintainer
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "qcli"}
+)
 ```
 
 ### Model Name Formats
@@ -230,31 +264,108 @@ evaluator = create_cab_evaluator(
 |-----------|--------|---------|
 | **Strands** | Short names | `"sonnet37"`, `"haiku"` |
 | **OpenHands** | Full model ID | `"claude-sonnet-4-5-20250929"` |
+| **Q-CLI** | Q-CLI model names | `"claude-sonnet-4.5"`, `"claude-haiku-4.5"` |
+
+**Q-CLI Available Models:**
+- `claude-sonnet-4.5`
+- `claude-sonnet-4`
+- `claude-haiku-4.5`
+- `qwen3-coder-480b`
+- `Auto` (default)
+
+Check available models: `q chat --model invalid 2>&1 | grep Available`
 
 ### Framework Comparison
 
-| Feature | Strands | OpenHands |
-|---------|---------|-----------|
-| **Installation** | Included | `pip install openhands` |
-| **Agent Support** | All 3 agents | Maintainer only |
-| **Speed** | Fast | Moderate |
-| **Best For** | General evaluation | Complex code tasks |
+| Feature | Strands | OpenHands | Q-CLI |
+|---------|---------|-----------|-------|
+| **Installation** | Included | `pip install openhands` | External CLI |
+| **Agent Support** | All 3 agents | Maintainer only | Maintainer only |
+| **Speed** | Fast | Moderate | Fast |
+| **Metrics** | Full token tracking | Full token tracking | Basic metrics only |
+| **Best For** | General evaluation | Complex code tasks | AWS Q integration |
 
 ### Troubleshooting
 
 **OpenHands not found:**
 ```bash
-pip install openhands
+pip install openhands openhands-sdk openhands-tools
 ```
 
-**API key not set:**
+**OpenHands API key not set:**
 ```bash
 export ANTHROPIC_API_KEY="your-key-here"
+```
+
+**Q-CLI not found:**
+```bash
+# Install Q-CLI following AWS documentation
+# Verify installation
+q --version
+
+# If command not found, ensure Q-CLI is in PATH
+which q
+```
+
+**Q-CLI timeout errors:**
+```python
+# Increase timeout in Python API
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4.5"},
+    agent_framework_mapping={"maintainer": "qcli"},
+    agent_framework_config={"qcli_timeout": 600}  # 10 minutes
+)
+```
+
+**Q-CLI model not available:**
+```bash
+# Check available models
+q chat --model invalid 2>&1 | grep Available
+
+# Use a supported model
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4.5"}' \
+  --agent-framework '{"maintainer": "qcli"}'
 ```
 
 **Import errors:**
 - System automatically falls back to Strands
 - No action needed
+
+---
+
+## Q-CLI Quick Reference
+
+### Setup
+```bash
+# Install Q-CLI (follow AWS docs), then verify
+q --version
+q chat --model claude-sonnet-4.5 "test"
+```
+
+### Usage
+```bash
+# CLI
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "qcli"}'
+
+# Python API
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "qcli"}
+)
+```
+
+### Models
+- `claude-sonnet-4.5` (recommended)
+- `claude-haiku-4.5` (fast)
+- `Auto` (default)
+
+### Limitations
+- No token usage tracking
+- No cache metrics
+- Basic metadata only (execution time, return code)
 
 ---
 

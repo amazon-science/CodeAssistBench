@@ -212,7 +212,9 @@ class GenerationWorkflow:
                 satisfaction_status=final_satisfaction["satisfaction_status"],
                 satisfaction_reason=final_satisfaction["satisfaction_reason"],
                 final_answer=final_answer,
-                prompt_cache=prompt_cache_metrics
+                prompt_cache=prompt_cache_metrics,
+                agent_framework_used=self.config.agent_framework_config.maintainer_framework,
+                qcli_metadata=maintainer_agent.get_qcli_metadata() if hasattr(maintainer_agent, 'get_qcli_metadata') else None
             )
             
             log.info(f"Generation workflow complete for issue {issue_data.id}")

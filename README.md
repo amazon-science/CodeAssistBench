@@ -16,9 +16,10 @@ CodeAssistBench implements a sophisticated **three-agent evaluation framework** 
 
 ### **Multi-Agent Architecture**
 - **🔧 Maintainer Agent**: Acts as experienced developer providing technical solutions
-  - **Framework Options**: Strands (default) or OpenHands (3rd party)
+  - **Framework Options**: Strands (default), OpenHands (3rd party), or Q-CLI (Amazon Q)
   - **Strands**: Built-in framework with comprehensive tools
   - **OpenHands**: Specialized for code generation and repository exploration
+  - **Q-CLI**: Amazon Q CLI integration for AWS-native workflows
 - **👤 User Agent**: Simulates end-users asking questions and validating responses (Strands only)
 - **⚖️ Judge Agent**: Evaluates solution quality and alignment with requirements (Strands only)
 - **🔄 Interactive Workflows**: Multi-turn conversations with context awareness
@@ -121,12 +122,36 @@ evaluator = create_cab_evaluator(
 )
 ```
 
+### **Optional: Q-CLI (Amazon Q CLI)**
+Alternative framework using Amazon Q CLI for the Maintainer agent.
+
+**Installation:**
+```bash
+# Install Q-CLI (follow AWS documentation)
+# No additional Python packages needed
+```
+
+**Usage Example:**
+```bash
+# CLI with Q-CLI maintainer
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "qcli"}'
+
+# Python API with Q-CLI maintainer
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "claude-sonnet-4.5", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "qcli"}
+)
+```
+
 **Framework Comparison:**
-| Feature | Strands (Default) | OpenHands |
-|---------|-------------------|-----------|
-| **Setup** | Included | `pip install openhands` |
-| **Agent Support** | All 3 agents | Maintainer only |
-| **Best For** | General evaluation | Complex code tasks |
+| Feature | Strands (Default) | OpenHands | Q-CLI |
+|---------|-------------------|-----------|-------|
+| **Setup** | Included | `pip install openhands` | External CLI |
+| **Agent Support** | All 3 agents | Maintainer only | Maintainer only |
+| **Best For** | General evaluation | Complex code tasks | AWS Q integration |
+| **Metrics** | Full token tracking | Full token tracking | Basic metrics only |
 
 See `examples/USAGE_GUIDE.md` for detailed usage and troubleshooting.
 

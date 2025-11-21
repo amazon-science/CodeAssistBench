@@ -716,7 +716,7 @@ def main():
     )
     dataset_parser.add_argument(
         "--agent-framework",
-        help='JSON mapping of agents to frameworks (e.g., \'{"maintainer": "openhands"}\')'
+        help='JSON mapping of agents to frameworks (e.g., \'{"maintainer": "openhands"}\' or \'{"maintainer": "qcli"}\')'
     )
     dataset_parser.add_argument(
         "--openhands-config",

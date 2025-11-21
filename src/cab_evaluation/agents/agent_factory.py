@@ -36,6 +36,24 @@ class AgentFactory:
         """Create a maintainer agent with framework selection."""
         model_name = model_name or self.config.default_maintainer_model
         
+        if framework.lower() == "qcli":
+            logger.info("🤖 Creating Q-CLI-based maintainer agent")
+            try:
+                from .qcli_maintainer_agent import QCLIMaintainerAgent
+                
+                return QCLIMaintainerAgent(
+                    model_name=model_name,
+                    config=self.config,
+                    prompt_manager=self.prompt_manager,
+                    qcli_path=self.config.agent_framework_config.qcli_path,
+                    timeout=self.config.agent_framework_config.qcli_timeout,
+                    **kwargs
+                )
+            except ImportError as e:
+                logger.error(f"❌ Q-CLI agent import failed: {e}")
+                logger.info("🔄 Falling back to Strands framework")
+                framework = "strands"
+        
         if framework.lower() == "openhands":
             logger.info("🤖 Creating OpenHands-based maintainer agent")
             try:

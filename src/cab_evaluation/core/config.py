@@ -42,6 +42,8 @@ class AgentFrameworkConfig:
     openhands_config_path: Optional[str] = None
     openhands_model_id: str = "anthropic/claude-3-5-sonnet-20241022"
     openhands_timeout: int = 1800  # 30 minutes
+    qcli_path: str = "q"
+    qcli_timeout: int = 300  # 5 minutes
 
 
 @dataclass
@@ -82,6 +84,7 @@ class CABConfig:
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     
     # Agent framework configuration
+    agent_framework_config: AgentFrameworkConfig = field(default_factory=AgentFrameworkConfig)
     agent_framework: AgentFrameworkConfig = field(default_factory=AgentFrameworkConfig)
     
     # Paths
