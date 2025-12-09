@@ -50,9 +50,9 @@ class AgentFrameworkConfig:
 class WorkflowConfig:
     """Configuration for workflow execution."""
     max_conversation_rounds: int = 10
-    max_exploration_iterations: int = 5
+    max_exploration_iterations: int = 30
     command_timeout: int = 300
-    overall_timeout: int = 600
+    overall_timeout: int = 1800
     batch_size: int = 10
     enable_parallel_processing: bool = False
 

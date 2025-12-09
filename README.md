@@ -352,7 +352,7 @@ async def test_evaluation():
     },
     "workflow": {
         "max_conversation_rounds": 15,
-        "max_exploration_iterations": 8,
+        "max_exploration_iterations": 30,
         "batch_size": 5
     },
     "docker": {
@@ -729,7 +729,7 @@ Issue Data → Repository Setup → Agent Initialization → Workflow Execution 
 {
   "workflow": {
     "max_conversation_rounds": 10,     // Maximum dialogue rounds
-    "max_exploration_iterations": 8,   // Repository exploration limit
+    "max_exploration_iterations": 30,  // Repository exploration limit
     "batch_size": 5,                  // Concurrent processing
     "timeout_seconds": 3600,          // Maximum workflow time
     "retry_attempts": 3               // Failed request retries
