@@ -38,7 +38,7 @@ class LLMService:
         self.bedrock_client = boto3.client(
             'bedrock-runtime', 
             config=bedrock_config, 
-            region_name='us-west-2'
+            region_name='us-east-1'
         )
         
         # Load environment variables for OpenAI

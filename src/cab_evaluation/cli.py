@@ -70,6 +70,19 @@ async def run_dataset(args):
             logger.error(f"Invalid JSON in agent_framework: {e}")
             return 1
     
+    # Parse custom agent config
+    custom_agent_config = None
+    if hasattr(args, 'custom_agent_config') and args.custom_agent_config:
+        try:
+            custom_agent_config = json.loads(args.custom_agent_config)
+            logger.info(f"Using custom agent config: {custom_agent_config}")
+            # Store in config for agent factory
+            if config.agent_framework_config:
+                config.agent_framework_config.custom_agent_config = custom_agent_config
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in custom_agent_config: {e}")
+            return 1
+    
     # Run dataset processing
     try:
         evaluator = CABWorkflow(config)
@@ -128,6 +141,19 @@ async def run_generation_dataset(args):
             logger.info(f"Using agent frameworks: {agent_framework_mapping}")
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON in agent_framework: {e}")
+            return 1
+    
+    # Parse custom agent config
+    custom_agent_config = None
+    if hasattr(args, 'custom_agent_config') and args.custom_agent_config:
+        try:
+            custom_agent_config = json.loads(args.custom_agent_config)
+            logger.info(f"Using custom agent config: {custom_agent_config}")
+            # Store in config for agent factory
+            if config.agent_framework_config:
+                config.agent_framework_config.custom_agent_config = custom_agent_config
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in custom_agent_config: {e}")
             return 1
     
     # Build complete framework mapping for tracking (including defaults)
@@ -727,6 +753,10 @@ def main():
         type=int,
         help="Maximum conversation rounds between maintainer and user agents (default: 2)"
     )
+    dataset_parser.add_argument(
+        "--custom-agent-config",
+        help='JSON configuration for custom agent (e.g., \'{"type": "cli", "command": "my-agent", "timeout": 300}\')'
+    )
     
     # Generation dataset command for JSONL files
     generation_dataset_parser = subparsers.add_parser("generation-dataset", help="Run generation workflow on JSONL dataset")
@@ -763,6 +793,10 @@ def main():
         "--max-conversation-rounds",
         type=int,
         help="Maximum conversation rounds between maintainer and user agents (default: 2)"
+    )
+    generation_dataset_parser.add_argument(
+        "--custom-agent-config",
+        help='JSON configuration for custom agent (e.g., \'{"type": "cli", "command": "my-agent", "timeout": 300}\')'
     )
     
     # Evaluation dataset command for JSONL files with generation results

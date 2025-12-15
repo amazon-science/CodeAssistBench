@@ -74,7 +74,8 @@ __all__ = [
 def create_cab_evaluator(
     config_path: str = None,
     agent_model_mapping: dict = None,
-    agent_framework_mapping: dict = None
+    agent_framework_mapping: dict = None,
+    custom_agent_config = None
 ) -> CABWorkflow:
     """Create a CAB evaluator with optional configuration.
     
@@ -82,6 +83,7 @@ def create_cab_evaluator(
         config_path: Path to configuration file
         agent_model_mapping: Optional mapping of agents to models
         agent_framework_mapping: Optional mapping of agents to frameworks (e.g., {"maintainer": "openhands"})
+        custom_agent_config: Optional custom agent configuration (CustomAgentConfig or dict)
         
     Returns:
         Configured CABWorkflow instance
@@ -110,6 +112,18 @@ def create_cab_evaluator(
         ...         "maintainer": "openhands"
         ...     }
         ... )
+        
+        >>> # Use custom agent for maintainer
+        >>> from cab_evaluation.core.config import CustomAgentConfig
+        >>> custom_config = CustomAgentConfig(
+        ...     type="cli",
+        ...     command="./my_agent.py",
+        ...     timeout=300
+        ... )
+        >>> evaluator = create_cab_evaluator(
+        ...     agent_framework_mapping={"maintainer": "custom"},
+        ...     custom_agent_config=custom_config
+        ... )
     """
     if config_path:
         config = CABConfig.from_file(config_path)
@@ -123,8 +137,13 @@ def create_cab_evaluator(
         # Note: Currently only maintainer framework is configurable
         # user and judge agents always use Strands framework
     
+    # Store custom agent config if provided
+    if custom_agent_config:
+        config.agent_framework.custom_agent_config = custom_agent_config
+    
     # Validate and setup
     config.validate()
     config.setup_directories()
     
+    # Note: agent_model_mapping is passed to workflow methods, not to __init__
     return CABWorkflow(config)

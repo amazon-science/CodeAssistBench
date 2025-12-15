@@ -3,7 +3,7 @@
 import os
 import json
 from dataclasses import dataclass, field, asdict
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from pathlib import Path
 import logging
 
@@ -36,6 +36,44 @@ class DockerConfig:
 
 
 @dataclass
+class CustomAgentConfig:
+    """Configuration for custom agents."""
+    type: str  # "cli" | "docker" | "python_class"
+    
+    # CLI-specific
+    command: Optional[str] = None
+    args: Optional[List[str]] = None
+    
+    # Docker-specific
+    image: Optional[str] = None
+    mount_repo: bool = True
+    container_args: Optional[List[str]] = None
+    
+    # Python class-specific
+    module_path: Optional[str] = None
+    class_name: Optional[str] = None
+    init_args: Optional[Dict[str, Any]] = None
+    
+    # Common
+    timeout: int = 300
+    working_directory: Optional[str] = None
+    max_retries: int = 3
+    
+    # Metrics configuration
+    metrics: Dict[str, Any] = field(default_factory=dict)
+    
+    def validate(self):
+        """Validate configuration based on type."""
+        if self.type == "cli" and not self.command:
+            raise ValueError("CLI agent requires 'command' field")
+        elif self.type == "docker" and not self.image:
+            raise ValueError("Docker agent requires 'image' field")
+        elif self.type == "python_class":
+            if not self.module_path or not self.class_name:
+                raise ValueError("Python agent requires 'module_path' and 'class_name'")
+
+
+@dataclass
 class AgentFrameworkConfig:
     """Configuration for agent framework selection."""
     maintainer_framework: str = "strands"
@@ -44,6 +82,7 @@ class AgentFrameworkConfig:
     openhands_timeout: int = 1800  # 30 minutes
     qcli_path: str = "q"
     qcli_timeout: int = 300  # 5 minutes
+    custom_agent_config: Optional[Dict[str, Any]] = None
 
 
 @dataclass
@@ -113,13 +152,13 @@ class CABConfig:
             ),
             "sonnet": ModelConfig(
                 name="sonnet",
-                model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+                model_id="us.anthropic.claude-3-5-sonnet-20241022-v2:0",
                 max_tokens=120000,
                 provider="bedrock"
             ),
             "sonnet37": ModelConfig(
                 name="sonnet37",
-                model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+                model_id="us.anthropic.claude-3-5-sonnet-20241022-v2:0",
                 max_tokens=120000,
                 provider="bedrock"
             ),

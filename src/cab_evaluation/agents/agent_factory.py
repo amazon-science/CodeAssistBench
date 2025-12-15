@@ -31,10 +31,37 @@ class AgentFactory:
         model_name: Optional[str] = None,
         framework: str = "strands",
         openhands_config: Optional[str] = None,
+        custom_agent_config: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> BaseAgent:
         """Create a maintainer agent with framework selection."""
         model_name = model_name or self.config.default_maintainer_model
+        
+        if framework.lower() == "custom":
+            logger.info("🎨 Creating Custom maintainer agent")
+            
+            if not custom_agent_config:
+                raise ValueError(
+                    "custom_agent_config required for custom framework. "
+                    "Provide via --custom-agent-config CLI argument or custom_agent_config parameter."
+                )
+            
+            try:
+                from .custom_maintainer_agent import CustomMaintainerAgent
+                
+                return CustomMaintainerAgent(
+                    custom_config=custom_agent_config,
+                    model_name=model_name,
+                    config=self.config,
+                    prompt_manager=self.prompt_manager,
+                    **kwargs
+                )
+            except ImportError as e:
+                logger.error(f"❌ Custom agent import failed: {e}")
+                raise
+            except Exception as e:
+                logger.error(f"❌ Custom agent creation failed: {e}")
+                raise
         
         if framework.lower() == "qcli":
             logger.info("🤖 Creating Q-CLI-based maintainer agent")

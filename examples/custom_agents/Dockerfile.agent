@@ -1,0 +1,37 @@
+# Example Dockerfile for custom agent in CodeAssistBench
+# This demonstrates how to build a Docker-based custom agent
+
+FROM python:3.9-slim
+
+# Install any dependencies your agent needs
+# Example: pip install anthropic openai ollama transformers
+
+# For this example, we'll keep it minimal
+RUN pip install --no-cache-dir requests
+
+# Copy the agent wrapper script
+COPY docker_agent_wrapper.py /app/agent.py
+RUN chmod +x /app/agent.py
+
+# Set working directory to where repo will be mounted
+WORKDIR /workspace
+
+# Run the agent script
+ENTRYPOINT ["python3", "/app/agent.py"]
+
+# Build instructions:
+# docker build -f examples/custom_agents/Dockerfile.agent -t cab-custom-agent:latest examples/custom_agents/
+
+# Usage with CodeAssistBench:
+# python -m cab_evaluation.cli generation-dataset examples/sample_dataset.jsonl \
+#   --agent-framework '{"maintainer": "custom"}' \
+#   --custom-agent-config '{
+#     "type": "docker",
+#     "image": "cab-custom-agent:latest",
+#     "mount_repo": true,
+#     "timeout": 600,
+#     "metrics": {
+#       "enabled": true,
+#       "expected_fields": ["execution_time", "input_tokens", "output_tokens"]
+#     }
+#   }'

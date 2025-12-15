@@ -146,14 +146,116 @@ evaluator = create_cab_evaluator(
 ```
 
 **Framework Comparison:**
-| Feature | Strands (Default) | OpenHands | Q-CLI |
-|---------|-------------------|-----------|-------|
-| **Setup** | Included | `pip install openhands` | External CLI |
-| **Agent Support** | All 3 agents | Maintainer only | Maintainer only |
-| **Best For** | General evaluation | Complex code tasks | AWS Q integration |
-| **Metrics** | Full token tracking | Full token tracking | Basic metrics only |
+| Feature | Strands (Default) | OpenHands | Q-CLI | Custom |
+|---------|-------------------|-----------|-------|--------|
+| **Setup** | Included | `pip install openhands` | External CLI | User-provided |
+| **Agent Support** | All 3 agents | Maintainer only | Maintainer only | Maintainer only |
+| **Best For** | General evaluation | Complex code tasks | AWS Q integration | Your own agents |
+| **Metrics** | Full token tracking | Full token tracking | Basic metrics only | User-configurable |
 
 See `examples/USAGE_GUIDE.md` for detailed usage and troubleshooting.
+
+### **Custom Agents (Bring Your Own)**
+Use your own locally-built agents as maintainers in CodeAssistBench evaluations. Supports three integration types with automatic retry logic and metrics validation.
+
+**Supported Agent Types:**
+1. **CLI Agents**: Executable commands (Python scripts, binaries, shell scripts)
+2. **Docker Agents**: Containerized agents with isolated environments
+3. **Python Class Agents**: Python modules with defined interface methods
+
+**Quick Example - CLI Agent:**
+```bash
+# Run with custom CLI agent
+python -m cab_evaluation.cli dataset examples/sample_dataset.jsonl \
+  --agent-models '{"maintainer": "custom", "user": "haiku", "judge": "sonnet37"}' \
+  --agent-framework '{"maintainer": "custom"}' \
+  --custom-agent-config '{
+    "type": "cli",
+    "command": "./my_agent.py",
+    "timeout": 300,
+    "expected_fields": ["response", "exploration_commands"]
+  }'
+```
+
+**Configuration Schema:**
+```json
+{
+  "type": "cli|docker|python",
+  "command": "path/to/executable",           // CLI only
+  "docker_image": "my-agent:latest",         // Docker only  
+  "python_module_path": "path/to/module.py", // Python only
+  "class_name": "MyAgent",                   // Python only
+  "timeout": 300,
+  "max_retries": 3,
+  "expected_fields": ["response", "exploration_commands", "metrics"]
+}
+```
+
+**Python API with Custom Agent:**
+```python
+from cab_evaluation import create_cab_evaluator
+from cab_evaluation.core.config import CustomAgentConfig
+
+# Configure custom CLI agent
+custom_config = CustomAgentConfig(
+    type="cli",
+    command="./examples/custom_agents/example_cli_agent.py",
+    timeout=300,
+    expected_fields=["response", "exploration_commands"]
+)
+
+# Create evaluator with custom maintainer
+evaluator = create_cab_evaluator(
+    agent_model_mapping={"maintainer": "custom", "user": "haiku", "judge": "sonnet37"},
+    agent_framework_mapping={"maintainer": "custom"},
+    custom_agent_config=custom_config
+)
+
+# Run evaluation - custom agent handles maintainer role
+result = await evaluator.run_complete_evaluation(issue_data)
+```
+
+**Key Features:**
+- **🔄 Automatic Retry Logic**: 3 attempts with exponential backoff (1s, 2s, 4s)
+- **✅ Metrics Validation**: Validates expected fields in agent responses
+- **🎯 Priority Handling**: CLI → Docker → Python (based on use case)
+- **🔧 Flexible Integration**: No CodeAssistBench code modification required
+- **📊 Standard Interface**: JSON-based communication protocol
+
+**Creating Custom Agents:**
+
+See `examples/custom_agents/README.md` for comprehensive examples of all three agent types:
+- `example_cli_agent.py` - CLI executable agent
+- `docker_agent_wrapper.py` + `Dockerfile.agent` - Docker container agent  
+- `example_python_agent.py` - Python class agent with multiple examples
+
+**Communication Protocol:**
+```json
+// Input to agent
+{
+  "prompt": "User's question or issue description",
+  "system_prompt": "System instructions for agent behavior",
+  "repo_dir": "/path/to/repository",
+  "issue_data": { /* complete issue context */ }
+}
+
+// Expected output from agent
+{
+  "response": "Agent's text response to the prompt",
+  "exploration_commands": ["command1", "command2"],  // Optional
+  "exploration_results": ["result1", "result2"],     // Optional
+  "metrics": {                                       // Optional
+    "custom_metric1": "value1",
+    "token_count": 1500
+  }
+}
+```
+
+**Benefits:**
+- ✅ Test your own agent implementations in CodeAssistBench framework
+- ✅ Compare custom agents against Strands/OpenHands/Q-CLI baselines  
+- ✅ Leverage CAB's evaluation infrastructure (User, Judge, Docker validation)
+- ✅ Maintain consistent evaluation methodology across different agents
 
 ---
 

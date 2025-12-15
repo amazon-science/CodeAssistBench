@@ -253,13 +253,24 @@ class GenerationWorkflow:
         
         logger_instance.info(f"Creating maintainer agent with framework: {maintainer_framework}")
         
+        # Get custom agent config if using custom framework
+        custom_agent_config = None
+        if maintainer_framework == "custom":
+            custom_agent_config = self.config.agent_framework_config.custom_agent_config
+            if not custom_agent_config:
+                raise ValueError(
+                    "Custom framework selected but no custom_agent_config provided. "
+                    "Use --custom-agent-config CLI argument."
+                )
+        
         agents["maintainer"] = self.agent_factory.create_maintainer_agent(
             model_name=maintainer_model,
             framework=maintainer_framework,
-            openhands_config=self.config.agent_framework.openhands_config_path
+            openhands_config=self.config.agent_framework.openhands_config_path,
+            custom_agent_config=custom_agent_config
         )
         
-        # User and judge always use Strands (only maintainer can use OpenHands)
+        # User and judge always use Strands (only maintainer can use custom/OpenHands/Q-CLI)
         user_model = model_mapping.get("user") if model_mapping else None
         agents["user"] = self.agent_factory.create_user_agent(user_model)
         
