@@ -44,7 +44,8 @@ class CABWorkflow:
         issue_data: IssueData,
         agent_model_mapping: Optional[Dict[str, str]] = None,
         agent_framework_mapping: Optional[Dict[str, str]] = None,
-        issue_logger: Optional[logging.Logger] = None
+        issue_logger: Optional[logging.Logger] = None,
+        enable_ast_tools: bool = True
     ) -> CABResult:
         """Run complete CAB evaluation workflow."""
         log = issue_logger or logger
@@ -62,7 +63,8 @@ class CABWorkflow:
             log.info("=== STARTING GENERATION WORKFLOW ===")
             self._flush_logger(log)
             generation_result = await self.generation_workflow.run_generation(
-                issue_data, agent_model_mapping, agent_framework_mapping, issue_logger=issue_logger
+                issue_data, agent_model_mapping, agent_framework_mapping, issue_logger=issue_logger,
+                enable_ast_tools=enable_ast_tools
             )
             log.info("=== GENERATION WORKFLOW COMPLETE ===")
             self._flush_logger(log)
@@ -128,7 +130,8 @@ class CABWorkflow:
         agent_model_mapping: Optional[Dict[str, str]] = None,
         agent_framework_mapping: Optional[Dict[str, str]] = None,
         batch_size: Optional[int] = None,
-        resume_processing: bool = True
+        resume_processing: bool = True,
+        enable_ast_tools: bool = True
     ) -> Dict[str, Any]:
         """Process complete dataset through CAB evaluation."""
         batch_size = batch_size or self.config.workflow.batch_size
@@ -181,7 +184,8 @@ class CABWorkflow:
                     issue_data, 
                     agent_model_mapping,
                     agent_framework_mapping,
-                    issue_logger=issue_logger
+                    issue_logger=issue_logger,
+                    enable_ast_tools=enable_ast_tools
                 )
                 
                 result_dict = self._cab_result_to_dict(cab_result)

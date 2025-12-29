@@ -80,7 +80,8 @@ async def run_dataset(args):
             agent_model_mapping=agent_model_mapping,
             agent_framework_mapping=agent_framework_mapping,
             batch_size=args.batch_size,
-            resume_processing=args.resume
+            resume_processing=args.resume,
+            enable_ast_tools=not getattr(args, 'disable_ast_tools', False)
         )
         
         logger.info(f"Dataset processing complete: {summary}")
@@ -211,7 +212,9 @@ async def run_generation_dataset(args):
                     result = await generation_workflow.run_generation(
                         issue_data, 
                         agent_model_mapping, 
-                        agent_framework_mapping
+                        agent_framework_mapping,
+                        enable_ast_tools=not getattr(args, 'disable_ast_tools', False),
+                        custom_system_prompt_path=getattr(args, 'ast_system_prompt', None)
                     )
                     
                     # Get original issue data for complete metadata preservation
@@ -727,6 +730,17 @@ def main():
         type=int,
         help="Maximum conversation rounds between maintainer and user agents (default: 2)"
     )
+    dataset_parser.add_argument(
+        "--disable-ast-tools",
+        action="store_true",
+        help="Disable AST tools (read_code, edit_code) for OpenHands maintainer agent"
+    )
+    dataset_parser.add_argument(
+        "--ast-system-prompt",
+        type=str,
+        default=None,
+        help="Path to custom system prompt template for AST-focused OpenHands agent"
+    )
     
     # Generation dataset command for JSONL files
     generation_dataset_parser = subparsers.add_parser("generation-dataset", help="Run generation workflow on JSONL dataset")
@@ -763,6 +777,11 @@ def main():
         "--max-conversation-rounds",
         type=int,
         help="Maximum conversation rounds between maintainer and user agents (default: 2)"
+    )
+    generation_dataset_parser.add_argument(
+        "--disable-ast-tools",
+        action="store_true",
+        help="Disable AST tools (read_code, edit_code) for OpenHands maintainer agent"
     )
     
     # Evaluation dataset command for JSONL files with generation results

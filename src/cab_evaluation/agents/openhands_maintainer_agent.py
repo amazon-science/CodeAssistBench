@@ -24,14 +24,34 @@ class OpenHandsMaintainerAgent(BaseAgent):
         config_file: Optional[str] = None,
         config=None,
         prompt_manager=None,
+        enable_ast_tools: bool = True,
+        custom_system_prompt_path: Optional[str] = None,
         **kwargs
     ):
-        """Initialize OpenHands maintainer agent."""
+        """Initialize OpenHands maintainer agent.
+        
+        Args:
+            enable_ast_tools: If True, include custom read_code/edit_code tools
+            custom_system_prompt_path: Absolute path to custom system prompt template (.j2)
+        """
+        self.custom_system_prompt_path = custom_system_prompt_path
         # Store OpenHands-specific attributes
         self.workspace_base = tempfile.mkdtemp(prefix="openhands_cab_")
         self._is_openhands = True
         self._oh_agent = None  # Will be initialized lazily
         self._oh_llm = None
+        self.enable_ast_tools = enable_ast_tools
+        if not hasattr(self, 'custom_system_prompt_path'):
+            self.custom_system_prompt_path = custom_system_prompt_path
+        
+        # Token usage tracking
+        self._token_usage = {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "reasoning_tokens": 0,
+            "total_cost_usd": 0.0,
+            "cache_hit_percent": 0.0
+        }
         
         # Initialize parent
         from ..core.config import CABConfig
@@ -56,7 +76,7 @@ class OpenHandsMaintainerAgent(BaseAgent):
         
         self._validate_openhands_sdk()
         
-        logger.info(f"🤖 OpenHands SDK maintainer agent initialized with model: {model_name}")
+        logger.info(f"🤖 OpenHands SDK maintainer agent initialized with model: {model_name} (AST tools: {enable_ast_tools})")
         logger.info(f"📁 Workspace: {self.workspace_base}")
     
     def _validate_openhands_sdk(self):
@@ -74,6 +94,17 @@ class OpenHandsMaintainerAgent(BaseAgent):
             )
             logger.error(f"❌ {error_msg}")
             raise AgentError(error_msg, agent_type="openhands_maintainer")
+        
+        # Validate custom AST tools availability
+        if self.enable_ast_tools:
+            try:
+                from ..utils.openhands_tools import OPENHANDS_AVAILABLE
+                if OPENHANDS_AVAILABLE:
+                    logger.info("✅ Custom AST tools (read_code, edit_code) available")
+                else:
+                    logger.warning("⚠️ OpenHands SDK not available for custom AST tools")
+            except ImportError as e:
+                logger.warning(f"⚠️ Custom AST tools not available: {e}")
     
     def _initialize_openhands_agent(self):
         """Initialize OpenHands agent and LLM."""
@@ -84,37 +115,62 @@ class OpenHandsMaintainerAgent(BaseAgent):
             from openhands.sdk import Agent, LLM, Tool
             from openhands.tools.terminal import TerminalTool
             from openhands.tools.file_editor import FileEditorTool
-            from ..utils.openhands_utils import validate_openhands_config
+            from ..utils.openhands_utils import validate_openhands_config, is_bedrock_model
             
-            # Validate configuration and get API key
+            # Validate configuration and get API key (None for Bedrock)
             api_key = validate_openhands_config(self.model_name)
             
             # Ensure model name has proper format for litellm
             model_name = self._normalize_model_name(self.model_name)
             logger.info(f"🔧 Normalized model name: {self.model_name} -> {model_name}")
             
-            # Create LLM
-            self._oh_llm = LLM(
-                model=model_name,
-                api_key=api_key,
-            )
+            # Create LLM - Bedrock uses AWS env vars, others use api_key
+            if api_key is None:  # Bedrock model
+                self._oh_llm = LLM(model=model_name)
+            else:
+                self._oh_llm = LLM(model=model_name, api_key=api_key)
             
             if not self._oh_llm:
                 raise AgentError("LLM initialization failed", agent_type="openhands_maintainer")
             
-            # Create Agent with tools
-            self._oh_agent = Agent(
-                llm=self._oh_llm,
-                tools=[
-                    Tool(name=TerminalTool.name),
-                    Tool(name=FileEditorTool.name),
-                ],
-            )
+            # Create Agent with tools (AST tools first to encourage their use)
+            tools = []
+            
+            # Add custom AST tools first if enabled
+            if self.enable_ast_tools:
+                try:
+                    from ..utils.openhands_tools import register_ast_tools, OPENHANDS_AVAILABLE
+                    if OPENHANDS_AVAILABLE:
+                        register_ast_tools()
+                        tools.append(Tool(name="read_code"))
+                        tools.append(Tool(name="edit_code"))
+                        logger.info("✅ Custom AST tools (read_code, edit_code) registered")
+                    else:
+                        logger.warning("⚠️ OpenHands SDK not available for custom tools")
+                except Exception as e:
+                    logger.warning(f"⚠️ Failed to register custom AST tools: {e}")
+            
+            # Add standard tools after AST tools
+            tools.append(Tool(name=TerminalTool.name))
+            tools.append(Tool(name=FileEditorTool.name))
+            
+            # Build agent kwargs
+            agent_kwargs = {
+                "llm": self._oh_llm,
+                "tools": tools,
+            }
+            
+            # Use custom system prompt if provided
+            if self.custom_system_prompt_path:
+                agent_kwargs["system_prompt_filename"] = self.custom_system_prompt_path
+                logger.info(f"📝 Using custom system prompt: {self.custom_system_prompt_path}")
+            
+            self._oh_agent = Agent(**agent_kwargs)
             
             if not self._oh_agent:
                 raise AgentError("Agent initialization failed", agent_type="openhands_maintainer")
             
-            logger.info(f"✅ OpenHands Agent initialized with {self.model_name}")
+            logger.info(f"✅ OpenHands Agent initialized with {self.model_name} ({len(tools)} tools)")
             
         except ValueError as e:
             raise AgentError(str(e), agent_type="openhands_maintainer")
@@ -134,17 +190,7 @@ class OpenHandsMaintainerAgent(BaseAgent):
         if 'commit_hash' in kwargs:
             repo_context += f"\nCommit hash: {kwargs['commit_hash']}"
         
-        # Add OpenHands-specific guidance
-        openhands_guidance = """
-
-OPENHANDS SDK CONTEXT:
-- You are operating within the OpenHands agent SDK framework
-- You have access to file system operations and command execution via tools
-- Focus on providing accurate, executable solutions
-- Use tools effectively to explore and understand the codebase
-"""
-        
-        return f"{base_prompt}{repo_context}{openhands_guidance}"
+        return f"{base_prompt}{repo_context}"
     
     async def call_llm(
         self,
@@ -179,9 +225,19 @@ OPENHANDS SDK CONTEXT:
         
         # Get repository directory from kwargs
         repo_dir = kwargs.get('repo_dir')
+        log.info(f"📂 repo_dir from kwargs: {repo_dir}")
+        
         if not repo_dir:
-            logger.warning("No repo_dir provided, using workspace base")
+            logger.debug("No repo_dir provided, using workspace base")
             repo_dir = self.workspace_base
+        
+        # Check if repo_dir exists and has content
+        repo_path = Path(repo_dir)
+        if repo_path.exists():
+            items = list(repo_path.iterdir())
+            log.info(f"📂 repo_dir exists with {len(items)} items: {[i.name for i in items[:5]]}...")
+        else:
+            log.warning(f"⚠️ repo_dir does not exist: {repo_dir}")
         
         try:
             # Initialize OpenHands agent
@@ -189,6 +245,7 @@ OPENHANDS SDK CONTEXT:
             
             # Prepare workspace
             workspace_dir = self._prepare_workspace(repo_dir, issue_id)
+            log.info(f"📂 workspace_dir: {workspace_dir}")
             
             # Execute using OpenHands SDK
             response = await self._execute_openhands_sdk(
@@ -215,26 +272,50 @@ OPENHANDS SDK CONTEXT:
     def _prepare_workspace(self, repo_dir: str, issue_id: str) -> str:
         """Prepare OpenHands workspace with repository content."""
         workspace_dir = Path(self.workspace_base) / f"workspace_{issue_id}"
+        
+        # Check if workspace already exists and has content
+        if workspace_dir.exists() and any(workspace_dir.iterdir()):
+            logger.info(f"✅ Reusing existing workspace: {workspace_dir}")
+            return str(workspace_dir)
+        
         workspace_dir.mkdir(parents=True, exist_ok=True)
         
-        if Path(repo_dir).exists():
-            logger.info(f"Copying repository to OpenHands workspace...")
-            for item in Path(repo_dir).iterdir():
-                if item.name == ".git":
-                    logger.info(f"⏭️  Skipping .git directory")
-                    continue
-            
-                try:
-                    if item.is_dir():
-                        shutil.copytree(item, workspace_dir / item.name, dirs_exist_ok=True)
-                    else:
-                        shutil.copy2(item, workspace_dir / item.name)
-                except Exception as e:
-                    logger.warning(f"⚠️  Failed to copy {item.name}: {e}")
+        repo_path = Path(repo_dir)
+        if not repo_path.exists():
+            logger.warning(f"⚠️ Repository directory not found: {repo_dir}")
+            return str(workspace_dir)
         
-            logger.info(f"✅ Repository copied to {workspace_dir}")
+        # Check if repo_dir has content
+        repo_items = list(repo_path.iterdir())
+        if not repo_items:
+            logger.warning(f"⚠️ Repository directory is empty: {repo_dir}")
+            return str(workspace_dir)
+        
+        logger.info(f"📁 Copying {len(repo_items)} items from {repo_dir} to workspace...")
+        
+        copied_count = 0
+        for item in repo_items:
+            if item.name == ".git":
+                continue
+            
+            try:
+                dest = workspace_dir / item.name
+                if item.is_dir():
+                    shutil.copytree(item, dest, dirs_exist_ok=True)
+                else:
+                    shutil.copy2(item, dest)
+                copied_count += 1
+            except Exception as e:
+                logger.warning(f"⚠️ Failed to copy {item.name}: {e}")
+        
+        # Verify copy
+        workspace_items = list(workspace_dir.iterdir())
+        logger.info(f"✅ Copied {copied_count} items. Workspace now has {len(workspace_items)} items")
+        
+        if workspace_items:
+            logger.info(f"📂 Workspace contents: {[i.name for i in workspace_items[:10]]}...")
         else:
-            logger.warning(f"Repository directory not found: {repo_dir}")
+            logger.error(f"❌ Workspace is empty after copy!")
         
         return str(workspace_dir)
     
@@ -277,6 +358,10 @@ OPENHANDS SDK CONTEXT:
                 status = conversation.run()
             
             stdout_content = captured_stdout.getvalue()
+            
+            # Parse and accumulate token usage from stdout
+            self._parse_token_usage(stdout_content, issue_logger=log)
+            
             response = self._extract_response_from_stdout(stdout_content, issue_logger=log)
             
             if response == "OpenHands conversation completed but no response extracted.":
@@ -292,7 +377,53 @@ OPENHANDS SDK CONTEXT:
         except Exception as e:
             log.error(f"❌ OpenHands SDK execution failed: {e}")
             self._flush_logger(log)
+            
+            # Check for max_tokens/context length error - return special marker to end conversation
+            error_str = str(e).lower()
+            if "max_tokens" in error_str or "max_completion_tokens" in error_str or "context length" in error_str:
+                log.warning("⚠️ Context length exceeded - ending conversation to proceed to judge evaluation")
+                self._flush_logger(log)
+                return "ERROR_CONTEXT_LENGTH_EXCEEDED"
+            
             raise AgentError(f"OpenHands SDK error: {e}", agent_type="openhands_maintainer")
+    
+    def _parse_token_usage(self, stdout_content: str, issue_logger=None):
+        """Parse token usage from OpenHands stdout and accumulate."""
+        import re
+        log = issue_logger if issue_logger else logger
+        
+        # Pattern: Tokens: ↑ input 5.58K • cache hit 20.63% • reasoning 320 • ↓ output 330 • $ 0.0089
+        pattern = r'Tokens: ↑ input ([\d.]+)K? • cache hit ([\d.]+|N/A)%? •\s*(?:reasoning (\d+) •)?\s*↓ output ([\d.]+)K? • \$ ([\d.]+)'
+        
+        for match in re.finditer(pattern, stdout_content):
+            try:
+                input_str = match.group(1)
+                input_tokens = float(input_str) * 1000 if 'K' in match.group(0).split('input')[1].split('•')[0] else float(input_str)
+                
+                cache_hit = 0.0
+                if match.group(2) != 'N/A':
+                    cache_hit = float(match.group(2))
+                
+                reasoning_tokens = int(match.group(3)) if match.group(3) else 0
+                
+                output_str = match.group(4)
+                output_tokens = float(output_str) * 1000 if 'K' in match.group(0).split('output')[1].split('•')[0] else float(output_str)
+                
+                cost = float(match.group(5))
+                
+                self._token_usage["input_tokens"] += int(input_tokens)
+                self._token_usage["output_tokens"] += int(output_tokens)
+                self._token_usage["reasoning_tokens"] += reasoning_tokens
+                self._token_usage["total_cost_usd"] += cost
+                self._token_usage["cache_hit_percent"] = cache_hit  # Use latest
+                
+                log.info(f"📊 Parsed token usage: input={int(input_tokens)}, output={int(output_tokens)}, reasoning={reasoning_tokens}, cost=${cost:.4f}")
+            except Exception as e:
+                log.warning(f"Failed to parse token line: {e}")
+    
+    def get_token_usage(self) -> Dict[str, Any]:
+        """Get accumulated token usage statistics."""
+        return self._token_usage.copy()
     
     def _extract_response_from_stdout(self, stdout_content: str, issue_logger=None) -> str:
         """Extract agent's final message from captured stdout."""
@@ -303,40 +434,84 @@ OPENHANDS SDK CONTEXT:
         log.info("=" * 80)
         log.info(f"Captured stdout length: {len(stdout_content)} chars")
         
+        # Log raw stdout for debugging (first 2000 chars)
+        if stdout_content:
+            log.info(f"Raw stdout preview:\n{stdout_content[:2000]}")
+        else:
+            log.warning("⚠️ stdout_content is empty")
+            return "OpenHands conversation completed but no response extracted."
+        
         try:
-            if "Message from Agent" not in stdout_content:
-                log.warning("⚠️  No 'Message from Agent' marker found in stdout")
-                return "OpenHands conversation completed but no response extracted."
+            # Try multiple extraction methods
             
-            parts = stdout_content.split("Message from Agent")
+            # Method 1: Look for "Message from Agent" marker
+            if "Message from Agent" in stdout_content:
+                parts = stdout_content.split("Message from Agent")
+                if len(parts) > 1:
+                    last_agent_section = parts[-1]
+                    lines = last_agent_section.split('\n')
+                    message_lines = []
+                    in_message = False
+                    
+                    for line in lines:
+                        if '─' in line and not in_message:
+                            in_message = True
+                            continue
+                        elif any(marker in line for marker in ['Tokens:', 'Agent Action', 'Observation', '═']):
+                            break
+                        elif in_message and line.strip():
+                            message_lines.append(line)
+                    
+                    agent_message = '\n'.join(message_lines).strip()
+                    if agent_message:
+                        log.info(f"✅ Extracted via 'Message from Agent' ({len(agent_message)} chars)")
+                        return agent_message
             
-            if len(parts) <= 1:
-                log.warning("⚠️  Found marker but couldn't split content")
-                return "OpenHands conversation completed but no response extracted."
+            # Method 2: Look for final text block after last tool output
+            if "Observation:" in stdout_content:
+                parts = stdout_content.split("Observation:")
+                last_part = parts[-1]
+                # Find text after the observation that looks like a response
+                lines = last_part.split('\n')
+                response_lines = []
+                started = False
+                for line in lines:
+                    if not started and line.strip() and not line.startswith('─') and not line.startswith('═'):
+                        started = True
+                    if started:
+                        if any(marker in line for marker in ['Tokens:', '═', 'Agent Action']):
+                            break
+                        if line.strip():
+                            response_lines.append(line)
+                
+                if response_lines:
+                    response = '\n'.join(response_lines).strip()
+                    if len(response) > 50:  # Reasonable response length
+                        log.info(f"✅ Extracted via last Observation ({len(response)} chars)")
+                        return response
             
-            last_agent_section = parts[-1]
-            lines = last_agent_section.split('\n')
-            message_lines = []
-            in_message = False
-            
+            # Method 3: Just get the last substantial text block
+            lines = stdout_content.split('\n')
+            text_blocks = []
+            current_block = []
             for line in lines:
-                if '─' in line and not in_message:
-                    in_message = True
-                    continue
-                elif any(marker in line for marker in ['Tokens:', 'Agent Action', 'Observation', '═']):
-                    break
-                elif in_message and line.strip():
-                    message_lines.append(line)
+                if line.strip() and not any(marker in line for marker in ['─', '═', 'Tokens:', '>>>', '...']):
+                    current_block.append(line)
+                elif current_block:
+                    text_blocks.append('\n'.join(current_block))
+                    current_block = []
+            if current_block:
+                text_blocks.append('\n'.join(current_block))
             
-            agent_message = '\n'.join(message_lines).strip()
+            # Get the longest text block as likely response
+            if text_blocks:
+                longest_block = max(text_blocks, key=len)
+                if len(longest_block) > 50:
+                    log.info(f"✅ Extracted longest text block ({len(longest_block)} chars)")
+                    return longest_block
             
-            if agent_message:
-                log.info(f"✅ Extracted agent message from stdout ({len(agent_message)} chars)")
-                log.info(f"📝 Message preview: {agent_message[:200]}...")
-                return agent_message
-            else:
-                log.warning("⚠️  Message extraction resulted in empty string")
-                return "OpenHands conversation completed but message extraction failed."
+            log.warning("⚠️ All extraction methods failed")
+            return "OpenHands conversation completed but no response extracted."
                 
         except Exception as e:
             log.error(f"❌ Error extracting response from stdout: {e}", exc_info=True)
@@ -353,12 +528,40 @@ OPENHANDS SDK CONTEXT:
     
     def _normalize_model_name(self, model_name: str) -> str:
         """Normalize model name for OpenHands/litellm compatibility."""
+        from ..utils.openhands_utils import is_bedrock_model
+        
+        # Already has provider prefix
         if "/" in model_name:
             return model_name
         
+        # Map CAB model names to Bedrock litellm format
+        bedrock_model_mapping = {
+            "qwen32b": "bedrock/qwen.qwen3-32b-v1:0",
+            "sonnet37": "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+            "sonnet45": "bedrock/us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+            "sonnet": "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+            "haiku": "bedrock/us.anthropic.claude-3-5-haiku-20241022-v1:0",
+            "thinking": "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+            "deepseek": "bedrock/us.deepseek.r1-v1:0",
+            "llama": "bedrock/us.meta.llama3-3-70b-instruct-v1:0",
+        }
+        
+        # Check if it's a known CAB model that maps to Bedrock
+        if model_name.lower() in bedrock_model_mapping:
+            mapped = bedrock_model_mapping[model_name.lower()]
+            logger.info(f"Mapped CAB model '{model_name}' -> Bedrock '{mapped}'")
+            return mapped
+        
+        # Check if it looks like a Bedrock model ID
+        if is_bedrock_model(model_name):
+            return f"bedrock/{model_name}"
+        
+        # Anthropic models
         if model_name.startswith("claude-"):
             return f"anthropic/{model_name}"
-        elif model_name.startswith("gpt-"):
+        
+        # OpenAI models
+        if model_name.startswith("gpt-"):
             return f"openai/{model_name}"
         
         return model_name
@@ -368,83 +571,77 @@ OPENHANDS SDK CONTEXT:
         log = issue_logger if issue_logger else logger
         
         log.info("=" * 80)
-        log.info("📊 OPENHANDS CONVERSATION ANALYSIS")
-        log.info("=" * 80)
-        log.info("ℹ️  OpenHands detailed actions are printed to console output")
-        log.info("ℹ️  (Agent thoughts, tool calls, and observations appear in terminal)")
+        log.info("📊 EXTRACTING FROM EVENTLOG")
         log.info("=" * 80)
         self._flush_logger(log)
         
         try:
-            if not hasattr(conversation, 'state') or not hasattr(conversation.state, 'events'):
-                log.warning("⚠️  No state.events found in conversation")
-                self._flush_logger(log)
+            # Try to get events from conversation state
+            events = None
+            if hasattr(conversation, 'state'):
+                if hasattr(conversation.state, 'events'):
+                    events = conversation.state.events
+                elif hasattr(conversation.state, 'history'):
+                    events = conversation.state.history
+            
+            if events is None:
+                log.warning("⚠️ No events found in conversation")
                 return "OpenHands completed but conversation state not accessible."
             
-            event_log = conversation.state.events
+            all_messages = []
             
-            all_responses = []
-            agent_final_messages = []
-            event_count = 0
-            
-            i = 0
-            max_iterations = 1000
-            while i < max_iterations:
-                try:
-                    event = event_log.get_index(i)
-                    event_count += 1
+            # Try iterating over events
+            try:
+                # Method 1: Direct iteration
+                for event in events:
                     event_type = type(event).__name__
                     content = None
-                    if hasattr(event, 'message') and event.message:
-                        content = str(event.message)
-                        if 'Agent' in event_type or 'Message' in event_type:
-                            agent_final_messages.append(content)
-                            log.info(f"Event {i+1}: {event_type} - Agent message ({len(content)} chars)")
-                    elif hasattr(event, 'content') and event.content:
-                        content = str(event.content)
-                        log.info(f"Event {i+1}: {event_type} - Content ({len(content)} chars)")
-                    elif hasattr(event, 'thought') and event.thought:
-                        log.info(f"Event {i+1}: {event_type} - Thought")
-                    elif hasattr(event, 'action') and event.action:
-                        log.info(f"Event {i+1}: {event_type} - Action")
-                    else:
-                        log.info(f"Event {i+1}: {event_type}")
+                    
+                    # Check various attributes for content
+                    for attr in ['message', 'content', 'text', 'output']:
+                        if hasattr(event, attr):
+                            val = getattr(event, attr)
+                            if val and isinstance(val, str) and len(val) > 10:
+                                content = val
+                                break
                     
                     if content:
-                        all_responses.append(content)
-                    
-                    i += 1
-                    if i % 10 == 0:
-                        self._flush_logger(log)
+                        all_messages.append((event_type, content))
+                        log.info(f"Event: {event_type} - {len(content)} chars")
+            except TypeError:
+                # Method 2: Index-based access
+                i = 0
+                while i < 1000:
+                    try:
+                        event = events.get_index(i) if hasattr(events, 'get_index') else events[i]
+                        event_type = type(event).__name__
+                        content = None
                         
-                except (IndexError, Exception) as e:
-                    if i == 0:
-                        log.warning(f"⚠️  Could not access any events: {e}")
-                    break
+                        for attr in ['message', 'content', 'text', 'output']:
+                            if hasattr(event, attr):
+                                val = getattr(event, attr)
+                                if val and isinstance(val, str) and len(val) > 10:
+                                    content = val
+                                    break
+                        
+                        if content:
+                            all_messages.append((event_type, content))
+                        i += 1
+                    except (IndexError, KeyError):
+                        break
             
-            log.info(f"📊 EventLog contains {event_count} events")
-            self._flush_logger(log)
+            log.info(f"Found {len(all_messages)} messages in EventLog")
             
-            if agent_final_messages:
-                final_response = agent_final_messages[-1]
-                log.info(f"✅ Extracted final agent message ({len(final_response)} chars)")
-                log.info(f"📝 Response preview: {final_response[:300]}...")
-                self._flush_logger(log)
-                return final_response
-            elif all_responses:
-                final_response = all_responses[-1]
-                log.info(f"⚠️  Using last available content ({len(final_response)} chars)")
-                self._flush_logger(log)
-                return final_response
-            else:
-                log.warning("⚠️  No content extracted from EventLog")
-                log.info("ℹ️  OpenHands actions were logged to console but not captured programmatically")
-                self._flush_logger(log)
-                return "OpenHands conversation completed. Detailed actions were logged to console output."
+            if all_messages:
+                # Return the last substantial message
+                final_type, final_content = all_messages[-1]
+                log.info(f"✅ Using last message from {final_type} ({len(final_content)} chars)")
+                return final_content
+            
+            return "OpenHands conversation completed. No extractable response found."
                 
         except Exception as e:
-            log.error(f"❌ Error extracting response from conversation: {e}", exc_info=True)
-            self._flush_logger(log)
+            log.error(f"❌ Error extracting from EventLog: {e}", exc_info=True)
             return "OpenHands conversation completed but response extraction encountered an error."
     
     async def generate_docker_response(
@@ -586,40 +783,25 @@ Use your tools to explore the repository if needed.
         return None
     
     async def choose_commit(self, reference_commit: str, user_question: str) -> str:
-        """Decide commit to use for exploration."""
+        """Decide commit to use for exploration.
+        
+        This is a simple text decision that doesn't need OpenHands tools.
+        Just use the LLM directly without workspace.
+        """
         from ..prompts.constants import TaskPrompts, ValidationPatterns
         import re
         
-        system_prompt = TaskPrompts.COMMIT_SELECTION
+        # For commit selection, just return reference commit
+        # This avoids the overhead of OpenHands for a simple decision
+        # Check if user explicitly mentioned a commit hash
+        hash_match = re.search(ValidationPatterns.GIT_COMMIT_PATTERN, user_question, re.IGNORECASE)
+        if hash_match:
+            user_commit = hash_match.group(0)
+            logger.info(f"User specified commit detected in question: {user_commit}")
+            return user_commit
         
-        user_prompt = f"""
-        Reference commit: {reference_commit}
-        
-        User's question: {user_question}
-        
-        Has the user explicitly mentioned a specific commit hash they want me to examine? 
-        If yes, what is that hash? If no, respond with USE_REFERENCE_COMMIT.
-        """
-        
-        try:
-            response = await self.generate_response(user_prompt, system_prompt, issue_id="commit_selection")
-            response_text = response.strip()
-            
-            if "USE_REFERENCE_COMMIT" in response_text:
-                logger.info(f"No specific commit mentioned. Using reference commit: {reference_commit}")
-                return reference_commit
-            else:
-                hash_match = re.search(ValidationPatterns.GIT_COMMIT_PATTERN, response_text, re.IGNORECASE)
-                if hash_match:
-                    user_commit = hash_match.group(0)
-                    logger.info(f"User specified commit detected: {user_commit}")
-                    return user_commit
-                else:
-                    logger.warning(f"Unexpected response format. Using reference commit: {reference_commit}")
-                    return reference_commit
-        except Exception as e:
-            logger.error(f"Error in commit selection: {e}")
-            return reference_commit
+        logger.info(f"No specific commit mentioned. Using reference commit: {reference_commit}")
+        return reference_commit
     
     def _format_conversation_history(self, history: List[ConversationMessage]) -> str:
         """Format conversation history for display."""

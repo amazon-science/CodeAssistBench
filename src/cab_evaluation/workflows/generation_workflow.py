@@ -53,7 +53,8 @@ class GenerationWorkflow:
         issue_data: IssueData,
         agent_model_mapping: Optional[Dict[str, str]] = None,
         agent_framework_mapping: Optional[Dict[str, str]] = None,
-        issue_logger: Optional[logging.Logger] = None
+        issue_logger: Optional[logging.Logger] = None,
+        enable_ast_tools: bool = True
     ) -> GenerationResult:
         """Run generation workflow for an issue.
         
@@ -63,6 +64,7 @@ class GenerationWorkflow:
             agent_framework_mapping: Optional mapping of agent types to frameworks
                                     Example: {"maintainer": "openhands"}
             issue_logger: Optional dedicated logger for this issue
+            enable_ast_tools: Enable AST tools for OpenHands agent (default: True)
             
         Returns:
             GenerationResult with conversation and exploration data
@@ -76,7 +78,7 @@ class GenerationWorkflow:
         # Create agents with framework selection
         if agent_framework_mapping:
             agents = self._create_agents_with_frameworks(
-                agent_model_mapping, agent_framework_mapping, log
+                agent_model_mapping, agent_framework_mapping, log, enable_ast_tools=enable_ast_tools
             )
         elif agent_model_mapping:
             agents = self.agent_factory.update_model_mapping(agent_model_mapping)
@@ -88,6 +90,7 @@ class GenerationWorkflow:
         
         # Track which framework is being used
         framework_used = agent_framework_mapping.get("maintainer", "strands") if agent_framework_mapping else "strands"
+        is_openhands = framework_used == "openhands"
         log.info(f"🤖 Maintainer agent framework: {framework_used}")
         self._flush_logger(log)
         
@@ -112,12 +115,20 @@ class GenerationWorkflow:
             raise CABEvaluationError(f"Failed to clone repository: {repo_url}")
         
         try:
-            # Perform interactive exploration
-            log.info("Starting interactive exploration")
-            self._flush_logger(log)
-            initial_answer, exploration_history, exploration_log = await self._interactive_exploration(
-                repo_dir, question, maintainer_agent, issue_data.id, issue_logger
-            )
+            # OpenHands has its own agentic loop, skip manual iteration
+            if is_openhands:
+                log.info("Using OpenHands native agentic loop")
+                self._flush_logger(log)
+                initial_answer, exploration_history, exploration_log = await self._openhands_exploration(
+                    repo_dir, question, maintainer_agent, issue_data.id, issue_logger
+                )
+            else:
+                # Perform interactive exploration for non-OpenHands agents
+                log.info("Starting interactive exploration")
+                self._flush_logger(log)
+                initial_answer, exploration_history, exploration_log = await self._interactive_exploration(
+                    repo_dir, question, maintainer_agent, issue_data.id, issue_logger
+                )
             
             log.info(f"Exploration complete. Initial answer length: {len(initial_answer)}")
             self._flush_logger(log)
@@ -179,6 +190,20 @@ class GenerationWorkflow:
                 except Exception as e:
                     logger.warning(f"Failed to collect maintainer cache metrics: {e}")
             
+            # Get token usage from OpenHands maintainer agent
+            elif hasattr(maintainer_agent, 'get_token_usage'):
+                try:
+                    token_usage = maintainer_agent.get_token_usage()
+                    prompt_cache_metrics["maintainer"] = {
+                        "input_tokens": token_usage.get("input_tokens", 0),
+                        "output_tokens": token_usage.get("output_tokens", 0),
+                        "reasoning_tokens": token_usage.get("reasoning_tokens", 0),
+                        "total_cost_usd": token_usage.get("total_cost_usd", 0.0),
+                        "cache_hit_rate_percent": token_usage.get("cache_hit_percent", 0.0)
+                    }
+                except Exception as e:
+                    logger.warning(f"Failed to collect OpenHands maintainer token metrics: {e}")
+            
             # Get cache metrics from user agent if it's also a StrandsAgent
             if hasattr(user_agent, '_calculate_cache_efficiency') and hasattr(user_agent, '_strands_agent') and user_agent._strands_agent:
                 try:
@@ -233,7 +258,8 @@ class GenerationWorkflow:
         self,
         model_mapping: Optional[Dict[str, str]],
         framework_mapping: Dict[str, str],
-        logger_instance: logging.Logger
+        logger_instance: logging.Logger,
+        enable_ast_tools: bool = True
     ) -> Dict[str, Any]:
         """Create agents with framework selection.
         
@@ -241,6 +267,7 @@ class GenerationWorkflow:
             model_mapping: Mapping of agent types to model names
             framework_mapping: Mapping of agent types to frameworks
             logger_instance: Logger instance for logging
+            enable_ast_tools: Enable AST tools for OpenHands agent
             
         Returns:
             Dictionary of agent instances
@@ -251,12 +278,13 @@ class GenerationWorkflow:
         maintainer_framework = framework_mapping.get("maintainer", "strands")
         maintainer_model = model_mapping.get("maintainer") if model_mapping else None
         
-        logger_instance.info(f"Creating maintainer agent with framework: {maintainer_framework}")
+        logger_instance.info(f"Creating maintainer agent with framework: {maintainer_framework} (AST tools: {enable_ast_tools})")
         
         agents["maintainer"] = self.agent_factory.create_maintainer_agent(
             model_name=maintainer_model,
             framework=maintainer_framework,
-            openhands_config=self.config.agent_framework.openhands_config_path
+            openhands_config=self.config.agent_framework.openhands_config_path,
+            enable_ast_tools=enable_ast_tools
         )
         
         # User and judge always use Strands (only maintainer can use OpenHands)
@@ -265,6 +293,46 @@ class GenerationWorkflow:
         
         logger_instance.info("Agent set created with framework selection")
         return agents
+    
+    async def _openhands_exploration(
+        self,
+        repo_dir: str,
+        question: str,
+        maintainer_agent,
+        issue_id: str,
+        issue_logger: Optional[logging.Logger] = None
+    ) -> Tuple[str, List[str], str]:
+        """Let OpenHands handle exploration with its native agentic loop.
+        
+        Args:
+            repo_dir: Repository directory
+            question: User's question
+            maintainer_agent: OpenHands maintainer agent instance
+            issue_id: Issue ID for tracking
+            issue_logger: Optional dedicated logger for this issue
+            
+        Returns:
+            Tuple of (final_answer, exploration_history, exploration_log)
+        """
+        log = issue_logger or logger
+        
+        system_prompt = maintainer_agent.get_system_prompt()
+        user_prompt = f"Question: {question}\n\nPlease explore the repository and provide a comprehensive answer."
+        
+        try:
+            answer = await maintainer_agent.call_llm(
+                user_prompt, system_prompt, issue_id, issue_logger=log, repo_dir=repo_dir
+            )
+            
+            if answer in ("ERROR_INPUT_TOO_LONG", "ERROR_CONTEXT_LENGTH_EXCEEDED"):
+                log.warning(f"OpenHands exploration hit limit: {answer}")
+                answer = "After repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
+            
+            return answer, ["OpenHands native exploration"], "OpenHands handled exploration internally"
+            
+        except Exception as e:
+            log.error(f"OpenHands exploration error: {e}")
+            return f"Error during exploration: {e}", [], str(e)
     
     async def _interactive_exploration(
         self,
@@ -315,13 +383,19 @@ class GenerationWorkflow:
             # Get exploration plan from maintainer
             try:
                 exploration_plan = await maintainer_agent.call_llm(
-                    user_prompt, system_prompt, issue_id, issue_logger=log
+                    user_prompt, system_prompt, issue_id, issue_logger=log, repo_dir=repo_dir
                 )
                 
                 # Check for input too long error
                 if exploration_plan == "ERROR_INPUT_TOO_LONG":
                     log.warning("Input too long error. Stopping exploration.")
                     exploration_log += "\n--- EXPLORATION STOPPED: Input too long error ---\n"
+                    break
+                
+                # Check for context length exceeded error
+                if exploration_plan == "ERROR_CONTEXT_LENGTH_EXCEEDED":
+                    log.warning("⚠️ Context length exceeded. Stopping exploration to proceed to judge.")
+                    exploration_log += "\n--- EXPLORATION STOPPED: Context length exceeded ---\n"
                     break
                 
                 exploration_history.append(exploration_plan)
@@ -333,6 +407,12 @@ class GenerationWorkflow:
                 exploration_log += "\n--- EXPLORATION STOPPED: Input too long error ---\n"
                 break
             except Exception as e:
+                error_str = str(e).lower()
+                # Check for context length error in exception
+                if "max_tokens" in error_str or "max_completion_tokens" in error_str or "context length" in error_str:
+                    log.warning("⚠️ Context length exceeded (exception). Stopping exploration to proceed to judge.")
+                    exploration_log += "\n--- EXPLORATION STOPPED: Context length exceeded ---\n"
+                    break
                 log.error(f"Error getting exploration plan: {e}")
                 exploration_log += f"\n--- ERROR IN ITERATION {iteration+1} ---\n{str(e)}\n"
                 break
@@ -394,12 +474,16 @@ class GenerationWorkflow:
         
         try:
             final_answer = await maintainer_agent.call_llm(
-                final_user_prompt, final_system_prompt, issue_id, issue_logger=log
+                final_user_prompt, final_system_prompt, issue_id, issue_logger=log, repo_dir=repo_dir
             )
             
             if final_answer == "ERROR_INPUT_TOO_LONG":
                 log.warning("Input too long in final answer generation. Using fallback.")
                 final_answer = "After extensive repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
+            
+            if final_answer == "ERROR_CONTEXT_LENGTH_EXCEEDED":
+                log.warning("⚠️ Context length exceeded in final answer generation. Using fallback.")
+                final_answer = "After repository exploration, I encountered context length limitations. Based on the exploration conducted, I can provide relevant information about this issue."
             
             return final_answer, exploration_history, exploration_log
             
@@ -408,6 +492,12 @@ class GenerationWorkflow:
             final_answer = "After extensive repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
             return final_answer, exploration_history, exploration_log
         except Exception as e:
+            error_str = str(e).lower()
+            # Check for context length error in exception
+            if "max_tokens" in error_str or "max_completion_tokens" in error_str or "context length" in error_str:
+                log.warning("⚠️ Context length exceeded (exception) in final answer. Using fallback.")
+                final_answer = "After repository exploration, I encountered context length limitations. Based on the exploration conducted, I can provide relevant information about this issue."
+                return final_answer, exploration_history, exploration_log
             log.error(f"Error generating final answer: {e}")
             fallback_answer = f"Based on the exploration conducted, I can provide information about this issue. Note: Full analysis was interrupted due to error: {str(e)}"
             return fallback_answer, exploration_history, exploration_log
@@ -512,6 +602,12 @@ class GenerationWorkflow:
                         repo_dir, issue_data, conversation_history, issue_logger=log
                     )
                     
+                    # Check for context length exceeded error
+                    if maintainer_response == "ERROR_CONTEXT_LENGTH_EXCEEDED":
+                        log.warning("⚠️ Context length exceeded in maintainer response. Ending conversation to proceed to judge.")
+                        self._flush_logger(log)
+                        break
+                    
                     # Update issue data with modifications
                     if modified_dockerfile:
                         issue_data.dockerfile = modified_dockerfile
@@ -540,6 +636,12 @@ class GenerationWorkflow:
                         repo_dir, issue_data, conversation_history, issue_logger=log
                     )
                     
+                    # Check for context length exceeded error
+                    if maintainer_response == "ERROR_CONTEXT_LENGTH_EXCEEDED":
+                        log.warning("⚠️ Context length exceeded in maintainer response. Ending conversation to proceed to judge.")
+                        self._flush_logger(log)
+                        break
+                    
                     conversation_history.append(
                         ConversationMessage(role="maintainer", content=maintainer_response)
                     )
@@ -556,6 +658,12 @@ class GenerationWorkflow:
                 log.warning("Input too long error in maintainer agent. Ending conversation.")
                 break
             except Exception as e:
+                error_str = str(e).lower()
+                # Check for context length error in exception
+                if "max_tokens" in error_str or "max_completion_tokens" in error_str or "context length" in error_str:
+                    log.warning("⚠️ Context length exceeded (exception). Ending conversation to proceed to judge.")
+                    self._flush_logger(log)
+                    break
                 log.error(f"Error getting maintainer agent response: {e}")
                 conversation_history.append(
                     ConversationMessage(role="maintainer", content=f"Error: Failed to get proper response. {str(e)}")

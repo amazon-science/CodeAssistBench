@@ -123,6 +123,18 @@ class CABConfig:
                 max_tokens=120000,
                 provider="bedrock"
             ),
+            "sonnet45": ModelConfig(
+                name="sonnet45",
+                model_id="us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+                max_tokens=120000,
+                provider="bedrock"
+            ),
+            "qwen32b": ModelConfig(
+                name="qwen32b",
+                model_id="qwen.qwen3-32b-v1:0",
+                max_tokens=8192,
+                provider="bedrock"
+            ),
             "thinking": ModelConfig(
                 name="thinking",
                 model_id="us.anthropic.claude-3-7-sonnet-20250219-v1:0",
@@ -141,6 +153,27 @@ class CABConfig:
                 model_id="us.meta.llama3-3-70b-instruct-v1:0",
                 max_tokens=8192,
                 provider="bedrock"
+            ),
+            "gpt5": ModelConfig(
+                name="gpt5",
+                model_id="gpt-5",
+                max_tokens=32000,
+                provider="openai",
+                api_key_env_var="OPENAI_API_KEY"
+            ),
+            "gpt5mini": ModelConfig(
+                name="gpt5mini",
+                model_id="gpt-5-mini",
+                max_tokens=32000,
+                provider="openai",
+                api_key_env_var="OPENAI_API_KEY"
+            ),
+            "gptnano": ModelConfig(
+                name="gptnano",
+                model_id="gpt-5-nano",
+                max_tokens=32000,
+                provider="openai",
+                api_key_env_var="OPENAI_API_KEY"
             )
         }
     

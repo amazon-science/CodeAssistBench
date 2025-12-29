@@ -11,14 +11,14 @@ from typing import Dict, Any, Optional
 logger = logging.getLogger(__name__)
 
 
-def validate_openhands_config(model_name: str) -> str:
+def validate_openhands_config(model_name: str) -> Optional[str]:
     """Validate OpenHands configuration and return API key.
     
     Args:
         model_name: Model name to validate
         
     Returns:
-        API key from environment
+        API key from environment (None for Bedrock models)
         
     Raises:
         ValueError: If validation fails
@@ -27,7 +27,16 @@ def validate_openhands_config(model_name: str) -> str:
     if not model_name or not isinstance(model_name, str):
         raise ValueError(f"Invalid model name: {model_name}. Must be a non-empty string.")
     
-    # Validate API key
+    # Check if using Bedrock (uses AWS credentials, not API key)
+    if model_name.startswith("bedrock/") or is_bedrock_model(model_name):
+        if not os.getenv("AWS_ACCESS_KEY_ID") or not os.getenv("AWS_SECRET_ACCESS_KEY"):
+            raise ValueError(
+                "Bedrock model requires AWS credentials. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY"
+            )
+        logger.info(f"Using Bedrock model: {model_name} (AWS credentials from environment)")
+        return None  # Bedrock uses AWS env vars, not api_key
+    
+    # Validate API key for non-Bedrock models
     api_key = os.getenv("LLM_API_KEY") or os.getenv("ANTHROPIC_API_KEY") or os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise ValueError(
@@ -35,6 +44,21 @@ def validate_openhands_config(model_name: str) -> str:
         )
     
     return api_key
+
+
+def is_bedrock_model(model_name: str) -> bool:
+    """Check if model name refers to a Bedrock model."""
+    bedrock_prefixes = ["bedrock/", "us.anthropic.", "us.meta.", "us.deepseek.", "anthropic.", "meta."]
+    bedrock_keywords = ["qwen", "llama", "mistral", "titan"]
+    
+    model_lower = model_name.lower()
+    
+    if any(model_lower.startswith(p.lower()) for p in bedrock_prefixes):
+        return True
+    if any(kw in model_lower for kw in bedrock_keywords):
+        return True
+    
+    return False
 
 
 def validate_openhands_installation() -> bool:
@@ -260,6 +284,7 @@ def map_cab_model_to_openhands(cab_model: str) -> str:
     model_mapping = {
         "sonnet37": "claude-3-5-sonnet",
         "sonnet": "claude-3-5-sonnet",
+        "sonnet45": "claude-sonnet-4-5-20250929",
         "haiku": "claude-3-5-haiku",
         "thinking": "claude-3-5-sonnet",
         "claude-3.5-sonnet": "claude-3-5-sonnet",
@@ -273,6 +298,9 @@ def map_cab_model_to_openhands(cab_model: str) -> str:
         "gpt-4-turbo": "gpt-4-turbo-preview",
         "gpt-4o": "gpt-4o",
         "gpt-4o-mini": "gpt-4o-mini",
+        "gpt5": "gpt-5",
+        "gpt5mini": "gpt-5-mini",
+        "gptnano": "gpt-5-nano",
     }
     
     if "/" in cab_model:

@@ -66,7 +66,9 @@ class AgentFactory:
                     config=self.config,
                     prompt_manager=self.prompt_manager,
                     config_file=openhands_config,
-                    **kwargs
+                    enable_ast_tools=kwargs.get('enable_ast_tools', True),
+                    custom_system_prompt_path=kwargs.get('custom_system_prompt_path'),
+                    **{k: v for k, v in kwargs.items() if k not in ['enable_ast_tools', 'custom_system_prompt_path']}
                 )
             except ImportError as e:
                 logger.error(f"❌ OpenHands not available: {e}")
