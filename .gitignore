@@ -1,3 +1,66 @@
-results*
+# Git disabled backup
+.git_disabled/
+
+# Python
 venv/
 __pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+*.egg
+dist/
+build/
+.pytest_cache/
+
+# Logs
+logs/
+*.log
+
+# Results and outputs
+results*/
+
+# Large data directories (intermediate processing data)
+repo/
+hf_dataset/
+temp_extract/
+
+# Raw collected data (too large for GitHub)
+recent_v2_June2025_Jan2026/
+recent_v2_June2025_Jan2026_classified/
+recent_v2_June2025_Jan2026_combined/
+recent_v2_June2025_Jan2026_conv/
+recent_v2_June2025_Jan2026_dockerized/
+recent_v2_June2025_Jan2026_final/
+recent_v2_June2025_Jan2026_msg/
+recent_v2_June2025_Jan2026_scon/
+
+# Large combined files at root
+recent_v2_June2025_Jan2026_combined.jsonl
+
+# Script intermediate data (raw scraped data, commits, logs)
+script/*.json
+script/*.csv
+script/*.log
+script/github_commits/
+script/raw_llm_responses/
+script/__pycache__/
+
+# External dependencies/packages
+strands-1.12.0/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example
