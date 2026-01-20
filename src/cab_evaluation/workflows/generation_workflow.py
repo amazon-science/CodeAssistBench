@@ -180,8 +180,31 @@ class GenerationWorkflow:
             # Collect prompt cache metrics from agents
             prompt_cache_metrics = {}
             
+            # Get token usage from Kiro CLI maintainer agent (check first - most specific)
+            if hasattr(maintainer_agent, 'get_kiro_cli_metadata'):
+                try:
+                    kiro_metadata = maintainer_agent.get_kiro_cli_metadata()
+                    prompt_cache_metrics["maintainer"] = {
+                        "input_tokens": kiro_metadata.get("estimated_total_input_tokens", 0),
+                        "output_tokens": kiro_metadata.get("estimated_total_output_tokens", 0),
+                        "total_tokens": kiro_metadata.get("estimated_total_tokens", 0),
+                        "reasoning_tokens": 0,
+                        "total_cost_usd": 0.0,
+                        "cache_hit_rate_percent": 0.0,
+                        "kiro_cli_call_count": kiro_metadata.get("call_count", 0),
+                        "kiro_cli_execution_time_seconds": kiro_metadata.get("total_execution_time_seconds", 0),
+                        "total_input_chars": kiro_metadata.get("total_input_chars", 0),
+                        "total_output_chars": kiro_metadata.get("total_output_chars", 0),
+                        "is_estimated": True,
+                        "estimation_note": kiro_metadata.get("token_estimation_note", "Tokens estimated from character count")
+                    }
+                    log.info(f"Collected Kiro CLI token metrics: {kiro_metadata.get('call_count', 0)} calls, "
+                             f"{kiro_metadata.get('estimated_total_tokens', 0)} estimated tokens")
+                except Exception as e:
+                    logger.warning(f"Failed to collect Kiro CLI maintainer token metrics: {e}")
+            
             # Get cache metrics from maintainer agent (StrandsAgent)
-            if hasattr(maintainer_agent, '_calculate_cache_efficiency') and maintainer_agent._strands_agent:
+            elif hasattr(maintainer_agent, '_calculate_cache_efficiency') and hasattr(maintainer_agent, '_strands_agent') and maintainer_agent._strands_agent:
                 try:
                     metrics_summary = maintainer_agent._strands_agent.event_loop_metrics.get_summary()
                     usage = metrics_summary["accumulated_usage"]
@@ -232,6 +255,11 @@ class GenerationWorkflow:
                 except Exception as e:
                     logger.warning(f"Failed to collect user cache metrics: {e}")
             
+            # Get Kiro CLI metadata if available
+            kiro_cli_metadata = None
+            if hasattr(maintainer_agent, 'get_kiro_cli_metadata'):
+                kiro_cli_metadata = maintainer_agent.get_kiro_cli_metadata()
+            
             # Create result
             result = GenerationResult(
                 issue_data=issue_data,
@@ -248,7 +276,8 @@ class GenerationWorkflow:
                 final_answer=final_answer,
                 prompt_cache=prompt_cache_metrics,
                 agent_framework_used=self.config.agent_framework_config.maintainer_framework,
-                qcli_metadata=maintainer_agent.get_qcli_metadata() if hasattr(maintainer_agent, 'get_qcli_metadata') else None
+                qcli_metadata=maintainer_agent.get_qcli_metadata() if hasattr(maintainer_agent, 'get_qcli_metadata') else None,
+                kiro_cli_metadata=kiro_cli_metadata
             )
             
             log.info(f"Generation workflow complete for issue {issue_data.id}")

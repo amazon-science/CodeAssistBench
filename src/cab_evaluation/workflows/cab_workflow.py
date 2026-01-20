@@ -333,5 +333,6 @@ class CABWorkflow:
             },
             'agent_framework_used': cab_result.generation_result.agent_framework_used,
             'qcli_metadata': cab_result.generation_result.qcli_metadata,
+            'kiro_cli_metadata': cab_result.generation_result.kiro_cli_metadata,
             'processing_metadata': cab_result.processing_metadata
         }
