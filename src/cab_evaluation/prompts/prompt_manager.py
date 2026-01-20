@@ -118,7 +118,6 @@ class PromptManager:
 
 You are a helpful maintainer of a software project. You can help answer questions about the code by exploring the repository.
 
-
 ## Your Capabilities:
 1. Clone the repository and explore its contents
 2. Read files or specific lines of files
@@ -135,11 +134,19 @@ You are a helpful maintainer of a software project. You can help answer question
 - Prioritize accuracy and completeness in your responses
 - If you're uncertain about something, acknowledge your uncertainty rather than providing potentially incorrect information
 
+## Critical Requirements for Complete Answers:
+1. **Address ALL aspects** of the user's question - do not focus on just one part of a multi-part problem
+2. **Identify ALL bugs** mentioned or implied in the question - if the user reports multiple symptoms, ensure each is addressed
+3. **Check for related issues** - problems often have multiple root causes (e.g., both a configuration bug AND a code bug)
+4. **Be comprehensive**: If multiple fixes are needed (e.g., RF termination + frequency setting), provide ALL of them
+5. **Prioritize accuracy over brevity**: Include all necessary technical details even if verbose
+
 ## Important Instructions:
 1. Include ALL relevant information needed to fully answer the user's question
 2. If you've provided partial information in previous responses, INCLUDE that information again
 3. When referencing code or solutions you've mentioned before, ALWAYS include the full code or solution again
 4. Make sure your answer is complete even if it means repeating information
+5. Before finalizing your response, verify that you have addressed EVERY issue mentioned or implied by the user
 
 Use your available tools to explore the repository and provide your complete answer to the user in a clear, helpful manner.
 """
@@ -197,12 +204,19 @@ Determine if the maintainer's answer is:
 - If the Docker validation shows "Success: False", then the maintainer's answer CANNOT be considered correct,
   regardless of how good the explanation seems. Docker build success is mandatory for Docker issues.
 
+## Consistency Guidelines for Fair Evaluation:
+1. **Extract ALL fixes from reference conversation** - When comparing, identify EVERY fix or solution mentioned
+2. **Penalize incomplete solutions** - If the reference shows multiple fixes (e.g., fix A AND fix B), but the maintainer only provides fix A, this is PARTIALLY CORRECT at best
+3. **Be explicit about what was missed** - In KEY ISSUES, list every aspect from the reference that the maintainer failed to address
+4. **Evaluate against the complete solution** - The reference conversation shows what a complete answer looks like; partial answers should not receive CORRECT verdicts
+5. **Apply criteria uniformly** - Use the same standards regardless of which model produced the answer
+
 ## Evaluation Format:
 Provide your evaluation in the following format:
 
 TECHNICAL CORRECTNESS: [CORRECT/PARTIALLY CORRECT/INCORRECT]
-- CORRECT: The solution is completely accurate
-- PARTIALLY CORRECT: The core solution works but has minor technical issues that wouldn't prevent implementation
+- CORRECT: The solution is completely accurate and addresses ALL technical aspects
+- PARTIALLY CORRECT: The core solution works but has minor technical issues OR addresses only SOME aspects of the problem
 - INCORRECT: The solution has significant errors, misconceptions, or would fail if implemented
 
 ALIGNMENT SCORE: X/Y CONDITIONS MET (Z%)
@@ -218,15 +232,23 @@ VERBOSITY ASSESSMENT: [CONCISE/APPROPRIATE/VERBOSE]
 
 VERDICT: [CORRECT/PARTIALLY CORRECT/INCORRECT] 
 You must provide exactly one of these three verdicts based ONLY on technical correctness AND alignment (NOT verbosity):
-- CORRECT: The answer is technically correct with no significant errors AND meets ALL user conditions
-- PARTIALLY CORRECT: The answer has only minor technical issues but meets SOME conditions, OR meets ALL conditions but has minor technical issues
+- CORRECT: The answer is technically correct with no significant errors AND meets ALL user conditions AND addresses ALL aspects of the problem shown in the reference
+- PARTIALLY CORRECT: The answer meets SOME but not ALL conditions, OR addresses only SOME aspects of the multi-part problem, OR has minor technical issues
 - INCORRECT: The answer has significant technical flaws OR fails to meet ANY conditions OR Docker validation failed
 
-KEY ISSUES: List ALL issues with the maintainer's answer, including even minor technical inaccuracies
+KEY ISSUES: List ALL issues with the maintainer's answer, including:
+- Technical inaccuracies (even minor ones)
+- Missing aspects from the reference solution
+- Unaddressed user conditions
+- Any omissions compared to the complete solution
 
-REASONING: Detailed explanation of your verdict, addressing both technical correctness and alignment with user conditions.
+REASONING: Detailed explanation of your verdict, addressing:
+1. Technical correctness of each part of the solution
+2. Alignment with ALL user conditions
+3. Comparison with reference solution - what was included vs. what was missed
+4. Why the verdict is appropriate given the above analysis
 
-Be thorough in your technical assessment. Any non-trivial error should be noted and count against the maintainer's answer.
+Be thorough and consistent in your technical assessment. Apply the same standards to all answers regardless of which model produced them.
 """
     
     def _get_default_docker_prompt(self) -> str:

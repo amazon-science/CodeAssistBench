@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import uuid
+import argparse
 from pathlib import Path
 from typing import Dict, List, Optional
 from dataclasses import dataclass, field
@@ -405,9 +406,30 @@ def process_conversations(input_file: str, output_file: str, bedrock_client: Bed
         raise
 
 def main():
-    # Define input and output directories
-    input_dir = "../recent_v2_June2025_Jan2026_msg"       # Input: from msg_filter.py (Step 4)
-    output_dir = "../recent_v2_June2025_Jan2026_scon"     # Output: with satisfaction_conditions
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Generate satisfaction conditions for GitHub issues using LLM.',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python scon_filter.py --input-dir my_data/issues --output-dir my_data/with_scon
+  python scon_filter.py -i ../issues -o ../scon --model us.anthropic.claude-sonnet-4-5-20250929-v1:0
+  python scon_filter.py -i data/raw -o data/processed --region us-east-1
+        """
+    )
+    parser.add_argument('--input-dir', '-i', type=str, required=True,
+                        help='Directory containing JSON files with issues')
+    parser.add_argument('--output-dir', '-o', type=str, required=True,
+                        help='Output directory for issues with satisfaction conditions')
+    parser.add_argument('--region', '-r', type=str, default='us-west-2',
+                        help='AWS region for Bedrock (default: us-west-2)')
+    parser.add_argument('--model', '-m', type=str, 
+                        default='us.anthropic.claude-sonnet-4-5-20250929-v1:0',
+                        help='Bedrock model ID (default: claude-sonnet-4.5)')
+    args = parser.parse_args()
+    
+    input_dir = args.input_dir
+    output_dir = args.output_dir
     
     # Check if input directory exists
     if not os.path.isdir(input_dir):
@@ -417,9 +439,12 @@ def main():
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
-    # Initialize Bedrock client
-    config = BedrockConfig()
+    # Initialize Bedrock client with CLI arguments
+    config = BedrockConfig(region=args.region, model_id=args.model)
     bedrock_client = BedrockClient(config)
+    
+    print(f"Using model: {args.model}")
+    print(f"Using region: {args.region}")
 
     # Process all files in directory
     process_directory(input_dir, output_dir, bedrock_client)

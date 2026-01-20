@@ -125,13 +125,14 @@ class StrandsAgent(BaseAgent):
         # Get model ID for this model
         model_id = self._get_strands_model_id(self.model_name)
         
-        # Create Bedrock model with caching enabled
+        # Create Bedrock model with caching enabled and temperature=0 for determinism
         model = BedrockModel(
             model_id=model_id,
             region_name="us-west-2",
             max_retries=1000,
             cache_prompt="default",  # Cache system prompt
-            cache_tools="default"    # Cache tools
+            cache_tools="default",   # Cache tools
+            temperature=0.0          # Set to 0 for deterministic outputs
         )
         
         # Select tools based on read-only mode

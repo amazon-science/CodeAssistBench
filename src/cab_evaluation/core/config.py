@@ -42,8 +42,11 @@ class AgentFrameworkConfig:
     openhands_config_path: Optional[str] = None
     openhands_model_id: str = "anthropic/claude-3-5-sonnet-20241022"
     openhands_timeout: int = 1800  # 30 minutes
-    qcli_path: str = "q"
-    qcli_timeout: int = 300  # 5 minutes
+    kiro_cli_path: str = "kiro-cli"
+    kiro_cli_timeout: int = 300  # 5 minutes
+    # Backward compatibility aliases
+    qcli_path: str = "kiro-cli"
+    qcli_timeout: int = 300
 
 
 @dataclass
@@ -251,6 +254,7 @@ class CABConfig:
     
     def get_model_config(self, model_name: str) -> ModelConfig:
         """Get model configuration by name."""
+        # Check if it's an OpenHands model (full model path or standard naming)
         is_openhands_model = (
             "/" in model_name or 
             model_name.startswith("claude-") or 
@@ -264,6 +268,27 @@ class CABConfig:
                 model_id=model_name,
                 max_tokens=8192,
                 provider="openhands"
+            )
+        
+        # Check if it's a Kiro CLI model alias
+        kiro_cli_models = {
+            # Sonnet models
+            "sonnet45", "sonnet-4.5", "sonnet4", "sonnet-4",
+            # Haiku models
+            "haiku", "haiku45", "haiku-4.5",
+            # Opus models  
+            "opus", "opus45", "opus-4.5",
+            # Qwen models
+            "qwen", "qwen3", "qwen3-coder",
+        }
+        
+        if model_name in kiro_cli_models:
+            logger.info(f"Creating minimal config for Kiro CLI model: {model_name}")
+            return ModelConfig(
+                name=model_name,
+                model_id=model_name,  # Kiro CLI agent will map this to the full name
+                max_tokens=8192,
+                provider="kiro_cli"
             )
         
         if model_name not in self.models:
@@ -284,14 +309,23 @@ class CABConfig:
         bedrock_models = 0
         openai_models = 0
         
+        # Only validate models that will actually be used
+        models_to_validate = {
+            self.default_maintainer_model,
+            self.default_user_model,
+            self.default_judge_model
+        }
+        
         for name, model_config in self.models.items():
             if model_config.provider == "openai":
                 openai_models += 1
-                if model_config.api_key_env_var:
-                    if not os.getenv(model_config.api_key_env_var):
-                        errors.append(f"Missing environment variable {model_config.api_key_env_var} for model {name}")
-                else:
-                    errors.append(f"OpenAI model {name} missing api_key_env_var configuration")
+                # Only check API key if this model will be used
+                if name in models_to_validate:
+                    if model_config.api_key_env_var:
+                        if not os.getenv(model_config.api_key_env_var):
+                            errors.append(f"Missing environment variable {model_config.api_key_env_var} for model {name}")
+                    else:
+                        errors.append(f"OpenAI model {name} missing api_key_env_var configuration")
             elif model_config.provider == "bedrock":
                 bedrock_models += 1
             else:

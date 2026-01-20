@@ -114,17 +114,26 @@ class GenerationWorkflow:
         if not repo_dir:
             raise CABEvaluationError(f"Failed to clone repository: {repo_url}")
         
+        # Detect if using Kiro CLI (also has native agentic loop)
+        is_kiro_cli = hasattr(maintainer_agent, 'kiro_cli_path')
+        
         try:
-            # OpenHands has its own agentic loop, skip manual iteration
+            # OpenHands and Kiro CLI have their own agentic loops, skip manual iteration
             if is_openhands:
                 log.info("Using OpenHands native agentic loop")
                 self._flush_logger(log)
                 initial_answer, exploration_history, exploration_log = await self._openhands_exploration(
                     repo_dir, question, maintainer_agent, issue_data.id, issue_logger
                 )
+            elif is_kiro_cli:
+                log.info("Using Kiro CLI native agentic loop (single call)")
+                self._flush_logger(log)
+                initial_answer, exploration_history, exploration_log = await self._kiro_cli_exploration(
+                    repo_dir, question, maintainer_agent, issue_data.id, issue_logger
+                )
             else:
-                # Perform interactive exploration for non-OpenHands agents
-                log.info("Starting interactive exploration")
+                # Perform interactive exploration for Strands agents (which need manual iteration)
+                log.info("Starting interactive exploration (Strands agent)")
                 self._flush_logger(log)
                 initial_answer, exploration_history, exploration_log = await self._interactive_exploration(
                     repo_dir, question, maintainer_agent, issue_data.id, issue_logger
@@ -334,6 +343,61 @@ class GenerationWorkflow:
             log.error(f"OpenHands exploration error: {e}")
             return f"Error during exploration: {e}", [], str(e)
     
+    async def _kiro_cli_exploration(
+        self,
+        repo_dir: str,
+        question: str,
+        maintainer_agent,
+        issue_id: str,
+        issue_logger: Optional[logging.Logger] = None
+    ) -> Tuple[str, List[str], str]:
+        """Let Kiro CLI handle exploration with its native agentic loop.
+        
+        Kiro CLI has built-in tools for reading files, running commands, and exploring
+        repositories. We make a single call and let it iterate internally.
+        
+        Args:
+            repo_dir: Repository directory
+            question: User's question
+            maintainer_agent: Kiro CLI maintainer agent instance
+            issue_id: Issue ID for tracking
+            issue_logger: Optional dedicated logger for this issue
+            
+        Returns:
+            Tuple of (final_answer, exploration_history, exploration_log)
+        """
+        log = issue_logger or logger
+        
+        system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.INITIAL_EXPLORATION
+        user_prompt = f"Question: {question}\n\nPlease explore the repository and provide a comprehensive answer to help the user understand this code issue."
+        
+        log.info("Kiro CLI will handle all exploration internally with its native tools")
+        self._flush_logger(log)
+        
+        try:
+            answer = await maintainer_agent.call_llm(
+                user_prompt, system_prompt, issue_id, issue_logger=log, repo_dir=repo_dir
+            )
+            
+            if answer in ("ERROR_INPUT_TOO_LONG", "ERROR_CONTEXT_LENGTH_EXCEEDED"):
+                log.warning(f"Kiro CLI exploration hit limit: {answer}")
+                answer = "After repository exploration, I encountered context limitations. Based on the exploration conducted, I can provide relevant information about this issue."
+            
+            # Get token usage from Kiro CLI
+            if hasattr(maintainer_agent, 'get_kiro_cli_metadata'):
+                metadata = maintainer_agent.get_kiro_cli_metadata()
+                log.info(f"Kiro CLI exploration complete:")
+                log.info(f"  - Execution time: {metadata.get('total_execution_time_seconds', 0):.2f}s")
+                log.info(f"  - Estimated tokens: {metadata.get('estimated_total_tokens', 0)} (input: {metadata.get('estimated_total_input_tokens', 0)}, output: {metadata.get('estimated_total_output_tokens', 0)})")
+                log.info(f"  - Total calls: {metadata.get('call_count', 0)}")
+                self._flush_logger(log)
+            
+            return answer, ["Kiro CLI native exploration"], "Kiro CLI handled exploration internally with its built-in tools"
+            
+        except Exception as e:
+            log.error(f"Kiro CLI exploration error: {e}")
+            return f"Error during exploration: {e}", [], str(e)
+    
     async def _interactive_exploration(
         self,
         repo_dir: str,
@@ -366,19 +430,32 @@ class GenerationWorkflow:
         max_context_size = 600000
         current_exploration_context = ""
         
-        log.info(f"Starting interactive exploration with max {max_iterations} iterations")
+        # Detect if using Kiro CLI
+        is_kiro_cli = hasattr(maintainer_agent, 'kiro_cli_path')
+        
+        log.info(f"Starting interactive exploration with max {max_iterations} iterations (Kiro CLI: {is_kiro_cli})")
         self._flush_logger(log)
         
         for iteration in range(max_iterations):
             log.info(f"Exploration iteration {iteration+1}/{max_iterations}")
             
-            # Create system prompt based on iteration
-            if iteration == 0:
-                system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.INITIAL_EXPLORATION
-                user_prompt = f"Question: {question}\n\nPlease help me understand this code issue."
+            # Create system prompt based on iteration and agent type
+            if is_kiro_cli:
+                # Kiro CLI uses its own tools, so we add summary instructions
+                if iteration == 0:
+                    system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.INITIAL_EXPLORATION + TaskPrompts.KIRO_CLI_EXPLORATION
+                    user_prompt = f"Question: {question}\n\nPlease help me understand this code issue."
+                else:
+                    system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.KIRO_CLI_CONTINUED_EXPLORATION
+                    user_prompt = f"Question: {question}\n\nPrevious exploration summary:\n{current_exploration_context}\n\nPlease continue exploring or provide an answer."
             else:
-                system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.CONTINUED_EXPLORATION
-                user_prompt = f"Question: {question}\n\nExploration results so far:\n{current_exploration_context}\n\nPlease continue exploring or provide an answer."
+                # Standard exploration with EXPLORE: commands
+                if iteration == 0:
+                    system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.INITIAL_EXPLORATION
+                    user_prompt = f"Question: {question}\n\nPlease help me understand this code issue."
+                else:
+                    system_prompt = maintainer_agent.get_system_prompt() + TaskPrompts.CONTINUED_EXPLORATION
+                    user_prompt = f"Question: {question}\n\nExploration results so far:\n{current_exploration_context}\n\nPlease continue exploring or provide an answer."
             
             # Get exploration plan from maintainer
             try:
@@ -417,9 +494,18 @@ class GenerationWorkflow:
                 exploration_log += f"\n--- ERROR IN ITERATION {iteration+1} ---\n{str(e)}\n"
                 break
             
-            # Extract and execute exploration commands
+            # Extract and execute exploration commands or parse Kiro CLI summary
             iteration_results = ""
-            if "EXPLORE:" in exploration_plan:
+            
+            if is_kiro_cli:
+                # For Kiro CLI, extract the summary section from the response
+                iteration_results = self._extract_kiro_cli_summary(exploration_plan, log)
+                if not iteration_results:
+                    # If no summary found, use a condensed version of the response
+                    # (first 2000 chars to avoid context bloat)
+                    iteration_results = f"[Kiro CLI Response Summary]\n{exploration_plan[:2000]}{'...' if len(exploration_plan) > 2000 else ''}"
+                log.info(f"Extracted Kiro CLI summary ({len(iteration_results)} chars)")
+            elif "EXPLORE:" in exploration_plan:
                 commands = [
                     line.split("EXPLORE: ", 1)[1].strip() 
                     for line in exploration_plan.split('\n') 
@@ -705,6 +791,74 @@ class GenerationWorkflow:
         logger.warning("No maintainer response found in conversation history")
         return "No maintainer response found"
     
+    def _extract_kiro_cli_summary(self, response: str, log: logging.Logger) -> str:
+        """Extract exploration summary from Kiro CLI response.
+        
+        Args:
+            response: Kiro CLI response text
+            log: Logger instance
+            
+        Returns:
+            Extracted summary or empty string if not found
+        """
+        import re
+        
+        # Try to find the structured summary section
+        summary_pattern = r'=== EXPLORATION SUMMARY ===(.*?)=== END SUMMARY ==='
+        match = re.search(summary_pattern, response, re.DOTALL | re.IGNORECASE)
+        
+        if match:
+            summary = match.group(1).strip()
+            log.info("Found structured Kiro CLI exploration summary")
+            return summary
+        
+        # Alternative: look for KEY_FINDINGS or similar markers
+        alt_patterns = [
+            r'KEY_FINDINGS:(.*?)(?=\n\n|\Z)',
+            r'## Summary(.*?)(?=##|\Z)',
+            r'\*\*Summary\*\*(.*?)(?=\*\*|\Z)',
+        ]
+        
+        for pattern in alt_patterns:
+            match = re.search(pattern, response, re.DOTALL | re.IGNORECASE)
+            if match:
+                summary = match.group(1).strip()
+                if len(summary) > 50:  # Ensure it's substantial
+                    log.info("Found alternative Kiro CLI summary format")
+                    return summary
+        
+        # Extract key information from tool usage annotations in Kiro CLI output
+        # Kiro CLI includes annotations like "(using tool: read)", "(using tool: shell)"
+        tool_results = []
+        
+        # Look for file reading operations
+        file_reads = re.findall(r'Reading file: ([^\n]+)', response)
+        if file_reads:
+            tool_results.append(f"Files read: {', '.join(file_reads[:5])}")  # Limit to 5
+        
+        # Look for shell commands
+        shell_cmds = re.findall(r'I will run the following command: ([^\n]+)', response)
+        if shell_cmds:
+            tool_results.append(f"Commands executed: {', '.join(shell_cmds[:5])}")
+        
+        # Look for directory listings
+        dir_reads = re.findall(r'Reading directory: ([^\n]+)', response)
+        if dir_reads:
+            tool_results.append(f"Directories explored: {', '.join(dir_reads[:5])}")
+        
+        # Look for searches
+        searches = re.findall(r'Searching for: ([^\n]+)', response)
+        if searches:
+            tool_results.append(f"Searches performed: {', '.join(searches[:5])}")
+        
+        if tool_results:
+            summary = "[Kiro CLI Tool Activity]\n" + "\n".join(tool_results)
+            log.info(f"Extracted Kiro CLI tool activity summary ({len(tool_results)} items)")
+            return summary
+        
+        log.info("No structured summary found in Kiro CLI response")
+        return ""
+
     async def _run_docker_validation(
         self,
         issue_data: IssueData,

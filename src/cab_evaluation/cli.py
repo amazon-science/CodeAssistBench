@@ -213,8 +213,7 @@ async def run_generation_dataset(args):
                         issue_data, 
                         agent_model_mapping, 
                         agent_framework_mapping,
-                        enable_ast_tools=not getattr(args, 'disable_ast_tools', False),
-                        custom_system_prompt_path=getattr(args, 'ast_system_prompt', None)
+                        enable_ast_tools=not getattr(args, 'disable_ast_tools', False)
                     )
                     
                     # Get original issue data for complete metadata preservation

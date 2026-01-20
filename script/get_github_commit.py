@@ -4,6 +4,7 @@ import os
 from typing import List, Dict
 import time
 import json
+import argparse
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -144,9 +145,25 @@ def process_repository_file(file_path: Path, output_dir: Path, client: GitHubAPI
 
 def main():
     """Process all JSON files in the input directory."""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Get commit IDs for GitHub issues before their creation date.',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python get_github_commit.py --input-dir my_data/issues --output-dir my_data/commits
+  python get_github_commit.py -i ../recent_issues -o ../commits
+        """
+    )
+    parser.add_argument('--input-dir', '-i', type=str, required=True,
+                        help='Directory containing JSON files with issues')
+    parser.add_argument('--output-dir', '-o', type=str, default='github_commits',
+                        help='Output directory for commit data (default: github_commits)')
+    args = parser.parse_args()
+    
     # Setup directories
-    input_dir = Path("../recent_v2_June2025_Jan2026_scon")  # Input: from scon_filter.py (Step 5)
-    output_dir = Path("github_commits")
+    input_dir = Path(args.input_dir)
+    output_dir = Path(args.output_dir)
     output_dir.mkdir(exist_ok=True)
     
     # Initialize GitHub API client

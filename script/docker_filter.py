@@ -2,6 +2,7 @@ import json
 import os
 import boto3
 import glob
+import argparse
 from botocore.config import Config
 import time
 from collections import defaultdict
@@ -9,14 +10,14 @@ import re
 import shutil
 from datetime import datetime
 
-# Configure path
-ISSUES_DIR = "../recent_v2_June2025_Jan2026_final"  # Input: issues with commit_id from Step 6b
-DOCKER_FILTER_DIR = "../recent_v2_June2025_Jan2026_classified"  # Output: classified issues
-NEED_DOCKER_DIR = os.path.join(DOCKER_FILTER_DIR, "need_docker")
-NO_NEED_DOCKER_DIR = os.path.join(DOCKER_FILTER_DIR, "no_need_docker")
-NEED_DOCKER_BUT_CANNOT_DIR = os.path.join(DOCKER_FILTER_DIR, "need_docker_but_cannot")
-LLM_RESPONSES_DIR = os.path.join(DOCKER_FILTER_DIR, "llm_responses")
-PROCESSED_ISSUES_FILE = os.path.join(DOCKER_FILTER_DIR, "processed_issues.json")
+# Default paths (can be overridden via CLI)
+ISSUES_DIR = None
+DOCKER_FILTER_DIR = None
+NEED_DOCKER_DIR = None
+NO_NEED_DOCKER_DIR = None
+NEED_DOCKER_BUT_CANNOT_DIR = None
+LLM_RESPONSES_DIR = None
+PROCESSED_ISSUES_FILE = None
 
 # Define classification categories
 CATEGORIES = [
@@ -286,6 +287,48 @@ def save_issue_to_category(issue, json_file, category):
     return target_file
 
 def main():
+    global ISSUES_DIR, DOCKER_FILTER_DIR, NEED_DOCKER_DIR, NO_NEED_DOCKER_DIR
+    global NEED_DOCKER_BUT_CANNOT_DIR, LLM_RESPONSES_DIR, PROCESSED_ISSUES_FILE
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Classify GitHub issues by Dockerizability using LLM.',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python docker_filter.py --input-dir my_data/issues --output-dir my_data/classified
+  python docker_filter.py -i ../issues -o ../classified --region us-east-1
+  
+Output structure:
+  <output-dir>/
+  ├── need_docker/           # Issues that need Docker environment
+  ├── no_need_docker/        # Documentation/config issues
+  ├── need_docker_but_cannot/ # Hardware-specific issues
+  ├── llm_responses/         # Raw LLM responses for debugging
+  └── processed_issues.json  # Tracking file for resume capability
+        """
+    )
+    parser.add_argument('--input-dir', '-i', type=str, required=True,
+                        help='Directory containing JSON files with issues')
+    parser.add_argument('--output-dir', '-o', type=str, required=True,
+                        help='Output directory for classified issues')
+    parser.add_argument('--region', '-r', type=str, default='us-west-2',
+                        help='AWS region for Bedrock (default: us-west-2)')
+    args = parser.parse_args()
+    
+    # Set global paths based on CLI arguments
+    ISSUES_DIR = args.input_dir
+    DOCKER_FILTER_DIR = args.output_dir
+    NEED_DOCKER_DIR = os.path.join(DOCKER_FILTER_DIR, "need_docker")
+    NO_NEED_DOCKER_DIR = os.path.join(DOCKER_FILTER_DIR, "no_need_docker")
+    NEED_DOCKER_BUT_CANNOT_DIR = os.path.join(DOCKER_FILTER_DIR, "need_docker_but_cannot")
+    LLM_RESPONSES_DIR = os.path.join(DOCKER_FILTER_DIR, "llm_responses")
+    PROCESSED_ISSUES_FILE = os.path.join(DOCKER_FILTER_DIR, "processed_issues.json")
+    
+    print(f"Input directory: {ISSUES_DIR}")
+    print(f"Output directory: {DOCKER_FILTER_DIR}")
+    print(f"AWS region: {args.region}")
+    
     # Initialize Bedrock client
     client = init_bedrock_client()
     

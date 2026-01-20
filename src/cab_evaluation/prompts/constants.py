@@ -80,6 +80,35 @@ class TaskPrompts:
     Use all relevant information gathered during the exploration to formulate your response.
     """
     
+    # Kiro CLI specific prompts
+    KIRO_CLI_EXPLORATION = """
+    At the END of your response, please include a SUMMARY section in this exact format:
+
+    === EXPLORATION SUMMARY ===
+    FILES_EXPLORED: [list of files you read or examined]
+    DIRECTORIES_LISTED: [list of directories you explored]
+    COMMANDS_EXECUTED: [list of shell commands you ran]
+    KEY_FINDINGS: [bullet points of important discoveries]
+    === END SUMMARY ===
+    
+    This summary helps track your exploration progress across iterations.
+    """
+    
+    KIRO_CLI_CONTINUED_EXPLORATION = """
+    Based on the previous exploration, continue investigating the repository.
+    
+    At the END of your response, please include a SUMMARY section in this exact format:
+
+    === EXPLORATION SUMMARY ===
+    FILES_EXPLORED: [list of files you read or examined in THIS iteration]
+    DIRECTORIES_LISTED: [list of directories you explored in THIS iteration]
+    COMMANDS_EXECUTED: [list of shell commands you ran in THIS iteration]
+    KEY_FINDINGS: [bullet points of important discoveries in THIS iteration]
+    === END SUMMARY ===
+    
+    If you believe you have enough information to answer the question fully, provide your comprehensive answer.
+    """
+    
     # Satisfaction evaluation
     SATISFACTION_EVALUATION = """
     After writing your response to the maintainer, add a separate section at the end that explicitly evaluates whether
