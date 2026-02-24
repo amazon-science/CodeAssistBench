@@ -17,9 +17,9 @@ export AWS_ACCESS_KEY_ID=your_key
 export AWS_SECRET_ACCESS_KEY=your_secret
 export AWS_DEFAULT_REGION=us-west-2
 
-# 3. Run evaluation on 10 Python issues
+# 3. Run evaluation on Python issues (using human-verified dataset)
 python -m cab_evaluation.cli generation-dataset \
-  dataset/cab_recent.jsonl \
+  dataset/cab_verified_v2.jsonl \
   --output results/quick_test.jsonl \
   --agent-models '{"maintainer": "haiku", "user": "haiku"}' \
   --language python
@@ -51,13 +51,14 @@ For production evaluation, use `sonnet4` or `opus` models instead of `haiku`.
 
 ## 📊 Dataset Overview
 
-CodeAssistBench provides three ready-to-use datasets:
+CodeAssistBench provides four ready-to-use datasets. **We recommend `cab_verified_v2.jsonl` for evaluation** — it contains 274 human-verified, high-quality issues (scored 4+ out of 5 by annotators):
 
 | Dataset | Issues | Languages | Description |
 |---------|--------|-----------|-------------|
-| `dataset/cab_recent_v2.jsonl` | 771 | 7 | **Latest** - June 2025 - Jan 2026 (with satisfaction conditions & classification) |
-| `dataset/cab_recent.jsonl` | 308 | 7 | Recent issues (June 2025 - Jan 2026) |
-| `dataset/cab_verified.jsonl` | 149 | 7 | Verified subset with tested Dockerfiles |
+| **`dataset/cab_verified_v2.jsonl`** | **274** | **7** | **⭐ Recommended** — Human-verified subset from annotation |
+| `dataset/cab_recent_v2.jsonl` | 771 | 7 | Full dataset — June 2025 - Jan 2026 (with satisfaction conditions & classification) |
+| `dataset/cab_recent.jsonl` | 308 | 7 | Earlier recent issues (June 2025 - Jan 2026) |
+| `dataset/cab_verified.jsonl` | 149 | 7 | Legacy verified subset with tested Dockerfiles |
 
 ### Dataset Fields
 
@@ -431,19 +432,15 @@ See [`examples/`](examples/) for sample outputs at each pipeline stage:
 ```python
 import json
 
-# Load the dataset
-with open('dataset/cab_recent.jsonl', 'r') as f:
+# Load the recommended human-verified dataset
+with open('dataset/cab_verified_v2.jsonl', 'r') as f:
     issues = [json.loads(line) for line in f]
 
 # Filter by language
 python_issues = [i for i in issues if i.get('language') == 'python']
 
-# Get issues with Dockerfiles
-dockerized = [i for i in issues if i.get('dockerfile')]
-
 print(f"Total issues: {len(issues)}")
 print(f"Python issues: {len(python_issues)}")
-print(f"With Dockerfiles: {len(dockerized)}")
 ```
 
 ### Running Evaluation
@@ -583,6 +580,8 @@ See [examples/USAGE_GUIDE.md](examples/USAGE_GUIDE.md) for more detailed instruc
 ```
 CodeAssistBench/
 ├── dataset/                    # 📊 Final datasets
+│   ├── cab_recent_v2.jsonl     # 771 latest issues
+│   ├── cab_verified_v2.jsonl   # 274 human-verified issues (quality 4+)
 │   ├── cab_recent.jsonl        # 308 recent issues
 │   ├── cab_verified.jsonl      # 149 verified issues
 │   └── recent/                 # Additional samples
